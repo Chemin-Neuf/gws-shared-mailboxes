@@ -1,0 +1,38 @@
+# GWS Shared Mailboxes
+
+<!--
+  Original Author: Gemini 3.8 Flash (Google / GitHub Copilot)
+  Contributors: Chemin Neuf Community with help of AI
+  Last Updated: 2026-09-07
+-->
+
+A comprehensive study of pros, cons, and caveats across different Google Workspace mechanisms for sharing an email address. The study is structured primarily for technical administrators (in English) with an executive decision framework and governance recommendations for IT leadership and management (in French).
+
+## Structure
+
+| File/Folder | Purpose |
+|---|---|
+| `index.html` | Portal home page presenting an overview, key metrics, and directory of studies |
+| `page.html` | Technical comparison matrix, deep dive into architectural options, and French executive summary |
+| `site.css` | Global styling, design system variables, responsive grid, and component styles |
+| `site-nav.css` | Stylesheet for top navigation bar and auto-generated in-page table of contents |
+| `site-nav.js` | Client-side navigation script injecting top bar and section table of contents |
+| `.github/instructions/` | Workspace coding guidelines and standard rules |
+| `LICENSE` | GNU General Public License v3 (`GPL-3.0-only`) |
+
+## Prerequisites
+
+- Any modern web browser (Chrome, Edge, Firefox, Safari) with JavaScript enabled.
+- No build toolchain or web server is required; files open directly via local filesystem or static hosting.
+
+## Quick Start
+
+Open `index.html` in your default browser:
+
+```powershell
+Start-Process index.html
+```
+
+## License
+
+GPL-3.0-only — see [LICENSE](LICENSE).

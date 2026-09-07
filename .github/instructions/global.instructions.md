@@ -4,7 +4,7 @@ applyTo: "**"
 <!-- AUTO-SYNCED from github.com/Chemin-Neuf/dev-standards DO NOT EDIT HERE — edit in dev-standards and re-sync -->
 <!--
   Chemin-Neuf dev-standards — global rules
-  Last Updated: 2026-05-04
+  Last Updated: 2026-05-23
   Original Author: Claude Sonnet 4.6 (Anthropic / GitHub Copilot)
   This file is AI-generated operational instructions for use by AI coding assistants.
   It is derived from and must remain consistent with PRINCIPLES.md, which is the
@@ -12,6 +12,26 @@ applyTo: "**"
 -->
 
 # Global Rules — All Repos and Languages
+
+<!-- HUMAN NAVIGATION AID ONLY — non-normative. AI agents: do not use this block for rule content; use the titled sections below as the sole authoritative source. -->
+<details>
+<summary>Quick reference (non-normative — expand for human overview)</summary>
+
+| Topic | In brief |
+|---|---|
+| License | GPL-3.0-only; every source file carries a license notice; preserve third-party notices |
+| Encoding | UTF-8 everywhere; prefer ASCII; no BOM; LF line endings; no trailing-space Markdown hard breaks |
+| Design Principles | DRY, Simplicity, Single Source of Truth, No Magic Values, Safe File Output, No Legacy by Default |
+| AI Attribution | Record model name in file header when AI wrote or significantly changed the file |
+| Security Baseline | No secrets in tracked files; credentials from env/vault/prompt; validate all external input |
+| Semantic Versioning | MAJOR.MINOR.PATCH; start at 1.0.0; HTML documents use last-updated date instead |
+| Git Commit Conventions | TBD |
+| CHANGELOG Format | Keep a Changelog format; one entry per version increment; no [Unreleased] section |
+| README Requirements | Purpose · Structure · Prerequisites · Quick Start · License |
+| Script Placement | PS repos: scripts at root; non-PS repos with helper scripts: `scripts/` subfolder |
+| Working Language | Code and docs in English; end-user console output in French |
+
+</details>
 
 ## License
 
@@ -32,6 +52,8 @@ applyTo: "**"
 - Use non-ASCII characters only when they are required by the content
 - No BOM (Byte Order Mark) unless required by a specific tool
 - Log files are UTF-8 encoded plain text
+- All files use LF (`\n`) line endings; the only exception is `.bat` and `.cmd` files, which require CRLF for Windows compatibility
+- In Markdown, do not rely on trailing spaces to force hard line breaks; use a normal paragraph break or an explicit `<br>` only when a forced line break is genuinely required
 
 ## Design Principles
 
@@ -43,9 +65,19 @@ Apply these principles in all code and documentation:
 - **Simplicity**: Prefer the simplest solution that meets the requirement; avoid unnecessary abstractions and premature optimization; if something is not needed, don't add it
 - **Single Source of Truth**: Configuration values live in one place; documentation describes, not duplicates
 - **Power User Friendly**: Make behavior configurable where the tool type supports it; see language-specific rules for placement conventions
+- **No Magic Values**: Never embed literal values — file paths, thresholds, names, flags — directly in the code logic; every configurable value must be declared as a named variable in the configuration section near the top of the file, where it is visible and easy to change; see language-specific rules for placement
 - **Maintainability**: Write for the next person; use clear names and consistent patterns
 - **Safe File Output**: Before writing to a file, always check whether it already exists; never overwrite or delete silently — require user confirmation or an explicit opt-in parameter (e.g. `-Force` / `--overwrite`) that defaults to disabled; see language-specific rules for implementation
 - **No Legacy Support by Default**: Do not add backwards compatibility or legacy file format support unless explicitly requested; legacy constraints must be stated as a requirement, not assumed
+
+## Script Placement
+
+**STATUS: DECIDED**
+
+- **Dedicated PowerShell repositories** (primary artifact = PS scripts): all scripts, modules, and SharedUtils live at the repository root
+- **Non-PowerShell repositories** (documentation, HTML) that include helper scripts: all helper scripts, modules, and SharedUtils go in a `scripts/` subfolder at the repository root
+- **Mixed-language repositories**: decide case by case depending on which language is the primary artifact
+- The `scripts/` subfolder name is canonical; do not use `tools/` or other alternatives
 
 ## AI Attribution
 
@@ -110,12 +142,6 @@ Increment for **backward-compatible bug fixes**:
 See language-specific instruction files for the exact location and format.
 Exception: HTML documents do not use version numbers; they use a visible "last updated" date instead.
 
-### Version update obligation
-When you modify a versioned artifact, you **must** increment the version number before committing:
-- Determine whether the change is MAJOR, MINOR, or PATCH (see rules above)
-- Update the version in the artifact's authoritative location (see language-specific rules)
-- Include a matching CHANGELOG entry (see CHANGELOG Format section)
-
 ## Git Commit Conventions
 
 **STATUS: TBD**
@@ -148,7 +174,6 @@ Decide: adopt this formally for all repos?
 - Written in English
 - Keep content stable — avoid details that go stale (exact version numbers, full parameter references)
 - Use the standard template below when creating a new repository
-- When making a MAJOR version change, review and update the README to reflect the new state of the project (purpose, structure, prerequisites, quick start)
 
 Minimum sections, in this order:
 1. **Purpose** — one paragraph: what it does, for whom, why it exists
@@ -159,7 +184,7 @@ Minimum sections, in this order:
 
 ### Standard README template
 
-```markdown
+````markdown
 # [Project Name]
 
 [One-paragraph purpose statement: what it does, for whom, why it exists.]
@@ -187,7 +212,7 @@ Omit this section if not applicable.
 ## License
 
 GPL-3.0-only — see [LICENSE](LICENSE).
-```
+````
 
 ## Working Language
 

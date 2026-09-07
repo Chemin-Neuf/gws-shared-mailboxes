@@ -31,10 +31,9 @@
      file  : filename (relative, same folder)
   ────────────────────────────────────────────────────────── */
   const PAGES = [
-    { file: 'index.html',    title: 'Home' },
-    { file: 'page.html',     title: 'Options Comparison' },
-    // Add more pages here:
-    // { file: 'another.html', title: 'Another' },
+    { file: 'index.html',                 title: 'Home' },
+    { file: 'options-comparison.html',    title: 'Options Comparison' },
+    { file: 'synthese-manageriale.html',  title: 'Synthèse managériale' },
   ];
 
   /* ── Detect current page ───────────────────────────────── */

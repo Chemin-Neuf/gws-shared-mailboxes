@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/site.css" />
   <link rel="stylesheet" href="css/site-nav.css" />
   <style>
-    /* ── page.html page-specific styles ── */
+    /* ── options-comparison.html page-specific styles ── */
 
     /* Two-column layout: sticky sidebar + scrolling content */
     .topbar {
@@ -60,7 +60,7 @@
     <h1>Shared Mailbox Options Comparison</h1>
     <p>
       Technical comparison and analysis of mechanisms to share an email address in Google Workspace,
-      covering operational workflows, security, licensing, and manager recommendations.
+      covering operational workflows, security, licensing, and implementation methodology.
     </p>
     <div class="meta">
       <span class="pill">📅 Last updated: 2026-09-08</span>
@@ -98,9 +98,9 @@
 
         <!-- Tag row -->
         <div class="tag-row">
-          <span class="tag info">English Technical Core</span>
-          <span class="tag good">French Executive Summary</span>
+          <span class="tag info">Technical Core</span>
           <span class="tag warn">Security &amp; 2FA Caveats</span>
+          <a href="synthese-manageriale.html" class="tag good" style="text-decoration:none;">Synthèse managériale (FR) &rarr;</a>
         </div>
       </section>
 
@@ -241,41 +241,8 @@
       </section>
 
       <!-- Section 4 -->
-      <section id="synthese-manageriale" class="section">
-        <h2>4. Synthèse managériale (Recommandations &amp; Décision)</h2>
-        <p>
-          Cette section résume les recommandations stratégiques et opérationnelles à destination
-          des responsables d'équipes et de la direction informatique.
-        </p>
-
-        <!-- Grid cards for Management Summary -->
-        <div class="grid-2" style="margin-top:14px;">
-          <div class="card primary">
-            <h3>Option recommandée n°1 : Délégation Gmail</h3>
-            <p><strong>Pour qui ?</strong> Les services opérationnels (Comptabilité, Secrétariat, Support client, Inscriptions) où le volume d'échanges exige de savoir qui a traité ou répondu à chaque message.</p>
-            <p><strong>Arbitrage :</strong> Nécessite le coût d'une licence Google Workspace dédiée, mais offre l'expérience utilisateur Gmail la plus propre, sans risque de double traitement des demandes.</p>
-          </div>
-          <div class="card soft">
-            <h3>Option recommandée n°2 : Groupe Google Collaboratif</h3>
-            <p><strong>Pour qui ?</strong> Les commissions, équipes projets temporaires ou adresses d'information générale à faible criticité.</p>
-            <p><strong>Arbitrage :</strong> Aucun coût de licence supplémentaire. Demande cependant aux collaborateurs d'adopter le réflexe de consulter <code>groups.google.com</code> pour affecter et marquer les messages.</p>
-          </div>
-        </div>
-
-        <div class="callout-box" style="margin-top:16px;">
-          <h3>Directive de gouvernance et sécurité</h3>
-          <p>
-            Le partage d'identifiants (mot de passe commun sur un compte utilisateur) est formellement
-            proscrit. Il est incompatible avec l'authentification multifacteur (2FA), expose l'organisation
-            à des blocages de sécurité inopinés par Google en cas de connexions simultanées, et rend
-            impossible toute traçabilité en cas d'erreur ou d'incident de sécurité.
-          </p>
-        </div>
-      </section>
-
-      <!-- Section 5 -->
       <section id="next-steps" class="section">
-        <h2>5. Next Steps &amp; Methodology</h2>
+        <h2>4. Next Steps &amp; Methodology</h2>
         <p>
           To prepare this study for full organizational adoption, the following implementation steps
           are outlined:

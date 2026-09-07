@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Boîtes Partagées — Synthèse managériale</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── synthese-manageriale.html styles spécifiques ── */
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .callout-box {
+      background: linear-gradient(180deg, #eff6ff, #ffffff);
+      border: 1px solid #bfdbfe;
+      border-left: 6px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .callout-box.warn {
+      background: linear-gradient(180deg, #fffbeb, #ffffff);
+      border-color: #fde68a;
+      border-left-color: var(--warn);
+    }
+
+    .callout-box h3 { margin: 0 0 8px; color: var(--primary); }
+    .callout-box.warn h3 { color: var(--warn); }
+    .callout-box p  { margin: 0; color: var(--muted); }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Synthèse managériale</h1>
+    <p>
+      Guide d'aide à la décision et gouvernance pour le partage d'adresses e-mail au sein de
+      Google Workspace : arbitrages budgétaires, retours d'expérience et directives de sécurité.
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Dernière mise à jour : 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash</span>
+      <span class="pill">🏷️ Décision &amp; Gouvernance</span>
+    </div>
+  </div>
+
+  <!-- ── Disposition en deux colonnes ───────────────────── -->
+  <div class="topbar">
+
+    <!-- Barre latérale dynamique -->
+    <nav class="nav" data-page-nav="auto" data-page-nav-root=".content">
+      <h2>Sur cette page</h2>
+      <!-- Les liens sont injectés automatiquement par site-nav.js -->
+    </nav>
+
+    <!-- Contenu principal -->
+    <div class="content">
+
+      <!-- Section 1 : Contexte et enjeu décisionnel -->
+      <section id="contexte" class="section">
+        <h2>1. Contexte &amp; Enjeu décisionnel</h2>
+        <p>
+          Contrairement à Microsoft 365 / Exchange, Google Workspace ne dispose pas de fonctionnalité
+          native de « boîte partagée » gratuite fonctionnant de façon transparente et synchronisée
+          sur tous les appareils.
+        </p>
+        <p>
+          Toute mise en place d'une adresse générique partagée (ex. <code>contact@</code>,
+          <code>compta@</code>, <code>inscriptions@</code>, <code>secretariat@</code>) impose
+          un compromis managérial entre coût financier, ergonomie quotidienne et conformité sécuritaire.
+        </p>
+
+        <div class="tag-row">
+          <span class="tag good">Public : Responsables d'équipe &amp; DSI</span>
+          <span class="tag info">Portée : Google Workspace</span>
+          <span class="tag warn">Arbitrage Budgétaire &amp; Sécurité</span>
+        </div>
+      </section>
+
+      <!-- Encadré synthèse -->
+      <div class="callout-box">
+        <h3>Principe clé d'arbitrage</h3>
+        <p>
+          Il n'y a pas de solution unique idéale dans Google Workspace. Le choix dépend directement de
+          deux facteurs : le volume de messages nécessitant un suivi de traitement (qui a répondu à quoi)
+          et la criticité opérationnelle du service demandeur.
+        </p>
+      </div>
+
+      <!-- Section 2 : Recommandations opérationnelles -->
+      <section id="recommandations" class="section">
+        <h2>2. Recommandations par scénario d'usage</h2>
+        <p>
+          Deux solutions officielles se détachent selon la nature du besoin :
+        </p>
+
+        <div class="grid-2" style="margin-top:14px;">
+          <div class="card primary">
+            <h3>Option recommandée n°1 : Délégation Gmail</h3>
+            <p><strong>Pour qui ?</strong> Les services opérationnels critiques (Comptabilité, Secrétariat, Support, Inscriptions) où le volume d'échanges exige de savoir qui a traité, lu ou répondu à chaque message.</p>
+            <p><strong>Arbitrage :</strong> Nécessite le coût d'une licence Google Workspace dédiée, mais offre l'expérience utilisateur Gmail la plus propre et prévient tout risque de doublon de traitement.</p>
+            <p><strong>Contrainte :</strong> Utilisation web sur ordinateur recommandée (non disponible dans l'application mobile Gmail sans contournement).</p>
+          </div>
+
+          <div class="card accent">
+            <h3>Option recommandée n°2 : Groupe Google Collaboratif</h3>
+            <p><strong>Pour qui ?</strong> Les commissions, équipes projets temporaires ou adresses d'information générale à faible volume ou criticité modérée.</p>
+            <p><strong>Arbitrage :</strong> Aucun coût de licence supplémentaire (inclus nativement). Permet d'affecter des sujets et d'ajouter des étiquettes de statut depuis l'interface web <code>groups.google.com</code>.</p>
+            <p><strong>Contrainte :</strong> Pas de synchronisation du statut lu/non-lu dans la boîte de messagerie personnelle des membres.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3 : Grille d'arbitrage managérial -->
+      <section id="arbitrage" class="section">
+        <h2>3. Grille d'arbitrage rapide</h2>
+        <p>
+          Tableau de synthèse pour orienter les demandes des pôles et des services :
+        </p>
+
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Scénario / Besoin</th>
+                <th>Solution préconisée</th>
+                <th>Impact budgétaire</th>
+                <th>Point de vigilance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Comptabilité / Facturation</strong><br />Traçabilité indispensable, aucun e-mail oublié</td>
+                <td><span class="tag good">Délégation Gmail</span></td>
+                <td>1 licence Workspace</td>
+                <td>Interface web sur poste de travail</td>
+              </tr>
+              <tr>
+                <td><strong>Secrétariat &amp; Accueil</strong><br />Multi-gestionnaires, réponses au nom du service</td>
+                <td><span class="tag good">Délégation Gmail</span></td>
+                <td>1 licence Workspace</td>
+                <td>Formation initiale à la bascule de compte</td>
+              </tr>
+              <tr>
+                <td><strong>Commission / Groupe projet</strong><br />Partage d'informations entre membres bénévoles</td>
+                <td><span class="tag info">Groupe Google (Collaboratif)</span></td>
+                <td><span class="tag good">Gratuit (0 licence)</span></td>
+                <td>Consulter l'interface Groupes dédiée</td>
+              </tr>
+              <tr>
+                <td><strong>Alias nominatif / Redirection simple</strong><br />Adresse de fonction attribuée à une seule personne</td>
+                <td><span class="tag info">Alias de messagerie</span></td>
+                <td><span class="tag good">Gratuit (0 licence)</span></td>
+                <td>Pas de travail collaboratif possible</td>
+              </tr>
+              <tr>
+                <td><strong>Partage de mot de passe commun</strong><br />Compte partagé identifiant/mot de passe</td>
+                <td><span class="tag bad">Proscrit (Anti-modèle)</span></td>
+                <td>1 licence inutile</td>
+                <td>Blocages 2FA, risque légal, absence d'audit</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 4 : Directive stricte de gouvernance -->
+      <section id="gouvernance-securite" class="section">
+        <h2>4. Directive de gouvernance et sécurité</h2>
+        <div class="callout-box warn">
+          <h3>Interdiction formelle du partage d'identifiants</h3>
+          <p>
+            Le partage de mot de passe sur un compte utilisateur collectif est formellement
+            interdit par la politique de sécurité du système d'information.
+          </p>
+        </div>
+
+        <p style="margin-top:14px;">
+          Cette interdiction repose sur des motifs techniques et juridiques stricts :
+        </p>
+
+        <div class="grid-3" style="margin-top:14px;">
+          <div class="card warn">
+            <h3>Incompatibilité 2FA</h3>
+            <p>L'authentification multifacteur requiert un appareil individuel (clé de sécurité, smartphone). Un compte partagé entraîne des alertes permanentes et le blocage automatique par Google.</p>
+          </div>
+          <div class="card warn">
+            <h3>Perte d'auditabilité</h3>
+            <p>En cas de suppression accidentelle, de fuite de données ou de litige, il est techniquement impossible d'identifier l'auteur réel de l'action si l'identifiant est partagé.</p>
+          </div>
+          <div class="card warn">
+            <h3>Non-conformité RGPD</h3>
+            <p>L'absence de traçabilité et le maintien d'accès non révoqués lors des départs de collaborateurs constituent une violation directe des obligations de protection des données.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5 : Déploiement et étapes suivantes -->
+      <section id="plan-action" class="section">
+        <h2>5. Plan d'action pour les services</h2>
+        <p>
+          Démarche recommandée pour toute nouvelle demande de boîte partagée :
+        </p>
+
+        <div class="timeline" style="margin-top:14px;">
+          <div class="step">
+            <div><span class="badge">Étape 1</span></div>
+            <div>
+              <strong>Expression du besoin</strong>
+              <p class="muted" style="margin:4px 0 0;">Le responsable de service précise le volume prévisionnel d'e-mails, le nombre de collaborateurs concernés et la nécessité ou non d'un statut partagé.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div><span class="badge">Étape 2</span></div>
+            <div>
+              <strong>Validation budgétaire &amp; Provisionnement</strong>
+              <p class="muted" style="margin:4px 0 0;">Si la délégation Gmail est retenue, l'arbitrage budgétaire (1 licence Workspace) est validé et le compte générique est configuré par l'équipe informatique.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div><span class="badge">Étape 3</span></div>
+            <div>
+              <strong>Accompagnement des utilisateurs</strong>
+              <p class="muted" style="margin:4px 0 0;">Transmission de la fiche réflexe aux utilisateurs (ouverture du compte délégué dans Gmail, bonne pratique de réponse et classement).</p>
+            </div>
+          </div>
+        </div>
+
+        <p style="margin-top:20px;">
+          Pour consulter les analyses techniques détaillées, la matrice d'architecture et les limites de Google Workspace :
+          <a href="options-comparison.html">consulter l'étude technique complète (en anglais)</a>.
+        </p>
+      </section>
+
+    </div><!-- /.content -->
+  </div><!-- /.topbar -->
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

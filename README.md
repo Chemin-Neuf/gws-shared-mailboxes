@@ -13,7 +13,8 @@ A comprehensive study of pros, cons, and caveats across different Google Workspa
 | File/Folder | Purpose |
 |---|---|
 | `index.html` | Portal home page presenting an overview, key metrics, and directory of studies |
-| `page.html` | Technical comparison matrix, deep dive into architectural options, and French executive summary |
+| `options-comparison.html` | Technical comparison matrix, deep dive into architectural options, and implementation methodology (in English) |
+| `synthese-manageriale.html` | Executive decision framework, governance guidelines, and security directives for department heads (in French) |
 | `css/` | Shared stylesheets (`site.css`, `site-nav.css`) |
 | `js/` | Client-side navigation script (`site-nav.js`) |
 | `assets/` | Static media and site favicon (`favicon.svg`) |

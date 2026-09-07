@@ -1,3 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Chemin-Neuf
+ * SPDX-License-Identifier: GPL-3.0-only
+ *
+ * Original Author: Gemini 3.8 Flash (Google / GitHub Copilot)
+ */
+
 /* ============================================================
    site-nav.js — shared top navigation bar
 
@@ -5,9 +12,9 @@
    ─────────────────
    1. Set SITE_BRAND to your project/site name.
    2. Add one entry per page to the PAGES array.
-   3. Make sure every HTML file includes these two lines in <head>:
-        <link rel="stylesheet" href="site-nav.css" />
-        <script src="site-nav.js"></script>
+   3. Make sure every HTML file includes:
+        In <head>: <link rel="stylesheet" href="css/site-nav.css" />
+        At end of <body>: <script src="js/site-nav.js"></script>
    That is all — the nav bar updates on every page automatically.
    ============================================================ */
 

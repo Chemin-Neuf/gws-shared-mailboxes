@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GWS Shared Mailboxes — Home</title>
-  <link rel="stylesheet" href="site.css" />
-  <link rel="stylesheet" href="site-nav.css" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
   <style>
     /* ── index.html page-specific styles ── */
 
@@ -64,6 +67,10 @@
 
     .tag-primary { background: var(--primary-soft); color: #1e40af; }
     .tag-teal    { background: var(--teal-soft); color: #115e59; }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -77,8 +84,8 @@
       mechanisms for sharing an email address.
     </p>
     <div class="meta">
-      <span class="pill">📅 Last updated: 2026-09-07</span>
-      <span class="pill">✍️ Chemin Neuf Community with help of AI</span>
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash</span>
       <span class="pill">🏷️ Google Workspace</span>
     </div>
   </div>
@@ -163,6 +170,6 @@
   </div>
 
 </div><!-- /.shell -->
-<script src="site-nav.js"></script>
+<script src="js/site-nav.js"></script>
 </body>
 </html>

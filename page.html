@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GWS Shared Mailboxes — Options Comparison</title>
-  <link rel="stylesheet" href="site.css" />
-  <link rel="stylesheet" href="site-nav.css" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
   <style>
     /* ── page.html page-specific styles ── */
 
@@ -43,6 +46,10 @@
     @media (max-width: 900px) {
       .topbar { grid-template-columns: 1fr; }
     }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -56,8 +63,8 @@
       covering operational workflows, security, licensing, and manager recommendations.
     </p>
     <div class="meta">
-      <span class="pill">📅 Last updated: 2026-09-07</span>
-      <span class="pill">✍️ Chemin Neuf Community with help of AI</span>
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash</span>
       <span class="pill">🏷️ Architecture &amp; Governance</span>
     </div>
   </div>
@@ -310,6 +317,6 @@
   </div><!-- /.topbar -->
 
 </div><!-- /.shell -->
-<script src="site-nav.js"></script>
+<script src="js/site-nav.js"></script>
 </body>
 </html>

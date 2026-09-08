@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Topic 3: Folders &amp; Labels</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── topic-organization.html page-specific styles ── */
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section h3 { margin: 18px 0 8px; font-size: 1.08rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .callout-box {
+      background: linear-gradient(180deg, #eff6ff, #ffffff);
+      border: 1px solid #bfdbfe;
+      border-left: 6px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .callout-box h3 { margin: 0 0 8px; color: var(--primary); }
+    .callout-box p  { margin: 0; color: var(--muted); }
+
+    .topic-pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Topic 3 — Folder &amp; Label Organization</h1>
+    <p>
+      How is the shared mail organized — Gmail labels, IMAP folders, Groups tags — and does
+      that organization <em>sync across the team</em>, or does every member file alone?
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
+      <span class="pill">🏷️ Status: Draft — migrated, pending review</span>
+    </div>
+  </div>
+
+  <!-- ── Two-column layout ───────────────────────────────── -->
+  <div class="topbar">
+
+    <!-- Sidebar -->
+    <nav class="nav" data-page-nav="auto" data-page-nav-root=".content" aria-label="Page sections">
+      <h2>On this page</h2>
+      <!-- Links are injected automatically by site-nav.js -->
+    </nav>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <!-- Comparison table -->
+      <section id="comparison" class="section">
+        <h2>Comparison across the 7 options</h2>
+        <p>
+          Organization is where the architectural differences become most visible day to day:
+          only some options give the whole team a <strong>single shared filing system</strong>.
+        </p>
+
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>Organizational Mechanism</th>
+                <th>Shared Sync Across Team</th>
+                <th>Flags, Stars &amp; Markers</th>
+                <th>Key Organization Caveats</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Shared Password Account</strong></td>
+                <td>Gmail labels &amp; nested labels. Maps to standard IMAP folders in desktop clients (Outlook/Thunderbird).</td>
+                <td><span class="tag good">Yes</span> real-time label application, creation, and filing sync across all logged-in users.</td>
+                <td>Account-wide Gmail stars/flags (shared across all users).</td>
+                <td>Full shared folder/label structure; syncs seamlessly across clients and web.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Gmail Delegation Account</strong></td>
+                <td>Gmail labels &amp; nested labels inside the delegated mailbox.</td>
+                <td><span class="tag good">Yes</span> real-time label sync between all delegates via web UI or Gmail app.</td>
+                <td>Account-wide Gmail stars/flags shared across delegates.</td>
+                <td>Delegates cannot manage labels via desktop email clients (IMAP unavailable) — must use the Gmail UI.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Collaborative Inbox</strong></td>
+                <td><strong>Shared category tags &amp; topics</strong> defined in Google Groups settings — does <em>not</em> use Gmail labels or IMAP folders.</td>
+                <td><span class="tag good">Yes</span> tags, status categories (Resolved, Duplicate, No Action Needed) and topic filters sync inside groups.google.com.</td>
+                <td>No color flags or Gmail stars. Uses status tags and user assignments instead.</td>
+                <td>Non-standard organization model; does not integrate with email-client folder trees.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Distribution List</strong></td>
+                <td>Personal Gmail labels / client folders inside each member's account.</td>
+                <td><span class="tag bad">No</span> strictly local. If member A files a message, member B sees no change.</td>
+                <td>Personal to each individual account.</td>
+                <td>Zero shared categorization — every member organizes list email individually.</td>
+              </tr>
+              <tr>
+                <td><strong>5. Email Alias / Redirection</strong></td>
+                <td>Personal Gmail labels / client folders on the primary recipient account.</td>
+                <td><span class="tag bad">No</span> personal to the recipient account.</td>
+                <td>Personal to the primary account owner.</td>
+                <td>Requires personal filter rules in Gmail to auto-label incoming alias mail.</td>
+              </tr>
+              <tr>
+                <td><strong>6. "Send Mail As" Config</strong></td>
+                <td>Personal Gmail labels in the individual sender's account.</td>
+                <td><span class="tag bad">No</span> outbound tagging stays inside the sender's mailbox.</td>
+                <td>Personal to the individual sender.</td>
+                <td>Inherits the personal organization model of the underlying account setup.</td>
+              </tr>
+              <tr>
+                <td><strong>7. Email-to-Google Chat Space</strong></td>
+                <td><strong>Chat threads &amp; pinned messages</strong> within the Space. No folders, no Gmail labels.</td>
+                <td><span class="tag good">Yes</span> thread topics and pinned messages visible to all Space members in real time.</td>
+                <td>Emoji reactions / pinned messages (shared across the Space).</td>
+                <td>No traditional folder or label structure; retrieval relies on Chat thread history and search.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Callout -->
+      <div class="callout-box">
+        <h3>The fundamental split</h3>
+        <p>
+          Options 1, 2, 3 and 7 offer a <strong>shared organization system</strong>; options 4, 5
+          and 6 leave every member filing alone. If your workflow depends on a common structure
+          ("Urgent", "Waiting for answer", "Processed by region"), only the first group qualifies —
+          and among those, only 1 and 2 use the Gmail label model users already know.
+        </p>
+      </div>
+
+      <!-- User perspective -->
+      <section id="user-view" class="section">
+        <h2>User perspective</h2>
+        <ul>
+          <li>
+            <strong>Familiarity.</strong> Gmail labels (options 1, 2) are immediately understood
+            by existing Gmail users. Groups tags (3) and Chat threads (7) are new mental models
+            that require onboarding.
+          </li>
+          <li>
+            <strong>Duplicate work.</strong> With distribution lists and aliases (4, 5), every
+            member re-files the same message — or, more often, nobody files it.
+          </li>
+          <li>
+            <strong>Client constraints.</strong> If part of the team lives in Outlook, only the
+            shared account (1) exposes the shared structure as real folders.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Admin perspective -->
+      <section id="admin-view" class="section">
+        <h2>Administrator perspective</h2>
+        <h3>Web console</h3>
+        <p>
+          Groups tags and status categories are configured per group in the Groups settings.
+          Gmail labels are user-level objects: they cannot be centrally created or enforced from
+          the Admin console — a delegated or shared mailbox's label tree is maintained by its users.
+        </p>
+        <h3>API &amp; automation</h3>
+        <p>
+          Labels can be provisioned via the Gmail API (<code>users.labels</code>) — useful to
+          bootstrap a standard label tree on a new delegated mailbox. Groups settings (including
+          archive and moderation behavior) are scriptable via the Groups Settings API. Details in
+          <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>.
+        </p>
+      </section>
+
+      <!-- Pager -->
+      <div class="topic-pager">
+        <a class="btn btn-secondary link-btn" href="topic-reply-writing.html">&larr; Topic 2 — Reply &amp; Writing</a>
+        <a class="btn btn-primary link-btn" href="topic-collaboration.html">Next: Topic 4 — Team Collaboration &rarr;</a>
+      </div>
+
+    </div><!-- /.content -->
+  </div><!-- /.topbar -->
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

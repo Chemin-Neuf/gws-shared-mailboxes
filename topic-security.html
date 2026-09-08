@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Topic 8: Security &amp; Compliance</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── topic-security.html page-specific styles ── */
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section h3 { margin: 18px 0 8px; font-size: 1.08rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .callout-box {
+      background: linear-gradient(180deg, #fff5f5, #ffffff);
+      border: 1px solid #fecaca;
+      border-left: 6px solid var(--danger);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .callout-box h3 { margin: 0 0 8px; color: var(--danger); }
+    .callout-box p  { margin: 0; color: var(--muted); }
+
+    .topic-pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Topic 8 — Security, Offboarding &amp; Compliance</h1>
+    <p>
+      Multi-factor authentication, credential exposure, how fast access can be revoked when
+      someone leaves, and which compliance tooling exists on a Nonprofits edition.
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
+      <span class="pill">🏷️ Status: Draft — pending review</span>
+    </div>
+  </div>
+
+  <!-- ── Two-column layout ───────────────────────────────── -->
+  <div class="topbar">
+
+    <!-- Sidebar -->
+    <nav class="nav" data-page-nav="auto" data-page-nav-root=".content" aria-label="Page sections">
+      <h2>On this page</h2>
+      <!-- Links are injected automatically by site-nav.js -->
+    </nav>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <!-- Comparison table -->
+      <section id="comparison" class="section">
+        <h2>Comparison across the 7 options</h2>
+
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>MFA / 2FA Compatibility</th>
+                <th>Credential Exposure</th>
+                <th>Offboarding Speed (Revoking One Person)</th>
+                <th>Individual Accountability</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Shared Password Account</strong></td>
+                <td><span class="tag bad">Broken</span> 2FA codes must be shared/relayed; concurrent logins trigger lockouts</td>
+                <td><span class="tag bad">High</span> password known by N people, often written down</td>
+                <td><span class="tag bad">Slow</span> change the password + re-enroll 2FA + redistribute to everyone</td>
+                <td><span class="tag bad">None</span> all actions map to one identity</td>
+              </tr>
+              <tr>
+                <td><strong>2. Gmail Delegation Account</strong></td>
+                <td><span class="tag good">Full</span> each delegate uses their own 2FA</td>
+                <td><span class="tag good">None</span> the mailbox password is never shared (can be random + vaulted by admin)</td>
+                <td><span class="tag good">Instant</span> remove the delegate grant</td>
+                <td><span class="tag good">Strong</span> audit logs record the acting delegate</td>
+              </tr>
+              <tr>
+                <td><strong>3. Collaborative Inbox</strong></td>
+                <td><span class="tag good">Full</span> personal accounts with personal 2FA</td>
+                <td><span class="tag good">None</span> no credentials involved</td>
+                <td><span class="tag good">Instant</span> remove from group</td>
+                <td><span class="tag good">Strong</span> assignment and posting are attributed</td>
+              </tr>
+              <tr>
+                <td><strong>4. Distribution List</strong></td>
+                <td><span class="tag good">Full</span> personal 2FA</td>
+                <td><span class="tag good">None</span></td>
+                <td><span class="tag good">Instant</span> remove from group</td>
+                <td><span class="tag warn">Partial</span> membership known; who replied is not centrally visible</td>
+              </tr>
+              <tr>
+                <td><strong>5. Email Alias / Redirection</strong></td>
+                <td><span class="tag good">Full</span> personal 2FA</td>
+                <td><span class="tag good">None</span></td>
+                <td><span class="tag good">Instant</span> remove alias/routing</td>
+                <td><span class="tag good">Yes</span> single accountable recipient</td>
+              </tr>
+              <tr>
+                <td><strong>6. "Send Mail As" Config</strong></td>
+                <td><span class="tag good">Full</span> personal 2FA</td>
+                <td><span class="tag good">None</span></td>
+                <td><span class="tag good">Instant</span> remove the sendAs grant</td>
+                <td><span class="tag warn">Partial</span> sent mail lives in personal Sent folders</td>
+              </tr>
+              <tr>
+                <td><strong>7. Email-to-Google Chat Space</strong></td>
+                <td><span class="tag good">Full</span> personal 2FA</td>
+                <td><span class="tag good">None</span></td>
+                <td><span class="tag good">Instant</span> remove from Space</td>
+                <td><span class="tag good">Yes</span> all discussion attributed per author</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Callout -->
+      <div class="callout-box">
+        <h3>Policy directive: shared passwords are never acceptable</h3>
+        <p>
+          Option 1 fails every row of this table. Beyond the technical lockouts, shared
+          credentials void individual accountability — unacceptable for an organization handling
+          donor data and subject to GDPR-style obligations. Where a "shared account feel" is
+          truly required, <strong>Delegation (option 2) delivers the same UX without sharing
+          any secret.</strong> See the <a href="synthese-manageriale.html">synthèse managériale</a>
+          for the governance wording.
+        </p>
+      </div>
+
+      <!-- Edition limits -->
+      <section id="edition-limits" class="section">
+        <h2>Edition limits — Google Workspace for Nonprofits</h2>
+        <ul>
+          <li>
+            <strong>No DLP (Data Loss Prevention)</strong> — rules scanning outbound mail for
+            sensitive content require higher editions; not available on GWN regardless of the
+            sharing option chosen.
+          </li>
+          <li>
+            <strong>No Google Vault</strong> — see
+            <a href="topic-history-search.html">Topic 5</a>; retention is architectural, not policy-driven.
+          </li>
+          <li>
+            <strong>Available and usable:</strong> 2-Step Verification enforcement (free),
+            security keys, context-aware access basics, Admin audit logs (login, admin actions,
+            Groups audit, Gmail log search with limited retention), and alert center.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Admin perspective -->
+      <section id="admin-view" class="section">
+        <h2>Administrator perspective</h2>
+        <h3>Web console</h3>
+        <p>
+          The Admin console covers: 2SV enforcement per OU, group membership and roles,
+          delegation review (per user: Gmail settings; centrally: report), session revocation,
+          and audit logs. Delegation grants can be inspected via the
+          <a href="topic-admin-controls.html">admin controls</a> covered in Topic 9.
+        </p>
+        <h3>API &amp; automation</h3>
+        <p>
+          Offboarding is highly scriptable: one GAM command chain can remove group memberships,
+          revoke delegation grants, and revoke tokens for a departing user. Details in
+          <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>.
+        </p>
+      </section>
+
+      <!-- Pager -->
+      <div class="topic-pager">
+        <a class="btn btn-secondary link-btn" href="topic-contacts.html">&larr; Topic 7 — Contacts &amp; Directory</a>
+        <a class="btn btn-primary link-btn" href="topic-admin-controls.html">Next: Topic 9 — Admin Controls &rarr;</a>
+      </div>
+
+    </div><!-- /.content -->
+  </div><!-- /.topbar -->
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

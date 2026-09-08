@@ -27,13 +27,33 @@
   var SITE_BRAND = 'GWS Shared Mailboxes';
 
   /* ── Page registry ─────────────────────────────────────────
-     title : short label shown in the nav bar
-     file  : filename (relative, same folder)
+     title    : short label shown in the nav bar
+     file     : filename (relative, same folder); use '#' for a
+                dropdown parent that has no page of its own
+     children : optional array of sub-pages rendered as a dropdown
   ────────────────────────────────────────────────────────── */
   const PAGES = [
     { file: 'index.html',                 title: 'Home' },
-    { file: 'options-comparison.html',    title: 'Options Comparison' },
-    { file: 'synthese-manageriale.html',  title: 'Synthèse managériale' },
+    { file: 'options-comparison.html',    title: 'Options' },
+    {
+      file: 'topics.html',
+      title: 'Topics',
+      children: [
+        { file: 'topic-read-access.html',        title: '1. Read Access & Platforms' },
+        { file: 'topic-reply-writing.html',      title: '2. Reply & Writing' },
+        { file: 'topic-organization.html',       title: '3. Folders & Labels' },
+        { file: 'topic-collaboration.html',      title: '4. Team Collaboration' },
+        { file: 'topic-history-search.html',     title: '5. History & Search' },
+        { file: 'topic-identity-signatures.html',title: '6. Identity & Signatures' },
+        { file: 'topic-contacts.html',           title: '7. Contacts & Directory' },
+        { file: 'topic-security.html',           title: '8. Security & Compliance' },
+        { file: 'topic-admin-controls.html',     title: '9. Admin Controls' },
+        { file: 'topic-api-automation.html',     title: '10. API & Automation' },
+      ],
+    },
+    { file: 'decision-guide.html',        title: 'Decision Guide' },
+    { file: 'matrix.html',                title: 'Matrix' },
+    { file: 'synthese-manageriale.html',  title: 'Synthèse (FR)' },
   ];
 
   /* ── Detect current page ───────────────────────────────── */
@@ -61,14 +81,43 @@
     linksWrapper.className = 'nav-links';
 
     PAGES.forEach(function (page) {
-      const a = document.createElement('a');
-      a.href = page.file;
-      a.textContent = page.title;
-      a.className = 'nav-link' + (page.file === currentFile ? ' active' : '');
-      if (page.file === currentFile) {
-        a.setAttribute('aria-current', 'page');
+      var childActive = page.children && page.children.some(function (c) { return c.file === currentFile; });
+
+      if (page.children && page.children.length) {
+        // Dropdown parent
+        var item = document.createElement('div');
+        item.className = 'nav-item';
+
+        var a = document.createElement('a');
+        a.href = page.file;
+        a.textContent = page.title + ' \u25BE';
+        a.className = 'nav-link' + ((page.file === currentFile || childActive) ? ' active' : '');
+        if (page.file === currentFile || childActive) {
+          a.setAttribute('aria-current', 'page');
+        }
+        item.appendChild(a);
+
+        var menu = document.createElement('div');
+        menu.className = 'nav-dropdown';
+        page.children.forEach(function (child) {
+          var ca = document.createElement('a');
+          ca.href = child.file;
+          ca.textContent = child.title;
+          ca.className = 'nav-dropdown-link' + (child.file === currentFile ? ' active' : '');
+          menu.appendChild(ca);
+        });
+        item.appendChild(menu);
+        linksWrapper.appendChild(item);
+      } else {
+        var link = document.createElement('a');
+        link.href = page.file;
+        link.textContent = page.title;
+        link.className = 'nav-link' + (page.file === currentFile ? ' active' : '');
+        if (page.file === currentFile) {
+          link.setAttribute('aria-current', 'page');
+        }
+        linksWrapper.appendChild(link);
       }
-      linksWrapper.appendChild(a);
     });
 
     nav.appendChild(linksWrapper);

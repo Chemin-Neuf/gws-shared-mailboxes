@@ -80,13 +80,15 @@
   <div class="hero">
     <h1>GWS Shared Mailboxes</h1>
     <p>
-      A comprehensive study of pros, cons, and caveats across different Google Workspace
-      mechanisms for sharing an email address.
+      A comprehensive study of the 7 native mechanisms for sharing an email address in
+      <strong>Google Workspace for Nonprofits</strong> — compared from the user's seat
+      (familiarity, devices, daily workflow) and the administrator's seat
+      (web console control, API automation, license cost).
     </p>
     <div class="meta">
       <span class="pill">📅 Last updated: 2026-09-08</span>
-      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash</span>
-      <span class="pill">🏷️ Google Workspace</span>
+      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
+      <span class="pill">🏷️ Google Workspace for Nonprofits</span>
     </div>
   </div>
 
@@ -94,17 +96,20 @@
   <p class="section-label">Overview</p>
   <div class="card">
     <p>
-      In Google Workspace, there is no direct 1:1 equivalent of a Microsoft Exchange "Shared Mailbox"
-      (which is free, multi-user, and fully integrated across Outlook apps). Administrators and teams
-      must evaluate multiple built-in architectures: <strong>Google Groups (Collaborative Inbox)</strong>,
-      <strong>Gmail Delegation</strong>, <strong>Email Aliases / Routing</strong>, or a
-      <strong>Dedicated User Account</strong>.
+      In Google Workspace, there is no direct 1:1 equivalent of a Microsoft Exchange "Shared Mailbox".
+      Administrators and teams must choose among seven built-in mechanisms: a
+      <strong>shared password account</strong> (anti-pattern), <strong>Gmail delegation</strong>,
+      <strong>Collaborative Inbox</strong>, <strong>distribution lists</strong>,
+      <strong>email aliases / routing</strong>, <strong>"Send Mail As"</strong> identities, and
+      <strong>email-to-Chat Spaces</strong> — each with its own cost, usability, and governance profile.
     </p>
     <p>
-      This documentation provides an objective breakdown of functional capabilities, licensing costs,
-      security considerations (including 2FA compliance), and mobile access trade-offs. The analysis
-      is structured into two dedicated studies: a technical deep-dive in English for system administrators,
-      and an executive decision framework (Synthèse managériale) in French for leadership and department heads.
+      The study is organized as <strong>10 evaluation topics</strong> (read access, reply dynamics,
+      organization, collaboration, history, identity, contacts, security, admin controls, API),
+      each validated independently before verdicts are consolidated. We stay well below the
+      tenant's 2,000-user hard limit, but license-consuming options are scrutinized accordingly.
+      An executive decision framework (Synthèse managériale) in French summarizes the findings
+      for leadership and department heads.
     </p>
   </div>
 
@@ -113,18 +118,18 @@
   <div class="kpi-grid">
     <div class="kpi">
       <div class="label">Options Evaluated</div>
-      <div class="value">4</div>
-      <div class="sub">Groups, Delegation, Alias, Account</div>
+      <div class="value">7</div>
+      <div class="sub">Shared account, Delegation, Collab. Inbox, List, Alias, Send-As, Chat</div>
     </div>
     <div class="kpi">
-      <div class="label">Cost Impact</div>
+      <div class="label">Evaluation Topics</div>
+      <div class="value">10</div>
+      <div class="sub">Validated one at a time</div>
+    </div>
+    <div class="kpi">
+      <div class="label">License Cost</div>
       <div class="value">0–1</div>
-      <div class="sub">Licenses per shared address</div>
-    </div>
-    <div class="kpi">
-      <div class="label">Mobile App Support</div>
-      <div class="value">Partial</div>
-      <div class="sub">Delegation web-only on iOS/Android</div>
+      <div class="sub">Per shared address (mind the 2,000-user cap)</div>
     </div>
     <div class="kpi">
       <div class="label">Target Audience</div>
@@ -140,12 +145,50 @@
     <a href="options-comparison.html" class="doc-card">
       <div class="doc-info">
         <div class="doc-title">
-          Shared Mailbox Options Comparison
+          The 7 Options — Profiles
           <span class="tag tag-primary">Technical Study (EN)</span>
         </div>
         <p class="doc-desc">
-          Technical comparison matrix, architectural deep dive into each Google Workspace
-          approach, security/caveats analysis, and implementation methodology.
+          One profile per mechanism: what it is, user experience, admin control via the
+          web console and via API, license cost, and key caveats.
+        </p>
+      </div>
+    </a>
+
+    <a href="topics.html" class="doc-card">
+      <div class="doc-info">
+        <div class="doc-title">
+          Evaluation Topics (10)
+          <span class="tag tag-primary">Technical Study (EN)</span>
+        </div>
+        <p class="doc-desc">
+          The 10 evaluation dimensions, one page each, with per-option comparison tables,
+          blocking-criteria quick reference, and the nonprofit external-tools policy.
+        </p>
+      </div>
+    </a>
+
+    <a href="decision-guide.html" class="doc-card">
+      <div class="doc-info">
+        <div class="doc-title">
+          Decision Guide
+          <span class="tag tag-primary">Technical Study (EN)</span>
+        </div>
+        <p class="doc-desc">
+          Blocking criteria, workarounds, and typical recipes per use case — the practical
+          entry point when choosing an option for a given shared address.
+        </p>
+      </div>
+    </a>
+
+    <a href="matrix.html" class="doc-card">
+      <div class="doc-info">
+        <div class="doc-title">
+          Master Matrix
+          <span class="tag tag-primary">Technical Study (EN)</span>
+        </div>
+        <p class="doc-desc">
+          Consolidated OK / NOK verdicts: 7 options × 10 topics, filled as topics are validated.
         </p>
       </div>
     </a>
@@ -169,12 +212,12 @@
   <p class="section-label">Highlights</p>
   <div class="grid-3">
     <div class="card primary">
-      <h3>Google Groups</h3>
-      <p>No license cost. Supports assignment and status in the web UI, but individual inboxes do not sync read/unread status across members.</p>
+      <h3>Collaborative Inbox</h3>
+      <p>No license cost. Native assignment and resolved status, but web-only and unable to compose new external mail.</p>
     </div>
     <div class="card accent">
       <h3>Gmail Delegation</h3>
-      <p>Requires 1 licensed base account. Fully synced sent/read states for up to 1,000 delegates, but limited to the desktop web interface.</p>
+      <p>1 license per functional mailbox. Fully synced read/sent state and shared contacts for delegates; no desktop-client access.</p>
     </div>
     <div class="card warn">
       <h3>Synthèse managériale</h3>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Topic 5: History &amp; Search</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── topic-history-search.html page-specific styles ── */
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section h3 { margin: 18px 0 8px; font-size: 1.08rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .callout-box {
+      background: linear-gradient(180deg, #fff8eb, #ffffff);
+      border: 1px solid #fcd34d;
+      border-left: 6px solid var(--warn);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .callout-box h3 { margin: 0 0 8px; color: var(--warn); }
+    .callout-box p  { margin: 0; color: var(--muted); }
+
+    .topic-pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Topic 5 — History, Search &amp; Archiving</h1>
+    <p>
+      Six months from now, can the team find "that exchange with the supplier"? History
+      lives in very different places depending on the option — and sometimes in several
+      places at once.
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
+      <span class="pill">🏷️ Status: Draft — pending review</span>
+    </div>
+  </div>
+
+  <!-- ── Two-column layout ───────────────────────────────── -->
+  <div class="topbar">
+
+    <!-- Sidebar -->
+    <nav class="nav" data-page-nav="auto" data-page-nav-root=".content" aria-label="Page sections">
+      <h2>On this page</h2>
+      <!-- Links are injected automatically by site-nav.js -->
+    </nav>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <!-- Comparison table -->
+      <section id="comparison" class="section">
+        <h2>Comparison across the 7 options</h2>
+
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>Where History Lives</th>
+                <th>Centralized Team Search</th>
+                <th>Continuity on Staff Departure</th>
+                <th>Key Caveats</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Shared Password Account</strong></td>
+                <td>The shared mailbox (all inbound + sent).</td>
+                <td><span class="tag good">Yes</span> full Gmail search for everyone</td>
+                <td><span class="tag warn">At risk</span> history survives, but so does the shared-password problem</td>
+                <td>Complete history, indistinguishable per author.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Gmail Delegation Account</strong></td>
+                <td>The shared mailbox (all inbound + sent, per admin setting).</td>
+                <td><span class="tag good">Yes</span> full Gmail search for all delegates</td>
+                <td><span class="tag good">Yes</span> revoke the delegate; history untouched</td>
+                <td>Best continuity story of all options.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Collaborative Inbox</strong></td>
+                <td>The group archive (groups.google.com); copies may also land in member inboxes.</td>
+                <td><span class="tag warn">Partial</span> Groups search is weaker than Gmail search; private replies absent</td>
+                <td><span class="tag good">Yes</span> archive is group-owned, independent of members</td>
+                <td>"Reply to author" messages leave no trace — history has holes by design.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Distribution List</strong></td>
+                <td>Scattered: N personal inboxes (inbound) + N personal Sent folders (outbound).</td>
+                <td><span class="tag bad">No</span> nobody can search the whole conversation</td>
+                <td><span class="tag bad">Poor</span> departing member takes their copy (unless retained otherwise)</td>
+                <td>Reconstructing a full thread requires asking every member.</td>
+              </tr>
+              <tr>
+                <td><strong>5. Email Alias / Redirection</strong></td>
+                <td>The single recipient's mailbox.</td>
+                <td><span class="tag info">N/A</span> single mailbox by design</td>
+                <td><span class="tag warn">Fragile</span> tied to one person's account lifecycle</td>
+                <td>Single point of failure for institutional memory.</td>
+              </tr>
+              <tr>
+                <td><strong>6. "Send Mail As" Config</strong></td>
+                <td>Senders' personal Sent folders.</td>
+                <td><span class="tag bad">No</span></td>
+                <td><span class="tag bad">Poor</span></td>
+                <td>Outbound side of 4/5 — same scattering problem.</td>
+              </tr>
+              <tr>
+                <td><strong>7. Email-to-Google Chat Space</strong></td>
+                <td>The Chat Space thread history + Gmail Sent for external replies.</td>
+                <td><span class="tag warn">Partial</span> Chat search covers inbound + discussion, not the Gmail-side replies</td>
+                <td><span class="tag good">Yes</span> Space history persists across member changes</td>
+                <td>History split across two tools (Chat + Gmail).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Edition callout -->
+      <div class="callout-box">
+        <h3>Google Workspace for Nonprofits edition limit — no Vault</h3>
+        <p>
+          Retention policies, legal holds and eDiscovery via <strong>Google Vault are not
+          included</strong> in the Google Workspace for Nonprofits edition (Business Starter
+          tier). Archiving therefore relies on the architecture itself: options that keep a
+          complete copy in a durable place (delegated mailbox, group archive) are your only
+          retention mechanism. Upgrading editions would change this picture — flagged here
+          as context, not as a recommendation.
+        </p>
+      </div>
+
+      <!-- User perspective -->
+      <section id="user-view" class="section">
+        <h2>User perspective</h2>
+        <ul>
+          <li>
+            <strong>Search quality varies sharply.</strong> Gmail search (options 1, 2) is best
+            in class; Groups search (3) and Chat search (7) are noticeably weaker for
+            mail-style retrieval.
+          </li>
+          <li>
+            <strong>"I know we answered this" frustration</strong> is the daily symptom of
+            options 4–6: the answer exists, in someone's Sent folder — find the someone first.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Admin perspective -->
+      <section id="admin-view" class="section">
+        <h2>Administrator perspective</h2>
+        <h3>Web console</h3>
+        <p>
+          Group archiving ("Who can view conversations", archive toggle) is set per group.
+          Without Vault, the admin's retention toolkit is limited to not deleting accounts and
+          keeping group archives enabled — there is no central retention dashboard.
+        </p>
+        <h3>API &amp; automation</h3>
+        <p>
+          The Gmail API can export mailbox content (backup-style archiving of a delegated
+          mailbox is scriptable). Group archives are <em>not</em> exportable via API. Details in
+          <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>.
+        </p>
+      </section>
+
+      <!-- Pager -->
+      <div class="topic-pager">
+        <a class="btn btn-secondary link-btn" href="topic-collaboration.html">&larr; Topic 4 — Team Collaboration</a>
+        <a class="btn btn-primary link-btn" href="topic-identity-signatures.html">Next: Topic 6 — Identity &amp; Signatures &rarr;</a>
+      </div>
+
+    </div><!-- /.content -->
+  </div><!-- /.topbar -->
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

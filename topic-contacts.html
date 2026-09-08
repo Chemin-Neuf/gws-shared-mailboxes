@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Topic 7: Contacts &amp; Directory</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── topic-contacts.html page-specific styles ── */
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section h3 { margin: 18px 0 8px; font-size: 1.08rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .callout-box {
+      background: linear-gradient(180deg, #fff8eb, #ffffff);
+      border: 1px solid #fcd34d;
+      border-left: 6px solid var(--warn);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .callout-box h3 { margin: 0 0 8px; color: var(--warn); }
+    .callout-box p  { margin: 0; color: var(--muted); }
+
+    .callout-box.info {
+      background: linear-gradient(180deg, #eff6ff, #ffffff);
+      border-color: #bfdbfe;
+      border-left-color: var(--primary);
+    }
+
+    .callout-box.info h3 { color: var(--primary); }
+
+    .topic-pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Topic 7 — Contacts &amp; Directory Access</h1>
+    <p>
+      When a team member writes from the shared identity, whose address book do they get?
+      Personal contacts, the domain Directory, or the shared mailbox's own contact list?
+      This is the topic most comparisons forget — and a real Google Workspace gap.
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
+      <span class="pill">🏷️ Status: Draft — pending review</span>
+    </div>
+  </div>
+
+  <!-- ── Two-column layout ───────────────────────────────── -->
+  <div class="topbar">
+
+    <!-- Sidebar -->
+    <nav class="nav" data-page-nav="auto" data-page-nav-root=".content" aria-label="Page sections">
+      <h2>On this page</h2>
+      <!-- Links are injected automatically by site-nav.js -->
+    </nav>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <!-- Background -->
+      <section id="background" class="section">
+        <h2>How contacts work in Google Workspace</h2>
+        <p>Three distinct contact sources exist, and they are often confused:</p>
+        <ul>
+          <li>
+            <strong>Personal contacts</strong> — per-account, managed in contacts.google.com.
+            A delegated or shared mailbox has <em>its own</em> personal contacts, separate from
+            each delegate's.
+          </li>
+          <li>
+            <strong>Domain Directory</strong> — all users and groups of the tenant, plus
+            admin-managed <em>shared external contacts</em>. Autocompletes for everyone when
+            Directory is enabled.
+          </li>
+          <li>
+            <strong>Auto-collected "Other contacts"</strong> — addresses Gmail remembers from
+            past correspondence, per account.
+          </li>
+        </ul>
+        <p>
+          The structural gap: <strong>Google has no native "team address book" for arbitrary
+          external contacts.</strong> Shared external contacts live in the Directory and are
+          visible to the whole tenant — you cannot scope them to one team or one mailbox.
+        </p>
+      </section>
+
+      <!-- Comparison table -->
+      <section id="comparison" class="section">
+        <h2>Comparison across the 7 options</h2>
+
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>Autocomplete Source When Writing</th>
+                <th>Shared Contact List for the Team</th>
+                <th>Key Caveats</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Shared Password Account</strong></td>
+                <td>The shared account's own contacts + Directory.</td>
+                <td><span class="tag good">Yes, de facto</span> the account's contact list is the team's list</td>
+                <td>Works, but contacts accumulate with no governance; export/backup is manual.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Gmail Delegation Account</strong></td>
+                <td>The delegated account's own contacts + Directory.</td>
+                <td><span class="tag good">Yes, de facto</span> all delegates share the mailbox's contact list</td>
+                <td><strong>Best native answer</strong> to "shared address book for this mailbox". Mobile Gmail app autocomplete included.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Collaborative Inbox</strong></td>
+                <td><span class="tag bad">None in Groups UI</span> replying happens with minimal composer; real writing falls back to Gmail</td>
+                <td><span class="tag bad">No</span></td>
+                <td>Contacts are effectively handled by the member's personal Gmail when using Send As.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Distribution List</strong></td>
+                <td>Each member's personal contacts + Directory.</td>
+                <td><span class="tag bad">No</span> every member maintains their own list</td>
+                <td>The classic pain: "does anyone have the supplier's new address?"</td>
+              </tr>
+              <tr>
+                <td><strong>5. Email Alias / Redirection</strong></td>
+                <td>The recipient's personal contacts + Directory.</td>
+                <td><span class="tag info">N/A</span> single person</td>
+                <td>Appropriate for one-person functions.</td>
+              </tr>
+              <tr>
+                <td><strong>6. "Send Mail As" Config</strong></td>
+                <td>The sender's personal contacts + Directory.</td>
+                <td><span class="tag bad">No</span></td>
+                <td>Inherits options 4/5 — identity changes, address book does not.</td>
+              </tr>
+              <tr>
+                <td><strong>7. Email-to-Google Chat Space</strong></td>
+                <td><span class="tag info">N/A</span> no external compose from Chat</td>
+                <td><span class="tag bad">No</span></td>
+                <td>External replies via Gmail inherit that option's behavior.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Admin-managed shared contacts -->
+      <section id="shared-external-contacts" class="section">
+        <h2>Admin-managed shared external contacts (Directory)</h2>
+        <p>
+          Administrators can add <strong>shared external contacts</strong> (Admin console &rarr;
+          Directory &rarr; Directory settings, or the Admin SDK Directory API). These autocomplete
+          for <em>everyone</em> in the tenant in Gmail, Contacts and mobile sync.
+        </p>
+        <h3>Limits relevant to a nonprofit</h3>
+        <ul>
+          <li><strong>All-or-nothing visibility</strong> — no per-team or per-OU scoping of external contacts.</li>
+          <li><strong>No user self-service</strong> — only admins (or API scripts) can add them; users cannot contribute.</li>
+          <li><strong>Propagation delay</strong> — new shared contacts can take up to 24&nbsp;h to appear in autocomplete.</li>
+          <li><strong>Quota</strong> — the Directory accepts large volumes (hundreds of thousands of external contacts), far beyond nonprofit needs.</li>
+        </ul>
+      </section>
+
+      <!-- Callout: third-party -->
+      <div class="callout-box">
+        <h3>Third-party "shared contacts" tools — policy check</h3>
+        <p>
+          A market of add-ons (e.g. Shared Contacts for Gmail-type tools) exists precisely
+          because of the native gap: label-based contact sharing between users. Per the
+          <a href="topics.html">standing nonprofit policy</a>, these are <strong>excluded by
+          default</strong> (recurring per-user cost, additional vendor access to Directory data).
+          Possible exception: a free tier or a genuinely decisive feature deployed to a small
+          set of power users only. The delegated mailbox's built-in shared contact list
+          (option 2) covers most needs at zero cost.
+        </p>
+      </div>
+
+      <!-- User perspective -->
+      <section id="user-view" class="section">
+        <h2>User perspective</h2>
+        <ul>
+          <li>
+            <strong>Autocomplete expectations.</strong> Users expect "type three letters, get
+            the right person". Only Directory entries and the current account's own contacts
+            deliver that — personal contacts of colleagues never autocomplete for you.
+          </li>
+          <li>
+            <strong>Delegation surprise.</strong> Delegates sometimes search their <em>own</em>
+            contacts while composing in the delegated mailbox and wonder why an address is
+            missing: the mailbox has its own list, which must be fed deliberately.
+          </li>
+          <li>
+            <strong>Mobile parity.</strong> Contacts sync to phone address books per account;
+            the shared mailbox's contacts only appear if that account is added to the device.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Admin perspective -->
+      <section id="admin-view" class="section">
+        <h2>Administrator perspective</h2>
+        <h3>Web console</h3>
+        <p>
+          Admins control: Directory visibility (on/off per OU), shared external contacts
+          (add/edit/delete), and contact delegation (a user-level feature letting an assistant
+          manage someone's contacts — rarely used). There is no console UI to push contacts
+          <em>into</em> a mailbox's personal list.
+        </p>
+        <h3>API &amp; automation</h3>
+        <p>
+          Two APIs matter: the <strong>Admin SDK Directory API</strong>
+          (shared external contacts for the whole tenant), and the
+          <strong>People API</strong> for per-account personal contacts
+          (<code>people.connections</code>, <code>otherContacts</code>). With domain-wide
+          delegation, a script can maintain a delegated mailbox's contact list from a source of
+          truth (e.g. a Sheet or CRM export). Details in
+          <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>.
+        </p>
+      </section>
+
+      <!-- Pager -->
+      <div class="topic-pager">
+        <a class="btn btn-secondary link-btn" href="topic-identity-signatures.html">&larr; Topic 6 — Identity &amp; Signatures</a>
+        <a class="btn btn-primary link-btn" href="topic-security.html">Next: Topic 8 — Security &amp; Compliance &rarr;</a>
+      </div>
+
+    </div><!-- /.content -->
+  </div><!-- /.topbar -->
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

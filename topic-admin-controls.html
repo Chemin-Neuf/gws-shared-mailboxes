@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Topic 9: Admin Controls</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── topic-admin-controls.html page-specific styles ── */
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section h3 { margin: 18px 0 8px; font-size: 1.08rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .callout-box {
+      background: linear-gradient(180deg, #eff6ff, #ffffff);
+      border: 1px solid #bfdbfe;
+      border-left: 6px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .callout-box h3 { margin: 0 0 8px; color: var(--primary); }
+    .callout-box p  { margin: 0; color: var(--muted); }
+
+    .topic-pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Topic 9 — Admin Controls &amp; Governance</h1>
+    <p>
+      What can an administrator actually see and change from the Admin console web UI:
+      membership, permissions, audit logs, delegation oversight — per option.
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
+      <span class="pill">🏷️ Status: Draft — pending review</span>
+    </div>
+  </div>
+
+  <!-- ── Two-column layout ───────────────────────────────── -->
+  <div class="topbar">
+
+    <!-- Sidebar -->
+    <nav class="nav" data-page-nav="auto" data-page-nav-root=".content" aria-label="Page sections">
+      <h2>On this page</h2>
+      <!-- Links are injected automatically by site-nav.js -->
+    </nav>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <!-- Comparison table -->
+      <section id="comparison" class="section">
+        <h2>Comparison across the 7 options</h2>
+
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>Membership / Access Management</th>
+                <th>Audit Trail Available to Admin</th>
+                <th>License Cost</th>
+                <th>Key Governance Caveats</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Shared Password Account</strong></td>
+                <td>None — access is whoever knows the password.</td>
+                <td><span class="tag bad">Login audit only</span> all actions under one identity</td>
+                <td><span class="tag warn">1 license</span></td>
+                <td>Admin cannot even enumerate who has access. Unmanageable by design.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Gmail Delegation Account</strong></td>
+                <td>Delegate list visible per user; grants manageable by users or via API; 25-delegate practical / 1,000 hard limit, 40 concurrent.</td>
+                <td><span class="tag good">Strong</span> Gmail log search + audit events attribute actions to the delegate</td>
+                <td><span class="tag warn">1 license</span> counts toward the user cap</td>
+                <td>Console visibility of "who delegates what" tenant-wide is limited — API reporting recommended.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Collaborative Inbox</strong></td>
+                <td><span class="tag good">Full</span> roles (owner/manager/member), join policy, posting permissions per role</td>
+                <td><span class="tag good">Strong</span> Groups audit log (membership, settings); content moderation history in group</td>
+                <td><span class="tag good">Free</span></td>
+                <td>Assignment/status activity is <em>not</em> in any admin audit view — UI-only.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Distribution List</strong></td>
+                <td><span class="tag good">Full</span> same Groups admin surface as option 3</td>
+                <td><span class="tag good">Good</span> membership and settings audited; delivery is per-member</td>
+                <td><span class="tag good">Free</span></td>
+                <td>No visibility into what members do with delivered copies.</td>
+              </tr>
+              <tr>
+                <td><strong>5. Email Alias / Redirection</strong></td>
+                <td>Alias on a user (up to 30/user) or routing rule — centrally managed.</td>
+                <td><span class="tag warn">Low</span> routing changes audited; mail flow visible in log search</td>
+                <td><span class="tag good">Free</span></td>
+                <td>Simple, but the recipient owns the entire mailbox lifecycle.</td>
+              </tr>
+              <tr>
+                <td><strong>6. "Send Mail As" Config</strong></td>
+                <td><span class="tag bad">User-level</span> configured in each member's Gmail settings; no console management</td>
+                <td><span class="tag warn">Low</span></td>
+                <td><span class="tag good">Free</span></td>
+                <td>Without API provisioning, admin has zero visibility of who may send as the shared address.</td>
+              </tr>
+              <tr>
+                <td><strong>7. Email-to-Google Chat Space</strong></td>
+                <td>Space membership managed in Chat; app/webhook config in console.</td>
+                <td><span class="tag warn">Partial</span> Chat audit events in console</td>
+                <td><span class="tag good">Free</span></td>
+                <td>The inbound email webhook/app is the fragile piece — ownership must be documented.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Callout -->
+      <div class="callout-box">
+        <h3>The governance gap nobody expects: "Send Mail As"</h3>
+        <p>
+          The one option users set up <em>themselves</em> (6) is the one with the least admin
+          visibility. If your governance requires knowing "who is allowed to send as
+          info@our-ngo.org", either provision sendAs centrally via API
+          (<a href="topic-api-automation.html">Topic 10</a>) or prefer mailbox-based options
+          where the answer is structural (2) or role-based (3).
+        </p>
+      </div>
+
+      <!-- Console map -->
+      <section id="console-map" class="section">
+        <h2>Where things live in the Admin console</h2>
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Console Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Create / configure a group (Collaborative Inbox or list)</td>
+                <td>Directory &rarr; Groups &rarr; group &rarr; Access settings (also groups.google.com for managers)</td>
+              </tr>
+              <tr>
+                <td>Review delegates of a mailbox</td>
+                <td>Directory &rarr; Users &rarr; user &rarr; Security / Gmail settings (limited); full inventory via API</td>
+              </tr>
+              <tr>
+                <td>Set delegation Sent-folder behavior</td>
+                <td>Apps &rarr; Google Workspace &rarr; Gmail &rarr; User settings &rarr; Mail delegation</td>
+              </tr>
+              <tr>
+                <td>Routing / alias redirection rules</td>
+                <td>Apps &rarr; Google Workspace &rarr; Gmail &rarr; Routing; or user &rarr; Add alternate email</td>
+              </tr>
+              <tr>
+                <td>Gmail log search (delivery trace)</td>
+                <td>Reporting &rarr; Email log search</td>
+              </tr>
+              <tr>
+                <td>Groups audit events</td>
+                <td>Reporting &rarr; Audit and investigation &rarr; Groups log events</td>
+              </tr>
+              <tr>
+                <td>Shared external contacts</td>
+                <td>Directory &rarr; Directory settings &rarr; Shared external contacts (see <a href="topic-contacts.html">Topic 7</a>)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Pager -->
+      <div class="topic-pager">
+        <a class="btn btn-secondary link-btn" href="topic-security.html">&larr; Topic 8 — Security &amp; Compliance</a>
+        <a class="btn btn-primary link-btn" href="topic-api-automation.html">Next: Topic 10 — API &amp; Automation &rarr;</a>
+      </div>
+
+    </div><!-- /.content -->
+  </div><!-- /.topbar -->
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

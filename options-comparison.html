@@ -57,14 +57,15 @@
 
   <!-- ── Hero ────────────────────────────────────────────── -->
   <div class="hero">
-    <h1>Shared Mailbox Options Comparison</h1>
+    <h1>The 7 Sharing Options — Profiles</h1>
     <p>
-      Technical comparison and analysis of mechanisms to share an email address in Google Workspace,
-      covering operational workflows, security, licensing, and implementation methodology.
+      Detailed profile of each mechanism for sharing an email address in Google Workspace:
+      what it is, how it feels for users, and how much control administrators retain —
+      via the web console and via API automation.
     </p>
     <div class="meta">
       <span class="pill">📅 Last updated: 2026-09-08</span>
-      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash</span>
+      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
       <span class="pill">🏷️ Architecture &amp; Governance</span>
     </div>
   </div>
@@ -98,8 +99,9 @@
 
         <!-- Tag row -->
         <div class="tag-row">
-          <span class="tag info">Technical Core</span>
+          <span class="tag info">7 options profiled</span>
           <span class="tag warn">Security &amp; 2FA Caveats</span>
+          <a href="topics.html" class="tag good" style="text-decoration:none;">Per-topic detail &rarr;</a>
           <a href="synthese-manageriale.html" class="tag good" style="text-decoration:none;">Synthèse managériale (FR) &rarr;</a>
         </div>
       </section>
@@ -116,124 +118,142 @@
 
       <!-- Section 2 -->
       <section id="approaches" class="section">
-        <h2>2. Evaluated Approaches</h2>
+        <h2>2. The 7 Options at a Glance</h2>
         <p>
-          Four main approaches are available natively within Google Workspace to address shared email needs:
+          Seven mechanisms are available natively within Google Workspace. Option 1 is an
+          anti-pattern kept for completeness; options 4–7 are combinable building blocks.
         </p>
 
         <!-- Grid cards -->
         <div class="grid-2" style="margin-top:14px;">
           <div class="card soft">
-            <h3>A. Google Groups (Collaborative Inbox)</h3>
+            <h3>1. Shared Password Account <span class="tag bad">Anti-pattern</span></h3>
             <p>
-              A mailing list group configured as a Collaborative Inbox. Free (no extra license required).
-              Members access conversations via <code>groups.google.com</code> or receive emails in their
-              personal inbox. Supports assigning topics, tagging, and marking as resolved.
+              A licensed user account whose password is shared by the team. Full mailbox UX —
+              at the price of broken 2FA, zero accountability, and automated lockouts.
+              <strong>Excluded by policy</strong>; see <a href="topic-security.html">Topic 8</a>.
             </p>
           </div>
           <div class="card soft">
-            <h3>B. Gmail Account Delegation</h3>
+            <h3>2. Gmail Delegation Account</h3>
             <p>
-              A standard licensed Google Workspace account (e.g., <code>team@domain.org</code>) whose
-              access is delegated to team members via Gmail Delegation. Provides a genuine shared
-              Gmail UI with centralized read/unread status, shared folders, and shared sent items.
+              A licensed functional mailbox (<code>compta@</code>) accessed by delegates through
+              Gmail Delegation. Central read/sent state, shared labels and contacts,
+              personal 2FA per delegate, instant revocation. Costs 1 license.
             </p>
           </div>
           <div class="card soft">
-            <h3>C. Email Alias / Routing Rules</h3>
+            <h3>3. Collaborative Inbox</h3>
             <p>
-              An alias attached to an existing primary user or an email routing rule distributing
-              copies to multiple recipients. Inexpensive, but lacks centralized tracking, reply
-              visibility, and coordinated status across team members.
+              A Google Group with assignment, tags, and resolved status via
+              <code>groups.google.com</code>. Free. True queue workflow, but web-only and
+              unable to compose new external mail.
             </p>
           </div>
           <div class="card soft">
-            <h3>D. Shared User Account (Anti-Pattern)</h3>
+            <h3>4. Distribution List</h3>
             <p>
-              A single licensed account where the username and password are shared among several people.
-              <strong>Strongly discouraged:</strong> violates security policies, breaks 2FA enforcement,
-              triggers automated lockouts/suspensions, and removes individual accountability.
+              A Google Group routing copies into members' personal inboxes. Free and
+              frictionless, but every member gets an independent copy: no shared read state,
+              no shared Sent, duplicate-reply risk.
+            </p>
+          </div>
+          <div class="card soft">
+            <h3>5. Email Alias / Redirection</h3>
+            <p>
+              A secondary address on one user's account, or a routing rule forwarding to
+              recipients. Free and simple — right-sized for one-person role addresses.
+            </p>
+          </div>
+          <div class="card soft">
+            <h3>6. "Send Mail As" Configuration</h3>
+            <p>
+              Not a standalone option: the outbound layer that lets personal Gmail accounts
+              send as the group/alias address. Pairs with options 3–5; provisionable via API.
+            </p>
+          </div>
+          <div class="card soft">
+            <h3>7. Email-to-Google Chat Space</h3>
+            <p>
+              An inbound address feeding a Google Chat Space, where the team discusses before
+              answering. Free, mobile-friendly, but external replies still go through Gmail.
             </p>
           </div>
         </div>
       </section>
 
-      <!-- Section 3 -->
-      <section id="comparison-matrix" class="section">
-        <h2>3. Comparison Matrix &amp; Technical Caveats</h2>
+      <!-- Callout -->
+      <div class="callout-box">
+        <h3>Key Architectural Constraint</h3>
         <p>
-          The table below highlights the technical differences, limitations, and operational caveats
-          between the four approaches:
+          Sharing an email address in Google Workspace always involves an architectural compromise:
+          either an additional Google Workspace license fee, interface limitations (web-only vs mobile app),
+          or loss of centralized read/unread status across team members. The
+          <a href="decision-guide.html">Decision Guide</a> turns these constraints into a
+          per-address selection logic.
+        </p>
+      </div>
+
+      <!-- Section 3 -->
+      <section id="user-admin-view" class="section">
+        <h2>3. User View vs Admin View</h2>
+        <p>
+          Each option is experienced from two seats. The summary below links to the topic
+          pages where each dimension is analyzed across all 7 options.
         </p>
 
-        <!-- Table example -->
         <div class="table-wrap" style="margin-top:14px;">
           <table>
             <thead>
               <tr>
-                <th>Criterion</th>
-                <th>Google Groups (Collaborative)</th>
-                <th>Gmail Delegation</th>
-                <th>Email Alias</th>
-                <th>Shared Credentials (Discouraged)</th>
+                <th>Option</th>
+                <th>User experience (familiarity, devices)</th>
+                <th>Admin control — web console</th>
+                <th>Admin control — API / automation</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>License Cost</strong></td>
-                <td><span class="tag good">Free (0 license)</span></td>
-                <td><span class="tag warn">1 Workspace license</span></td>
-                <td><span class="tag good">Free</span></td>
-                <td><span class="tag warn">1 Workspace license</span></td>
+                <td><strong>1. Shared Password</strong></td>
+                <td>Perfect Gmail UX everywhere; fragile logins.</td>
+                <td><span class="tag bad">None</span> cannot even enumerate access</td>
+                <td><span class="tag bad">Nothing meaningful</span></td>
               </tr>
               <tr>
-                <td><strong>Central Read / Unread State</strong></td>
-                <td><span class="tag bad">No (personal sync only)</span></td>
-                <td><span class="tag good">Yes (centralized in mailbox)</span></td>
-                <td><span class="tag bad">No</span></td>
-                <td><span class="tag good">Yes</span></td>
+                <td><strong>2. Delegation</strong></td>
+                <td>Real Gmail (web + mobile app); no IMAP/desktop client; separate inbox view.</td>
+                <td><span class="tag warn">Medium</span> delegate list per user; Sent-folder behavior centrally set</td>
+                <td><span class="tag good">Full</span> delegates, sendAs, signatures, labels via Gmail API / GAM</td>
               </tr>
               <tr>
-                <td><strong>Shared Sent Messages</strong></td>
-                <td><span class="tag bad">In Group UI only</span></td>
-                <td><span class="tag good">Yes (visible to all delegates)</span></td>
-                <td><span class="tag bad">No (sender's sent items only)</span></td>
-                <td><span class="tag good">Yes</span></td>
+                <td><strong>3. Collaborative Inbox</strong></td>
+                <td>New UI to learn (groups.google.com); web-only; strong assignment/status model.</td>
+                <td><span class="tag good">Strong</span> roles, posting rights, archive settings</td>
+                <td><span class="tag good">Strong</span> provisioning + membership sync; assignment/status not scriptable</td>
               </tr>
               <tr>
-                <td><strong>Mobile App Access (Gmail iOS/Android)</strong></td>
-                <td><span class="tag warn">Email only (or web browser)</span></td>
-                <td><span class="tag bad">No (Desktop browser only)</span></td>
-                <td><span class="tag good">Yes (in personal inbox)</span></td>
-                <td><span class="tag warn">Possible but triggers 2FA alerts</span></td>
+                <td><strong>4. Distribution List</strong></td>
+                <td>Zero change — mail lands in the personal inbox everywhere.</td>
+                <td><span class="tag good">Strong</span> same Groups admin surface</td>
+                <td><span class="tag good">Strong</span> membership sync via Directory API / GAM</td>
               </tr>
               <tr>
-                <td><strong>Send-As Identity</strong></td>
-                <td>Group address (configured in settings)</td>
-                <td>Delegated address (or "sent by delegate")</td>
-                <td>Alias address</td>
-                <td>Direct account identity</td>
+                <td><strong>5. Alias / Redirection</strong></td>
+                <td>Zero change for the single recipient; mail blends into personal inbox.</td>
+                <td><span class="tag good">Good</span> aliases per user; routing rules centrally</td>
+                <td><span class="tag good">Good</span> alias + routing provisioning scriptable</td>
               </tr>
               <tr>
-                <td><strong>Security &amp; 2FA Compliance</strong></td>
-                <td><span class="tag good">Compliant (personal 2FA)</span></td>
-                <td><span class="tag good">Compliant (personal 2FA)</span></td>
-                <td><span class="tag good">Compliant (personal 2FA)</span></td>
-                <td><span class="tag bad">Non-compliant (shared secrets)</span></td>
+                <td><strong>6. Send Mail As</strong></td>
+                <td>From-dropdown in Gmail; per-user setup if not provisioned.</td>
+                <td><span class="tag bad">None</span> user-level setting, no console surface</td>
+                <td><span class="tag good">Good</span> Gmail API sendAs provisioning + inventory</td>
               </tr>
               <tr>
-                <td><strong>Auditability &amp; Traceability</strong></td>
-                <td><span class="tag good">High (member action logs)</span></td>
-                <td><span class="tag good">High (audit logs record delegate)</span></td>
-                <td><span class="tag warn">Low</span></td>
-                <td><span class="tag bad">Zero (shared identity)</span></td>
-              </tr>
-              <tr>
-                <td><strong>Max Participants</strong></td>
-                <td>Unlimited</td>
-                <td>Up to 1,000 delegates (40 concurrent)</td>
-                <td>Up to 30 aliases per user</td>
-                <td>Strict concurrent login caps</td>
+                <td><strong>7. Chat Space</strong></td>
+                <td>Chat UX (web + mobile); email appears as discussion threads, not an inbox.</td>
+                <td><span class="tag warn">Partial</span> Space membership; webhook ownership manual</td>
+                <td><span class="tag warn">Partial</span> Chat API for membership; inbound mail glue bespoke</td>
               </tr>
             </tbody>
           </table>
@@ -241,8 +261,23 @@
       </section>
 
       <!-- Section 4 -->
+      <section id="comparison-matrix" class="section">
+        <h2>4. Where the Detail Lives</h2>
+        <p>
+          The per-criterion comparison tables have moved to dedicated pages, one per
+          evaluation dimension — this keeps each study focused and lets us validate topics
+          one at a time:
+        </p>
+        <ul>
+          <li><a href="topics.html">Topics hub</a> — the 10 evaluation dimensions with status.</li>
+          <li><a href="decision-guide.html">Decision Guide</a> — blocking criteria, workarounds, and typical recipes.</li>
+          <li><a href="matrix.html">Master matrix</a> — consolidated OK/NOK verdicts.</li>
+        </ul>
+      </section>
+
+      <!-- Section 5 -->
       <section id="next-steps" class="section">
-        <h2>4. Next Steps &amp; Methodology</h2>
+        <h2>5. Next Steps &amp; Methodology</h2>
         <p>
           To prepare this study for full organizational adoption, the following implementation steps
           are outlined:

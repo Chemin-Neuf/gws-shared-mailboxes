@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Topic 10: API &amp; Automation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── topic-api-automation.html page-specific styles ── */
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section h3 { margin: 18px 0 8px; font-size: 1.08rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .callout-box {
+      background: linear-gradient(180deg, #eff6ff, #ffffff);
+      border: 1px solid #bfdbfe;
+      border-left: 6px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .callout-box h3 { margin: 0 0 8px; color: var(--primary); }
+    .callout-box p  { margin: 0; color: var(--muted); }
+
+    code.block {
+      display: block;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.84rem;
+      overflow-x: auto;
+      margin: 8px 0 14px;
+      white-space: pre;
+    }
+
+    .topic-pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Topic 10 — API Capabilities &amp; Automation</h1>
+    <p>
+      Everything an admin can do from a script: provisioning, permission sync, offboarding,
+      reporting. Maps each option to the relevant Google APIs and to GAM, the standard
+      open-source automation tool for Google Workspace.
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
+      <span class="pill">🏷️ Status: Draft — pending review</span>
+    </div>
+  </div>
+
+  <!-- ── Two-column layout ───────────────────────────────── -->
+  <div class="topbar">
+
+    <!-- Sidebar -->
+    <nav class="nav" data-page-nav="auto" data-page-nav-root=".content" aria-label="Page sections">
+      <h2>On this page</h2>
+      <!-- Links are injected automatically by site-nav.js -->
+    </nav>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <!-- API landscape -->
+      <section id="api-landscape" class="section">
+        <h2>The API landscape</h2>
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>API</th>
+                <th>Covers</th>
+                <th>Typical Use in This Study</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Admin SDK — Directory API</strong></td>
+                <td>Users, groups, members, aliases, shared external contacts</td>
+                <td>Create groups, sync membership from a source of truth, manage aliases, maintain shared contacts</td>
+              </tr>
+              <tr>
+                <td><strong>Admin SDK — Groups Settings API</strong></td>
+                <td>Group behavior (posting rights, archive, moderation, Collaborative Inbox flag)</td>
+                <td>Standardize group configuration; enforce baseline settings across all groups</td>
+              </tr>
+              <tr>
+                <td><strong>Admin SDK — Reports API</strong></td>
+                <td>Audit events (login, admin, groups, token)</td>
+                <td>Delegation inventory reports, offboarding verification</td>
+              </tr>
+              <tr>
+                <td><strong>Gmail API</strong></td>
+                <td>Per-mailbox settings: delegates, sendAs identities, signatures, labels, filters; message read/export</td>
+                <td>Provision delegates + sendAs + signatures centrally; export a delegated mailbox for archival</td>
+              </tr>
+              <tr>
+                <td><strong>People API</strong></td>
+                <td>Per-account personal contacts</td>
+                <td>Feed a delegated mailbox's contact list from a Sheet/CRM export</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:12px;">
+          Most mailbox-level Gmail API operations require a <strong>service account with
+          domain-wide delegation</strong> (a one-time admin setup in the console). This is the
+          standard, free, Google-supported pattern — no third-party tool involved.
+        </p>
+      </section>
+
+      <!-- Per-option automation -->
+      <section id="per-option" class="section">
+        <h2>Automation capability per option</h2>
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>Provision via API</th>
+                <th>Permission / Access Sync</th>
+                <th>Not Scriptable</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Shared Password</strong></td>
+                <td><span class="tag warn">User creation only</span></td>
+                <td><span class="tag bad">Nothing meaningful</span></td>
+                <td>Password distribution (that's the problem)</td>
+              </tr>
+              <tr>
+                <td><strong>2. Delegation</strong></td>
+                <td><span class="tag good">Full</span> user + delegates + sendAs + signature + labels</td>
+                <td><span class="tag good">Full</span> delegate list sync from a Sheet/HR source</td>
+                <td>Nothing significant — best API story of all options</td>
+              </tr>
+              <tr>
+                <td><strong>3. Collaborative Inbox</strong></td>
+                <td><span class="tag good">Full</span> group + settings + members</td>
+                <td><span class="tag good">Full</span> membership sync</td>
+                <td><span class="tag bad">Assignment &amp; resolved status</span> (UI-only, no API)</td>
+              </tr>
+              <tr>
+                <td><strong>4. Distribution List</strong></td>
+                <td><span class="tag good">Full</span></td>
+                <td><span class="tag good">Full</span> membership sync</td>
+                <td>Members' personal filters/labels (per-account, scriptable per user only)</td>
+              </tr>
+              <tr>
+                <td><strong>5. Alias / Redirection</strong></td>
+                <td><span class="tag good">Full</span> user aliases + routing rules</td>
+                <td><span class="tag info">N/A</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td><strong>6. Send Mail As</strong></td>
+                <td><span class="tag good">Full</span> via Gmail API sendAs (with domain-wide delegation)</td>
+                <td><span class="tag good">Provision + audit</span> who may send as what</td>
+                <td>User's manual From-selection habit</td>
+              </tr>
+              <tr>
+                <td><strong>7. Email-to-Chat Space</strong></td>
+                <td><span class="tag warn">Partial</span> Space management via Chat API; inbound email webhook setup is manual</td>
+                <td><span class="tag warn">Membership via Chat API</span></td>
+                <td>The email-ingestion piece (app script / webhook) is bespoke</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- GAM examples -->
+      <section id="gam" class="section">
+        <h2>GAM — the practical automation layer</h2>
+        <p>
+          <a href="https://github.com/GAM-team/GAM">GAM</a> (open source, free, actively
+          maintained) wraps these APIs in a command line — the de facto standard for Google
+          Workspace administration. Representative commands:
+        </p>
+
+<code class="block"># Create a Collaborative Inbox group
+gam create group support@example.org name "Support Team"
+gam update group support@example.org collaborative inbox
+
+# Add a delegate to a functional mailbox
+gam user compta@example.org delegate to jane.doe@example.org
+
+# Provision a "Send Mail As" identity + standard signature for a member
+gam user jane.doe@example.org add sendas support@example.org "Support Team" replyto support@example.org
+
+# Inventory all delegations in the tenant (reporting)
+gam all users show delegates
+
+# Offboard: strip group memberships and delegation grants
+gam user leaver@example.org delete groups
+gam all users delete delegate leaver@example.org</code>
+
+        <p>
+          <strong>Caution — delegated-mailbox contact hygiene:</strong> when syncing contacts
+          into a delegated mailbox via the People API, keep the source of truth outside Google
+          (Sheet/CRM) and treat the mailbox's list as a replica.
+        </p>
+      </section>
+
+      <!-- Callout -->
+      <div class="callout-box">
+        <h3>Policy fit</h3>
+        <p>
+          All of the above uses <strong>Google's own APIs and a free open-source CLI</strong> —
+          fully within the <a href="topics.html">nonprofit external-tools policy</a>: no
+          recurring cost, no additional vendor with data access, and skills transferable to
+          any Google Workspace tenant.
+        </p>
+      </div>
+
+      <!-- Pager -->
+      <div class="topic-pager">
+        <a class="btn btn-secondary link-btn" href="topic-admin-controls.html">&larr; Topic 9 — Admin Controls</a>
+        <a class="btn btn-primary link-btn" href="matrix.html">Next: Master Matrix &rarr;</a>
+      </div>
+
+    </div><!-- /.content -->
+  </div><!-- /.topbar -->
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

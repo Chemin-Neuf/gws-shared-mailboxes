@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Master Matrix</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── matrix.html page-specific styles ── */
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    /* Compact master matrix */
+    .master-matrix th, .master-matrix td {
+      font-size: 0.84rem;
+      padding: 9px 10px;
+    }
+
+    .master-matrix th { text-align: center; }
+    .master-matrix td:first-child { font-weight: 700; white-space: normal; }
+    .master-matrix td.cell { text-align: center; font-weight: 800; }
+
+    .cell-ok     { background: var(--accent-soft); color: #115e59; }
+    .cell-nok    { background: var(--danger-soft); color: #991b1b; }
+    .cell-mid    { background: var(--warn-soft);   color: #92400e; }
+    .cell-na     { color: var(--muted); }
+    .cell-pending{ background: #f3f4f6; color: var(--muted); font-weight: 500; }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Master Matrix — OK / NOK Summary</h1>
+    <p>
+      One-cell verdicts per option per topic. Cells consolidate the detailed reasoning of the
+      <a href="topics.html" style="color:#fff;text-decoration:underline;">10 topic pages</a>;
+      follow the row links for the full analysis.
+      Status: <strong>draft</strong> — rows are marked final only after their topic page is reviewed.
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
+      <span class="pill">🏷️ Consolidated Verdicts</span>
+    </div>
+  </div>
+
+  <!-- ── Legend ──────────────────────────────────────────── -->
+  <p class="section-label">Legend</p>
+  <div class="card">
+    <p>
+      <span class="tag good">OK</span> requirement met natively &nbsp;
+      <span class="tag warn">+/−</span> partial, workaround, or configuration-dependent &nbsp;
+      <span class="tag bad">NOK</span> not available / eliminated &nbsp;
+      <span class="tag">n/a</span> criterion does not apply to the option
+    </p>
+  </div>
+
+  <!-- ── Master matrix ───────────────────────────────────── -->
+  <p class="section-label">Consolidated matrix (7 options × 10 topics)</p>
+  <div class="section">
+    <div class="table-wrap">
+      <table class="master-matrix">
+        <thead>
+          <tr>
+            <th style="text-align:left;">Topic</th>
+            <th>1. Shared Password</th>
+            <th>2. Delegation</th>
+            <th>3. Collab. Inbox</th>
+            <th>4. Distrib. List</th>
+            <th>5. Alias</th>
+            <th>6. Send Mail As</th>
+            <th>7. Chat Space</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="topic-read-access.html">1. Read access &amp; platforms</a></td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-na">n/a</td>
+            <td class="cell cell-mid">+/−</td>
+          </tr>
+          <tr>
+            <td><a href="topic-reply-writing.html">2. Reply &amp; writing</a></td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-nok">NOK</td>
+          </tr>
+          <tr>
+            <td><a href="topic-organization.html">3. Folders &amp; labels</a></td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-mid">+/−</td>
+          </tr>
+          <tr>
+            <td><a href="topic-collaboration.html">4. Collaboration &amp; status</a></td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-na">n/a</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-mid">+/−</td>
+          </tr>
+          <tr>
+            <td><a href="topic-history-search.html">5. History &amp; search</a></td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-mid">+/−</td>
+          </tr>
+          <tr>
+            <td><a href="topic-identity-signatures.html">6. Identity &amp; signatures</a></td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-na">n/a</td>
+          </tr>
+          <tr>
+            <td><a href="topic-contacts.html">7. Contacts &amp; directory</a></td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-na">n/a</td>
+          </tr>
+          <tr>
+            <td><a href="topic-security.html">8. Security &amp; compliance</a></td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+          </tr>
+          <tr>
+            <td><a href="topic-admin-controls.html">9. Admin controls</a></td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-mid">+/−</td>
+          </tr>
+          <tr>
+            <td><a href="topic-api-automation.html">10. API &amp; automation</a></td>
+            <td class="cell cell-nok">NOK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-mid">+/−</td>
+          </tr>
+          <tr>
+            <td><strong>License cost</strong></td>
+            <td class="cell cell-mid">1</td>
+            <td class="cell cell-mid">1</td>
+            <td class="cell cell-ok">0</td>
+            <td class="cell cell-ok">0</td>
+            <td class="cell cell-ok">0</td>
+            <td class="cell cell-ok">0</td>
+            <td class="cell cell-ok">0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted" style="margin-top:12px;">
+      Verdicts are draft until each linked topic page is reviewed against the live tenant.
+      Option 1 (Shared Password) is excluded by security policy regardless of its scores — see
+      <a href="topic-security.html">Topic 8</a>.
+    </p>
+  </div>
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

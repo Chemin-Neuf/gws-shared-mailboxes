@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Evaluation Topics</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── topics.html page-specific styles ── */
+
+    .topic-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--primary);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 10px rgba(15,23,42,0.06);
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 16px;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      transition: box-shadow 0.15s, border-color 0.15s, transform 0.12s;
+    }
+
+    .topic-card:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 6px 24px rgba(29,78,216,0.12);
+      transform: translateY(-2px);
+    }
+
+    .topic-card.pending { border-left-color: var(--border); }
+    .topic-card.pending:hover { border-color: #d1d5db; box-shadow: 0 6px 24px rgba(15,23,42,0.08); }
+
+    .topic-title {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .topic-card.pending .topic-title { color: var(--muted); }
+    .topic-desc { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+    .blocker-row td:first-child { font-weight: 700; white-space: nowrap; }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Evaluation Topics</h1>
+    <p>
+      The study is organized into 10 evaluation dimensions. Each topic compares all 7 sharing
+      options side by side, from both the user's and the administrator's perspective.
+      Topics are written and validated one at a time.
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
+      <span class="pill">🏷️ Methodology</span>
+    </div>
+  </div>
+
+  <!-- ── Status legend ───────────────────────────────────── -->
+  <p class="section-label">How to read this page</p>
+  <div class="card">
+    <p>
+      Each topic card below carries a status badge:
+      <span class="tag good">Written</span> the comparison table is complete and validated,
+      <span class="tag warn">Draft</span> content exists but is under review,
+      <span class="tag">Pending</span> skeleton only — will be filled in a future session.
+      Once all topics are written, the consolidated verdicts feed the
+      <a href="matrix.html">master matrix</a> and the
+      <a href="synthese-manageriale.html">synthèse managériale (FR)</a> is updated.
+    </p>
+  </div>
+
+  <!-- ── Topic index ─────────────────────────────────────── -->
+  <p class="section-label">The 10 evaluation topics</p>
+  <div class="card-list">
+
+    <a href="topic-read-access.html" class="topic-card">
+      <div>
+        <div class="topic-title">1. Read Access &amp; Platform Compatibility <span class="tag warn">Draft</span></div>
+        <p class="topic-desc">Web, desktop clients (IMAP/Outlook/Thunderbird), mobile apps; inbox separation vs blending with personal mail.</p>
+      </div>
+    </a>
+
+    <a href="topic-reply-writing.html" class="topic-card">
+      <div>
+        <div class="topic-title">2. Reply &amp; Writing Dynamics <span class="tag warn">Draft</span></div>
+        <p class="topic-desc">Outbound capabilities, shared vs personal Sent folder, draft sharing and co-editing.</p>
+      </div>
+    </a>
+
+    <a href="topic-organization.html" class="topic-card">
+      <div>
+        <div class="topic-title">3. Folder &amp; Label Organization <span class="tag warn">Draft</span></div>
+        <p class="topic-desc">Gmail labels vs IMAP folders vs Groups tags; whether organization syncs across the team.</p>
+      </div>
+    </a>
+
+    <a href="topic-collaboration.html" class="topic-card">
+      <div>
+        <div class="topic-title">4. Team Collaboration &amp; Status Visibility <span class="tag warn">Draft</span></div>
+        <p class="topic-desc">Read/reply status shared across members, assignment to individuals, resolved marking, duplicate-reply avoidance.</p>
+      </div>
+    </a>
+
+    <a href="topic-history-search.html" class="topic-card">
+      <div>
+        <div class="topic-title">5. History, Search &amp; Archiving <span class="tag warn">Draft</span></div>
+        <p class="topic-desc">Centralized search over past conversations, retention, offboarding continuity. Includes GWN edition limits (no Vault).</p>
+      </div>
+    </a>
+
+    <a href="topic-identity-signatures.html" class="topic-card">
+      <div>
+        <div class="topic-title">6. Sender Identity &amp; Signatures <span class="tag warn">Draft</span></div>
+        <p class="topic-desc">"On behalf of" headers, shared vs personal signatures, From-address control per option.</p>
+      </div>
+    </a>
+
+    <a href="topic-contacts.html" class="topic-card">
+      <div>
+        <div class="topic-title">7. Contacts &amp; Directory Access <span class="tag warn">Draft</span></div>
+        <p class="topic-desc">Autocomplete behavior, domain Directory, shared external contacts, Admin SDK Directory API, third-party gap analysis.</p>
+      </div>
+    </a>
+
+    <a href="topic-security.html" class="topic-card">
+      <div>
+        <div class="topic-title">8. Security, Offboarding &amp; Compliance <span class="tag warn">Draft</span></div>
+        <p class="topic-desc">MFA compatibility, credential exposure, access revocation speed, DLP availability per edition.</p>
+      </div>
+    </a>
+
+    <a href="topic-admin-controls.html" class="topic-card">
+      <div>
+        <div class="topic-title">9. Admin Controls &amp; Governance <span class="tag warn">Draft</span></div>
+        <p class="topic-desc">Audit logs, delegation tracking, membership/permission management via the Admin console web UI.</p>
+      </div>
+    </a>
+
+    <a href="topic-api-automation.html" class="topic-card">
+      <div>
+        <div class="topic-title">10. API Capabilities &amp; Automation <span class="tag warn">Draft</span></div>
+        <p class="topic-desc">Admin SDK, Gmail API, Groups Settings API; GAM scripting; provisioning and permission-sync automation.</p>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ── Blocking criteria preview ───────────────────────── -->
+  <p class="section-label">Blocking criteria — quick reference</p>
+  <div class="card">
+    <p>
+      Some requirements are <strong>blocking</strong>: if your team needs them, certain options are
+      eliminated immediately, regardless of their other strengths. The full decision logic with
+      workarounds lives in the <a href="decision-guide.html">Decision Guide</a>.
+    </p>
+    <div class="table-wrap" style="margin-top:12px;">
+      <table>
+        <thead>
+          <tr>
+            <th>If you need…</th>
+            <th>Eliminates</th>
+            <th>Surviving options / workaround</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="blocker-row">
+            <td>Native mobile app access</td>
+            <td>Collaborative Inbox (web UI only)</td>
+            <td>Delegation via Gmail app, Distribution List, Alias; or receive Group posts by email.</td>
+          </tr>
+          <tr class="blocker-row">
+            <td>Shared Sent folder visible to the whole team</td>
+            <td>Distribution List, Alias, Send-Mail-As</td>
+            <td>Delegation or Shared Account; workaround: systematic CC/BCC to the group address.</td>
+          </tr>
+          <tr class="blocker-row">
+            <td>Central read/unread status</td>
+            <td>Distribution List, Alias</td>
+            <td>Delegation, Shared Account, Collaborative Inbox (assignment-based, not read-state).</td>
+          </tr>
+          <tr class="blocker-row">
+            <td>Zero extra license (cost / user-cap pressure)</td>
+            <td>Delegation, Shared Account (1 license each)</td>
+            <td>All Groups-based options, Aliases, Chat Space.</td>
+          </tr>
+          <tr class="blocker-row">
+            <td>Desktop client (Outlook / Thunderbird)</td>
+            <td>Collaborative Inbox, Delegation, Chat Space</td>
+            <td>Shared Account (IMAP/GWSMO), Distribution List, Alias (via personal client).</td>
+          </tr>
+          <tr class="blocker-row">
+            <td>Individual accountability (audit trail per person)</td>
+            <td>Shared Password Account</td>
+            <td>All other options; shared credentials are a policy violation regardless.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── External tools policy ───────────────────────────── -->
+  <p class="section-label">Standing constraint — external tools</p>
+  <div class="card warn">
+    <h3>Nonprofit resource policy</h3>
+    <p>
+      As a Google Workspace for Nonprofits tenant with limited financial and administrative
+      resources, the default answer to third-party tools and plugins is <strong>no</strong>.
+      Exceptions are considered only when a tool is
+      (a) free,
+      (b) provides a really considerable functional addition that native Google features cannot cover,
+      or (c) can be deployed to a limited set of users only (e.g. VIP or power users),
+      without tenant-wide cost or maintenance burden.
+      Every topic page flags external-tool dependencies against this policy.
+    </p>
+  </div>
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

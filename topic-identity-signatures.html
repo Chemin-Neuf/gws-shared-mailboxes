@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Topic 6: Identity &amp; Signatures</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── topic-identity-signatures.html page-specific styles ── */
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section h3 { margin: 18px 0 8px; font-size: 1.08rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .callout-box {
+      background: linear-gradient(180deg, #eff6ff, #ffffff);
+      border: 1px solid #bfdbfe;
+      border-left: 6px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .callout-box h3 { margin: 0 0 8px; color: var(--primary); }
+    .callout-box p  { margin: 0; color: var(--muted); }
+
+    .topic-pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Topic 6 — Sender Identity &amp; Signatures</h1>
+    <p>
+      What does the recipient actually see — the collective identity, the person behind it,
+      or a mix of both? And can the team enforce a consistent signature?
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
+      <span class="pill">🏷️ Status: Draft — pending review</span>
+    </div>
+  </div>
+
+  <!-- ── Two-column layout ───────────────────────────────── -->
+  <div class="topbar">
+
+    <!-- Sidebar -->
+    <nav class="nav" data-page-nav="auto" data-page-nav-root=".content" aria-label="Page sections">
+      <h2>On this page</h2>
+      <!-- Links are injected automatically by site-nav.js -->
+    </nav>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <!-- Comparison table -->
+      <section id="comparison" class="section">
+        <h2>Comparison across the 7 options</h2>
+
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>From: Address Seen by Recipient</th>
+                <th>"On Behalf Of" Disclosure</th>
+                <th>Shared Signature Enforcement</th>
+                <th>Key Caveats</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Shared Password Account</strong></td>
+                <td>The shared address, indistinguishable from a personal account.</td>
+                <td><span class="tag good">None</span> perfectly transparent</td>
+                <td><span class="tag good">Yes</span> one account = one signature</td>
+                <td>Perfect identity illusion — which is precisely the accountability problem.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Gmail Delegation Account</strong></td>
+                <td>The shared address.</td>
+                <td><span class="tag warn">Yes</span> depending on client, "sent by delegate@…" may appear in headers; Gmail shows the delegate in the web UI</td>
+                <td><span class="tag good">Yes</span> signature belongs to the shared account, applies to all delegates</td>
+                <td>Headers reveal the acting delegate — good for audit, visible to technical recipients.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Collaborative Inbox</strong></td>
+                <td>The group address (when replying via the group).</td>
+                <td><span class="tag warn">Partial</span> Groups UI shows the author; mail headers may show member address</td>
+                <td><span class="tag bad">No</span> no shared signature concept in Groups</td>
+                <td>Replies via "Send Mail As" fall back to option 6 behavior.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Distribution List + Send As</strong></td>
+                <td>The list address, if the member selects it in the From dropdown.</td>
+                <td><span class="tag warn">Possible</span> unverified sendAs may show "via" in some clients</td>
+                <td><span class="tag bad">No</span> each member manages their own signature</td>
+                <td>Identity consistency depends on every member's discipline.</td>
+              </tr>
+              <tr>
+                <td><strong>5. Email Alias + Send As</strong></td>
+                <td>The alias address.</td>
+                <td><span class="tag warn">Possible</span> same "via" caveat</td>
+                <td><span class="tag info">N/A</span> single user</td>
+                <td>Simple and clean for one-person ownership.</td>
+              </tr>
+              <tr>
+                <td><strong>6. "Send Mail As" Config</strong></td>
+                <td>Whichever address is selected in From.</td>
+                <td><span class="tag warn">Possible</span></td>
+                <td><span class="tag bad">No</span> per-user signatures</td>
+                <td>A wrong From selection sends personal mail as the team — or the reverse.</td>
+              </tr>
+              <tr>
+                <td><strong>7. Email-to-Google Chat Space</strong></td>
+                <td><span class="tag info">N/A</span> no native external reply from Chat</td>
+                <td><span class="tag info">N/A</span></td>
+                <td><span class="tag info">N/A</span></td>
+                <td>External replies are sent from Gmail and inherit that option's behavior.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Callout -->
+      <div class="callout-box">
+        <h3>Branding vs accountability trade-off</h3>
+        <p>
+          The shared account (1) gives the cleanest external identity but zero internal
+          accountability. Delegation (2) is the pragmatic middle ground: recipients see the
+          collective identity, while audit logs — and message headers — still record which
+          delegate acted. For a nonprofit answering to donors and partners, a consistent
+          signature also signals professionalism: only mailbox-based options (1, 2) enforce it.
+        </p>
+      </div>
+
+      <!-- User perspective -->
+      <section id="user-view" class="section">
+        <h2>User perspective</h2>
+        <ul>
+          <li>
+            <strong>From-dropdown discipline.</strong> With options 4–6, selecting the right
+            From address on every message is manual. Gmail does remember the last choice per
+            conversation, which mitigates but does not eliminate errors.
+          </li>
+          <li>
+            <strong>Signature maintenance.</strong> Members of a distribution list must each
+            paste the official signature into their personal settings — and update it whenever
+            it changes. In practice, signatures diverge within months.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Admin perspective -->
+      <section id="admin-view" class="section">
+        <h2>Administrator perspective</h2>
+        <h3>Web console</h3>
+        <p>
+          Gmail <strong>append footer</strong> (Admin console &rarr; Gmail &rarr; Compliance) can
+          append a legal footer tenant-wide, but it cannot manage per-user signatures or From
+          selection. No console setting enforces signature content.
+        </p>
+        <h3>API &amp; automation</h3>
+        <p>
+          Signatures are scriptable: the Gmail API (<code>users.settings.sendAs</code>,
+          <code>signature</code> field) can push a standardized signature to every member's
+          sendAs identity — with domain-wide delegation this is a realistic scheduled task.
+          Details in <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>.
+        </p>
+      </section>
+
+      <!-- Pager -->
+      <div class="topic-pager">
+        <a class="btn btn-secondary link-btn" href="topic-history-search.html">&larr; Topic 5 — History &amp; Search</a>
+        <a class="btn btn-primary link-btn" href="topic-contacts.html">Next: Topic 7 — Contacts &amp; Directory &rarr;</a>
+      </div>
+
+    </div><!-- /.content -->
+  </div><!-- /.topbar -->
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Topic 4: Team Collaboration</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── topic-collaboration.html page-specific styles ── */
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section h3 { margin: 18px 0 8px; font-size: 1.08rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .callout-box {
+      background: linear-gradient(180deg, #eff6ff, #ffffff);
+      border: 1px solid #bfdbfe;
+      border-left: 6px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .callout-box h3 { margin: 0 0 8px; color: var(--primary); }
+    .callout-box p  { margin: 0; color: var(--muted); }
+
+    .topic-pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Topic 4 — Team Collaboration &amp; Status Visibility</h1>
+    <p>
+      Can the team see, at a glance, what has been read, who is handling what, and what is
+      resolved — without asking each other? This is the core "shared inbox" promise.
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
+      <span class="pill">🏷️ Status: Draft — pending review</span>
+    </div>
+  </div>
+
+  <!-- ── Two-column layout ───────────────────────────────── -->
+  <div class="topbar">
+
+    <!-- Sidebar -->
+    <nav class="nav" data-page-nav="auto" data-page-nav-root=".content" aria-label="Page sections">
+      <h2>On this page</h2>
+      <!-- Links are injected automatically by site-nav.js -->
+    </nav>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <!-- Comparison table -->
+      <section id="comparison" class="section">
+        <h2>Comparison across the 7 options</h2>
+        <p>
+          Five collaboration signals matter operationally: shared read state, shared reply
+          visibility, assignment to a person, resolved marking, and protection against
+          duplicate replies.
+        </p>
+
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>Shared Read/Unread State</th>
+                <th>Assignment to a Person</th>
+                <th>Resolved / Closed Marking</th>
+                <th>Duplicate-Reply Protection</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Shared Password Account</strong></td>
+                <td><span class="tag good">Yes</span> one mailbox, one read state</td>
+                <td><span class="tag warn">Manual</span> via labels/stars conventions</td>
+                <td><span class="tag warn">Manual</span> via labels or archive</td>
+                <td><span class="tag warn">Partial</span> shared Sent helps, but two people can still reply simultaneously</td>
+              </tr>
+              <tr>
+                <td><strong>2. Gmail Delegation Account</strong></td>
+                <td><span class="tag good">Yes</span> centralized in the delegated mailbox</td>
+                <td><span class="tag warn">Manual</span> via labels conventions</td>
+                <td><span class="tag warn">Manual</span> via labels or archive</td>
+                <td><span class="tag warn">Partial</span> shared Sent + read state; no locking</td>
+              </tr>
+              <tr>
+                <td><strong>3. Collaborative Inbox</strong></td>
+                <td><span class="tag bad">No</span> read state is per member</td>
+                <td><span class="tag good">Yes</span> native "Assign to me / to member"</td>
+                <td><span class="tag good">Yes</span> native Resolved / Duplicate / No action needed</td>
+                <td><span class="tag good">Good</span> assignment + status visible before replying</td>
+              </tr>
+              <tr>
+                <td><strong>4. Distribution List</strong></td>
+                <td><span class="tag bad">No</span> each member has an independent copy</td>
+                <td><span class="tag bad">No</span></td>
+                <td><span class="tag bad">No</span></td>
+                <td><span class="tag bad">None</span> classic "two people answer the same mail" scenario</td>
+              </tr>
+              <tr>
+                <td><strong>5. Email Alias / Redirection</strong></td>
+                <td><span class="tag info">N/A</span> single recipient by design</td>
+                <td><span class="tag info">N/A</span></td>
+                <td><span class="tag info">N/A</span></td>
+                <td><span class="tag info">N/A</span> only one person receives it</td>
+              </tr>
+              <tr>
+                <td><strong>6. "Send Mail As" Config</strong></td>
+                <td><span class="tag info">N/A</span> outbound identity layer only</td>
+                <td><span class="tag info">N/A</span></td>
+                <td><span class="tag info">N/A</span></td>
+                <td><span class="tag bad">None</span> inherits option 4/5 behavior</td>
+              </tr>
+              <tr>
+                <td><strong>7. Email-to-Google Chat Space</strong></td>
+                <td><span class="tag good">Yes</span> Chat read markers per message</td>
+                <td><span class="tag warn">Manual</span> @mentions assign informally</td>
+                <td><span class="tag warn">Manual</span> thread conventions, no native status</td>
+                <td><span class="tag good">Good</span> internal thread discussion happens before any external reply</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Callout -->
+      <div class="callout-box">
+        <h3>The two real "shared inbox" philosophies</h3>
+        <p>
+          Only two options deliver genuine team coordination, with opposite philosophies:
+          <strong>Collaborative Inbox</strong> tracks <em>work items</em> (assign, resolve) but
+          ignores read state; <strong>Delegation</strong> shares the <em>mailbox state</em>
+          (read, sent) but has no concept of ownership. Teams handling support-style queues
+          prefer the former; teams sharing a correspondence identity prefer the latter.
+        </p>
+      </div>
+
+      <!-- User perspective -->
+      <section id="user-view" class="section">
+        <h2>User perspective</h2>
+        <ul>
+          <li>
+            <strong>"Who is on this?"</strong> Only the Collaborative Inbox answers this
+            natively. Everywhere else, coordination happens out-of-band (chat, meetings,
+            shouting across the office).
+          </li>
+          <li>
+            <strong>Silent failure mode of distribution lists:</strong> either everyone replies
+            (duplicate answers to the sender) or everyone assumes someone else replied
+            (no answer at all). Both damage credibility.
+          </li>
+          <li>
+            <strong>Chat Space nuance:</strong> excellent for <em>discussing</em> a mail before
+            answering, but the discussion and the reply live in two different tools.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Admin perspective -->
+      <section id="admin-view" class="section">
+        <h2>Administrator perspective</h2>
+        <h3>Web console</h3>
+        <p>
+          Collaboration features need almost no admin configuration: Collaborative Inbox
+          assignment/status is enabled by choosing the "Collaborative Inbox" group type;
+          delegation has no assignment settings at all. The admin's role is mostly choosing
+          the right architecture up front — collaboration behavior cannot be retrofitted.
+        </p>
+        <h3>API &amp; automation</h3>
+        <p>
+          No API exposes assignment or resolved status for Groups — these live only in the
+          Groups web UI. This is a hard limit for automation: dashboards or SLA tracking over
+          a Collaborative Inbox are not scriptable. Details in
+          <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>.
+        </p>
+      </section>
+
+      <!-- Pager -->
+      <div class="topic-pager">
+        <a class="btn btn-secondary link-btn" href="topic-organization.html">&larr; Topic 3 — Folders &amp; Labels</a>
+        <a class="btn btn-primary link-btn" href="topic-history-search.html">Next: Topic 5 — History &amp; Search &rarr;</a>
+      </div>
+
+    </div><!-- /.content -->
+  </div><!-- /.topbar -->
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

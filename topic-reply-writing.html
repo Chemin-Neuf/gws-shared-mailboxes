@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Topic 2: Reply &amp; Writing</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── topic-reply-writing.html page-specific styles ── */
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section h3 { margin: 18px 0 8px; font-size: 1.08rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .callout-box {
+      background: linear-gradient(180deg, #fff8eb, #ffffff);
+      border: 1px solid #fcd34d;
+      border-left: 6px solid var(--warn);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .callout-box h3 { margin: 0 0 8px; color: var(--warn); }
+    .callout-box p  { margin: 0; color: var(--muted); }
+
+    .topic-pager {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Topic 2 — Reply &amp; Writing Dynamics</h1>
+    <p>
+      Can the team <em>send</em> as the shared identity — new messages, not just replies?
+      Where do sent items land, can colleagues see them, and can drafts be shared?
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
+      <span class="pill">🏷️ Status: Draft — migrated, pending review</span>
+    </div>
+  </div>
+
+  <!-- ── Two-column layout ───────────────────────────────── -->
+  <div class="topbar">
+
+    <!-- Sidebar -->
+    <nav class="nav" data-page-nav="auto" data-page-nav-root=".content" aria-label="Page sections">
+      <h2>On this page</h2>
+      <!-- Links are injected automatically by site-nav.js -->
+    </nav>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <!-- Comparison table -->
+      <section id="comparison" class="section">
+        <h2>Comparison across the 7 options</h2>
+        <p>
+          Inbound delivery is only half the story. This table covers outbound capability,
+          the crucial question of <strong>where sent mail is stored</strong>, and draft sharing.
+        </p>
+
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>Outbound &amp; New Email Capabilities</th>
+                <th>Sent Item Storage &amp; Team Visibility</th>
+                <th>Draft Sharing</th>
+                <th>Key Reply / Writing Caveats</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Shared Password Account</strong></td>
+                <td>Full outbound (new emails &amp; replies) across web Gmail, IMAP/GWSMO clients, and mobile apps.</td>
+                <td>Central: shared account's Sent folder, visible to everyone logged in.</td>
+                <td><span class="tag good">Yes</span> native sync in Gmail web</td>
+                <td>No writing limitations, but concurrent-session risks exist.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Gmail Delegation Account</strong></td>
+                <td>Full outbound (new emails &amp; replies) via delegated Gmail web UI and native Gmail mobile app.</td>
+                <td>Configurable by admin: saved in the shared account's Sent folder, or in both shared Sent and the delegate's personal Sent box.</td>
+                <td><span class="tag good">Yes</span> fully shared among delegates</td>
+                <td>Outbound sending unavailable via desktop IMAP/Outlook clients.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Collaborative Inbox</strong></td>
+                <td><span class="tag bad">Cannot compose new outbound emails</span> to arbitrary external recipients from groups.google.com ("New conversation" posts a topic to the group). Can only reply to existing group threads. New external emails require "Send Mail As" in personal Gmail.</td>
+                <td>Public group replies are archived in the Groups web UI. <strong>Major caveat:</strong> a "private" reply (Reply to Author) leaves <strong>no trace inside the Group interface</strong> for other members.</td>
+                <td><span class="tag bad">No</span></td>
+                <td>Cannot initiate new external emails in the Groups UI; private replies leave no record in the group archive.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Distribution List</strong></td>
+                <td>Requires each member to individually set up "Send Mail As" in their personal Gmail settings.</td>
+                <td><span class="tag bad">Only in the individual sender's personal Sent box</span> — invisible to other members unless the group address is manually CC'd/BCC'd.</td>
+                <td><span class="tag bad">No</span></td>
+                <td>Zero shared visibility of outbound replies or sent history across members.</td>
+              </tr>
+              <tr>
+                <td><strong>5. Email Alias / Redirection</strong></td>
+                <td>Requires configuring "Send Mail As" in the primary user's Gmail settings.</td>
+                <td>Saved in the primary user's personal Sent folder.</td>
+                <td><span class="tag bad">No</span> private to the user account</td>
+                <td>Outbound replies stay strictly in the single user's personal mailbox.</td>
+              </tr>
+              <tr>
+                <td><strong>6. "Send Mail As" Config</strong></td>
+                <td>Lets the user select the shared/alias address from the "From:" dropdown when composing or replying in Gmail web or the mobile app.</td>
+                <td>Saved in the individual sender's personal Sent box by default.</td>
+                <td><span class="tag bad">No</span> private to the individual account</td>
+                <td>Drafts are strictly private to the composing account.</td>
+              </tr>
+              <tr>
+                <td><strong>7. Email-to-Google Chat Space</strong></td>
+                <td><span class="tag bad">Very limited / internal only.</span> Replies typed in the Chat Space remain internal comments. External replies to original senders require opening Gmail.</td>
+                <td>Recorded as internal chat messages inside the Chat Space.</td>
+                <td><span class="tag bad">No</span></td>
+                <td>Asymmetric workflow: inbound email readable in Chat, outbound external replies require Gmail.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Callout -->
+      <div class="callout-box">
+        <h3>Blocking criterion — shared Sent visibility</h3>
+        <p>
+          If the team must be able to see <strong>what has already been answered</strong>, the
+          Distribution List, Alias and Send-Mail-As patterns are eliminated: replies vanish into
+          personal Sent folders. The only partial workaround — systematically CC'ing the group
+          address — depends on human discipline and fails silently. See the
+          <a href="decision-guide.html">Decision Guide</a>.
+        </p>
+      </div>
+
+      <!-- User perspective -->
+      <section id="user-view" class="section">
+        <h2>User perspective</h2>
+        <ul>
+          <li>
+            <strong>Friction to send "as the team".</strong> Options 1–2 send as the shared identity
+            natively. Options 4–6 depend on every member completing a per-user "Send Mail As" setup —
+            a one-time but error-prone configuration step.
+          </li>
+          <li>
+            <strong>"Did anyone answer this?"</strong> Only options with a shared Sent folder
+            (1, 2) or a public reply archive (3, 7 for internal notes) answer this question
+            without asking colleagues.
+          </li>
+          <li>
+            <strong>Collaborative drafts.</strong> Real co-editing of a reply before sending exists
+            only in the shared account (1) and delegation (2).
+          </li>
+        </ul>
+      </section>
+
+      <!-- Admin perspective -->
+      <section id="admin-view" class="section">
+        <h2>Administrator perspective</h2>
+        <h3>Web console</h3>
+        <p>
+          Key admin-controlled settings: the delegation <strong>Sent-folder behavior</strong>
+          (Admin console &rarr; Gmail &rarr; User settings &rarr; Mail delegation) and the group-level
+          permission "who can post / reply" in Groups settings. "Send Mail As" addresses are
+          user-level settings and cannot be centrally provisioned from the Admin console UI.
+        </p>
+        <h3>API &amp; automation</h3>
+        <p>
+          "Send Mail As" identities <em>can</em> be provisioned via the Gmail API
+          (<code>users.settings.sendAs</code>) — with domain-wide delegation this removes the
+          per-user manual setup for options 4–6. Verified-sendAs is a prerequisite for external
+          addresses. Details in <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>.
+        </p>
+      </section>
+
+      <!-- Pager -->
+      <div class="topic-pager">
+        <a class="btn btn-secondary link-btn" href="topic-read-access.html">&larr; Topic 1 — Read Access</a>
+        <a class="btn btn-primary link-btn" href="topic-organization.html">Next: Topic 3 — Folders &amp; Labels &rarr;</a>
+      </div>
+
+    </div><!-- /.content -->
+  </div><!-- /.topbar -->
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

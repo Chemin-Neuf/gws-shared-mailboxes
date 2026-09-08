@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
+  <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GWS Shared Mailboxes — Decision Guide</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+  <link rel="stylesheet" href="css/site-nav.css" />
+  <style>
+    /* ── decision-guide.html page-specific styles ── */
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+    .section p  { margin: 0 0 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .callout-box {
+      background: linear-gradient(180deg, #eff6ff, #ffffff);
+      border: 1px solid #bfdbfe;
+      border-left: 6px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .callout-box h3 { margin: 0 0 8px; color: var(--primary); }
+    .callout-box p  { margin: 0; color: var(--muted); }
+
+    .need-card strong { display: block; margin-bottom: 6px; }
+
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .site-topnav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <div class="hero">
+    <h1>Decision Guide — Blocking Criteria &amp; Workarounds</h1>
+    <p>
+      Start from what your team absolutely needs. Each blocking criterion below eliminates
+      options immediately; the workarounds show what remains and at what cost.
+      Answer the questions in order — the first "yes, we need that" usually decides.
+    </p>
+    <div class="meta">
+      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
+      <span class="pill">🏷️ Decision Support</span>
+    </div>
+  </div>
+
+  <!-- ── Two-column layout ───────────────────────────────── -->
+  <div class="topbar">
+
+    <!-- Sidebar -->
+    <nav class="nav" data-page-nav="auto" data-page-nav-root=".content" aria-label="Page sections">
+      <h2>On this page</h2>
+      <!-- Links are injected automatically by site-nav.js -->
+    </nav>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <!-- How to use -->
+      <section id="how-to-use" class="section">
+        <h2>How to use this guide</h2>
+        <p>
+          For each shared address you want to set up, walk through the blocking criteria below
+          with the future users. As soon as a criterion is a hard requirement, the options
+          listed as <em>eliminated</em> are out for that address — regardless of their other
+          qualities. Among the survivors, pick by consulting the
+          <a href="options-comparison.html">option profiles</a> and the
+          <a href="topics.html">topic detail pages</a>.
+        </p>
+        <p>
+          Different addresses on the same tenant can legitimately use different options —
+          this is a per-address decision, not a tenant-wide one.
+        </p>
+      </section>
+
+      <!-- Blocking criteria -->
+      <section id="criteria" class="section">
+        <h2>The blocking criteria</h2>
+
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Blocking requirement</th>
+                <th>Eliminates</th>
+                <th>Survivors &amp; workaround</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>B1. Native mobile app access</strong><br /><span class="muted">Field staff read and answer on phones, in an app — not a mobile browser.</span></td>
+                <td>Collaborative Inbox (3) as primary interface; Delegation (2) for desktop-client users</td>
+                <td><strong>Delegation via Gmail app</strong>, Distribution List, Alias. Workaround for (3): members receive posts by email and process them in the Groups web UI later.</td>
+              </tr>
+              <tr>
+                <td><strong>B2. Shared Sent visibility</strong><br /><span class="muted">Anyone on the team can see what was answered, without asking.</span></td>
+                <td>Distribution List (4), Alias (5), Send-Mail-As (6)</td>
+                <td><strong>Delegation (2)</strong>, Shared Account (1 — rejected on security grounds). Workaround: mandatory CC of the group address — discipline-dependent, fails silently.</td>
+              </tr>
+              <tr>
+                <td><strong>B3. Central read/unread state</strong><br /><span class="muted">"Already handled?" must be visible on the message itself.</span></td>
+                <td>Distribution List (4), Alias (5), Send-Mail-As (6)</td>
+                <td><strong>Delegation (2)</strong>, Shared Account (1). Partial: Collaborative Inbox (3) tracks <em>assignment/resolution</em> instead of read state — often the better model anyway.</td>
+              </tr>
+              <tr>
+                <td><strong>B4. Task assignment &amp; queue workflow</strong><br /><span class="muted">Support-desk style: owners, status, "resolved".</span></td>
+                <td>All except Collaborative Inbox (3)</td>
+                <td><strong>Collaborative Inbox (3)</strong>. Workaround for mailbox options: label conventions ("Assigned:Jane") — works but has no enforcement and no dashboard.</td>
+              </tr>
+              <tr>
+                <td><strong>B5. Zero additional license</strong><br /><span class="muted">No budget headroom and/or staying clear of the 2,000-user cap.</span></td>
+                <td>Delegation (2), Shared Account (1)</td>
+                <td>All Groups-based options (3, 4), Alias (5), Send-Mail-As (6), Chat Space (7).</td>
+              </tr>
+              <tr>
+                <td><strong>B6. Desktop email client (Outlook / Thunderbird)</strong><br /><span class="muted">Users standardized on a real IMAP/Exchange client.</span></td>
+                <td>Collaborative Inbox (3), Delegation (2), Chat Space (7)</td>
+                <td>Shared Account (1) via IMAP/GWSMO — rejected on security grounds; realistically: Distribution List / Alias <em>delivered into the personal mailbox</em>, which the client already reads.</td>
+              </tr>
+              <tr>
+                <td><strong>B7. Individual accountability (audit trail per person)</strong><br /><span class="muted">Every read/reply attributable — donor data, GDPR posture.</span></td>
+                <td>Shared Password Account (1)</td>
+                <td>All other options. Note this criterion is <em>absolute</em>: option 1 is excluded by policy regardless of any other consideration.</td>
+              </tr>
+              <tr>
+                <td><strong>B8. Compose new external mail as the shared identity</strong><br /><span class="muted">Not just replying — initiating contact with arbitrary recipients.</span></td>
+                <td>Collaborative Inbox (3) alone, Chat Space (7) alone</td>
+                <td>Delegation (2), Alias/Send-Mail-As (5, 6). Hybrid: Collaborative Inbox (3) for intake + Send-Mail-As (6) for new outbound — a common combination.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Typical recipes -->
+      <section id="recipes" class="section">
+        <h2>Typical recipes by use case</h2>
+        <div class="grid-2" style="margin-top:14px;">
+          <div class="card soft need-card">
+            <strong>Support / helpdesk queue</strong>
+            <p class="muted">
+              Many incoming requests, team triage, need "who handles this" and "done".
+              &rarr; <strong>Collaborative Inbox (3)</strong>, optionally + Send-Mail-As (6) for
+              new outbound. Free.
+            </p>
+          </div>
+          <div class="card soft need-card">
+            <strong>Functional mailbox (compta@, secretariat@)</strong>
+            <p class="muted">
+              One identity, full correspondence history, 2–5 people, auditability required.
+              &rarr; <strong>Delegation (2)</strong>. Costs 1 license — justified here.
+            </p>
+          </div>
+          <div class="card soft need-card">
+            <strong>Announcement / information list</strong>
+            <p class="muted">
+              Broadcast to a team; replies rare; no shared state needed.
+              &rarr; <strong>Distribution List (4)</strong>. Free, zero friction.
+            </p>
+          </div>
+          <div class="card soft need-card">
+            <strong>Role address held by one person (president@)</strong>
+            <p class="muted">
+              Single owner, reassigned occasionally.
+              &rarr; <strong>Alias (5)</strong> on the person's account. Reassignment = move the alias.
+            </p>
+          </div>
+          <div class="card soft need-card">
+            <strong>Field team on phones, light volume</strong>
+            <p class="muted">
+              Mobile-first, no desk workflow, tolerance for blended inbox.
+              &rarr; <strong>Distribution List (4) + Send-Mail-As (6)</strong>, or Delegation (2)
+              via the Gmail app if shared Sent matters.
+            </p>
+          </div>
+          <div class="card soft need-card">
+            <strong>Internal triage before external answer</strong>
+            <p class="muted">
+              Discuss among the team, then one person answers from Gmail.
+              &rarr; <strong>Email-to-Chat Space (7)</strong> + Send-Mail-As (6).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Callout -->
+      <div class="callout-box">
+        <h3>When nothing survives</h3>
+        <p>
+          If B6 (desktop client) combines with B2/B3 (shared state), no native option survives —
+          that is the actual gap Microsoft shared mailboxes used to fill. The least-bad answers
+          are Delegation (2) with a web-Gmail habit change, or a Shared Account (1) confined to
+          the single Outlook workstation — with its security caveats formally accepted by
+          management. Document the choice; revisit if the edition is ever upgraded.
+        </p>
+      </div>
+
+    </div><!-- /.content -->
+  </div><!-- /.topbar -->
+
+</div><!-- /.shell -->
+<script src="js/site-nav.js"></script>
+</body>
+</html>

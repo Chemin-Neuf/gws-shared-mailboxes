@@ -64,7 +64,7 @@
       via the web console and via API automation.
     </p>
     <div class="meta">
-      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">📅 Last updated: 2026-09-14</span>
       <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
       <span class="pill">🏷️ Architecture &amp; Governance</span>
     </div>
@@ -106,32 +106,24 @@
         </div>
       </section>
 
-      <!-- Callout -->
-      <div class="callout-box">
-        <h3>Key Architectural Constraint</h3>
-        <p>
-          Sharing an email address in Google Workspace always involves an architectural compromise:
-          either an additional Google Workspace license fee, interface limitations (web-only vs mobile app),
-          or loss of centralized read/unread status across team members.
-        </p>
-      </div>
-
       <!-- Section 2 -->
       <section id="approaches" class="section">
         <h2>2. The 7 Options at a Glance</h2>
         <p>
-          Seven mechanisms are available natively within Google Workspace. Option 1 is an
-          anti-pattern kept for completeness; options 4–7 are combinable building blocks.
+          Seven mechanisms are available natively within Google Workspace; options 4–7 are
+          combinable building blocks.
         </p>
 
         <!-- Grid cards -->
         <div class="grid-2" style="margin-top:14px;">
           <div class="card soft">
-            <h3>1. Shared Password Account <span class="tag bad">Anti-pattern</span></h3>
+            <h3>1. Shared Password Account</h3>
             <p>
               A licensed user account whose password is shared by the team. Full mailbox UX —
-              at the price of broken 2FA, zero accountability, and automated lockouts.
-              <strong>Excluded by policy</strong>; see <a href="topic-security.html">Topic 8</a>.
+              but the shared credential implies 2FA workarounds, no individual accountability,
+              and concurrent-login lockouts, which lead many organizations to treat it as an
+              anti-pattern. The full security analysis is in
+              <a href="topic-security.html">Topic 8</a>.
             </p>
           </div>
           <div class="card soft">

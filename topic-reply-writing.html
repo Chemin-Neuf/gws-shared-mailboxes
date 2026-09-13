@@ -72,7 +72,7 @@
     <div class="meta">
       <span class="pill">📅 Last updated: 2026-09-14</span>
       <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
-      <span class="pill">🏷️ Status: Draft — migrated, pending review</span>
+      <span class="pill">🏷️ Status: Written</span>
     </div>
   </div>
 
@@ -124,17 +124,17 @@
               </tr>
               <tr>
                 <td><strong>3. Collaborative Inbox</strong></td>
-                <td><span class="tag bad">Cannot compose new outbound emails</span> to arbitrary external recipients from groups.google.com ("New conversation" posts a topic to the group). Can only reply to existing group threads. New external emails require "Send Mail As" in personal Gmail.</td>
+                <td><span class="tag bad">Cannot compose new outbound emails</span> to arbitrary external recipients from groups.google.com — <strong>not without a big workaround</strong> ("New conversation" merely posts a topic to the group). Natively, only replies to existing group threads. New external emails become possible via the <a href="#workaround-compliance">Send-As + compliance-rule workaround</a> below.</td>
                 <td>Public group replies are archived in the Groups web UI. <strong>Major caveat:</strong> a "private" reply (Reply to Author) leaves <strong>no trace inside the Group interface</strong> for other members.</td>
                 <td><span class="tag bad">No</span></td>
-                <td>Cannot initiate new external emails in the Groups UI; private replies leave no record in the group archive.</td>
+                <td>Cannot initiate new external emails in the Groups UI; <strong>without the workaround, a private "Reply to author" leaves no trace at all — neither in the group archive, nor even in the sender's own Gmail Sent folder</strong> (the message is sent through the Groups platform, bypassing Gmail entirely).</td>
               </tr>
               <tr>
                 <td><strong>4. Distribution List</strong></td>
-                <td>Requires each member to individually set up "Send Mail As" in their personal Gmail settings.</td>
-                <td><span class="tag bad">Only in the individual sender's personal Sent box</span> — invisible to other members unless the group address is manually CC'd/BCC'd.</td>
+                <td>Requires "Send Mail As" in each member's personal Gmail settings — manual per-user setup, or centrally provisioned via the Gmail API (same <a href="#workaround-compliance">workaround</a> as the Collaborative Inbox).</td>
+                <td><span class="tag bad">Only in the individual sender's personal Sent box</span> — invisible to other members unless the group address is manually CC'd/BCC'd (discipline-dependent), or an admin-enforced outbound compliance rule copies replies back to the list.</td>
                 <td><span class="tag bad">No</span></td>
-                <td>Zero shared visibility of outbound replies or sent history across members.</td>
+                <td>Zero shared visibility of outbound replies or sent history across members — unless the compliance-rule workaround is in place.</td>
               </tr>
               <tr>
                 <td><strong>5. Email Alias / Redirection</strong></td>
@@ -162,15 +162,70 @@
         </div>
       </section>
 
+      <!-- Workaround: enforced outbound visibility -->
+      <section id="workaround-compliance" class="section">
+        <h2>Workaround — Send-As + outbound compliance rule (options 3 &amp; 4)</h2>
+        <p>
+          The Groups-based options can be given full outbound capability <em>and</em> shared
+          Sent visibility without relying on user discipline, by combining two admin-controlled
+          building blocks:
+        </p>
+        <ul>
+          <li>
+            <strong>Centrally provisioned "Send Mail As".</strong> The group address is added as a
+            verified send-as identity on each member's account via the Gmail API
+            (<code>users.settings.sendAs</code>, with domain-wide delegation) — no manual per-user
+            setup. Members can then compose <em>new</em> external emails as the shared address from
+            Gmail web or the mobile app.
+          </li>
+          <li>
+            <strong>Outbound compliance / routing rule.</strong> In the Admin console
+            (Apps &rarr; Google Workspace &rarr; Gmail &rarr; Compliance / Routing), a rule matches
+            outbound mail sent <em>from the shared address</em> and adds the group address as an
+            additional recipient (BCC-style copy). Every such message is automatically copied back
+            into the Collaborative Inbox archive (option 3) or redistributed to all list members
+            (option 4) — the copy keeps the original envelope sender, so the group's normal posting
+            permission applies.
+          </li>
+        </ul>
+        <p>
+          Result: mail sent "as the team" is intercepted and becomes visible to everybody, even
+          though the user sent it from their own inbox.
+        </p>
+        <h3>Trade-offs to accept</h3>
+        <ul>
+          <li>
+            <strong>No privacy under the shared identity.</strong> Every reply sent with the shared
+            "From:" address is copied to the group — including one the sender considered a private
+            side-conversation. Depending on the team's accountability policy, this is a downside or
+            a feature.
+          </li>
+          <li>
+            <strong>Groups-UI "Reply to author" still escapes the net.</strong> A private reply
+            launched from groups.google.com is sent through the Groups platform from the user's
+            <em>personal</em> address: it matches neither the send-as flow nor the rule, and still
+            leaves no trace anywhere. The workaround only covers mail sent from Gmail.
+          </li>
+          <li>
+            <strong>Console-only setup.</strong> The compliance rule cannot be created via API —
+            see the <a href="#admin-view">administrator perspective</a> below.
+          </li>
+        </ul>
+      </section>
+
       <!-- Callout -->
       <div class="callout-box">
         <h3>Blocking criterion — shared Sent visibility</h3>
         <p>
           If the team must be able to see <strong>what has already been answered</strong>, the
-          Distribution List, Alias and Send-Mail-As patterns are eliminated: replies vanish into
-          personal Sent folders. The only partial workaround — systematically CC'ing the group
-          address — depends on human discipline and fails silently. See the
-          <a href="decision-guide.html">Decision Guide</a>.
+          Distribution List, Alias and Send-Mail-As patterns are eliminated <em>in their native
+          state</em>: replies vanish into personal Sent folders. Systematically CC'ing the group
+          address is <strong>not</strong> an acceptable fix — without something technically
+          configured and enforced, relying on user discipline is bound to fail. The robust
+          alternative is the admin-enforced
+          <a href="#workaround-compliance">outbound compliance rule</a> above, which restores shared
+          Sent visibility for the Groups-based options (3 &amp; 4) regardless of user behavior.
+          See the <a href="decision-guide.html">Decision Guide</a>.
         </p>
       </div>
 
@@ -180,12 +235,16 @@
         <ul>
           <li>
             <strong>Friction to send "as the team".</strong> Options 1–2 send as the shared identity
-            natively. Options 4–6 depend on every member completing a per-user "Send Mail As" setup —
-            a one-time but error-prone configuration step.
+            natively. Options 3, 4 and 6 depend on a per-user "Send Mail As" setup — a one-time but
+            error-prone step if left to users; provisioned centrally via the Gmail API it becomes an
+            admin task instead, and pairing it with the
+            <a href="#workaround-compliance">compliance-rule workaround</a> also restores sent-mail
+            visibility for options 3 &amp; 4.
           </li>
           <li>
             <strong>"Did anyone answer this?"</strong> Only options with a shared Sent folder
-            (1, 2) or a public reply archive (3, 7 for internal notes) answer this question
+            (1, 2), a public reply archive (3, 7 for internal notes), or the
+            <a href="#workaround-compliance">enforced compliance copy</a> (3, 4) answer this question
             without asking colleagues.
           </li>
           <li>
@@ -205,12 +264,23 @@
           permission "who can post / reply" in Groups settings. "Send Mail As" addresses are
           user-level settings and cannot be centrally provisioned from the Admin console UI.
         </p>
+        <p>
+          The outbound copy used by the <a href="#workaround-compliance">workaround</a> is a
+          <strong>content compliance / routing rule</strong> (Admin console &rarr; Apps &rarr;
+          Google Workspace &rarr; Gmail &rarr; Compliance / Routing) matching outbound mail from the
+          shared address, with an "add recipients" (BCC) action towards the group address.
+          <strong>This rule can only be created in the Admin console web UI — no public API covers
+          Gmail compliance/routing rules</strong> (a long-standing request on Google's issue
+          tracker, still open).
+        </p>
         <h3>API &amp; automation</h3>
         <p>
           "Send Mail As" identities <em>can</em> be provisioned via the Gmail API
           (<code>users.settings.sendAs</code>) — with domain-wide delegation this removes the
-          per-user manual setup for options 4–6. Verified-sendAs is a prerequisite for external
-          addresses. Details in <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>.
+          per-user manual setup for options 3, 4 and 6. Verified-sendAs is a prerequisite for
+          external addresses. The compliance-rule half of the workaround, however, is
+          <strong>console-only</strong> and must be applied by hand in the Admin console. Details in
+          <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>.
         </p>
       </section>
 

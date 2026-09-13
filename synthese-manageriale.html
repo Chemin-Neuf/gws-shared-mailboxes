@@ -137,7 +137,8 @@
             <h3>Option recommandée n°2 : Groupe Google Collaboratif</h3>
             <p><strong>Pour qui ?</strong> Les commissions, équipes projets temporaires ou adresses d'information générale à faible volume ou criticité modérée.</p>
             <p><strong>Arbitrage :</strong> Aucun coût de licence supplémentaire (inclus nativement). Permet d'affecter des sujets et d'ajouter des étiquettes de statut depuis l'interface web <code>groups.google.com</code>.</p>
-            <p><strong>Contrainte :</strong> Pas de synchronisation du statut lu/non-lu dans la boîte de messagerie personnelle des membres.</p>
+            <p><strong>Contrainte :</strong> Pas de synchronisation du statut lu/non-lu dans la boîte de messagerie personnelle des membres. Impossible d'écrire un nouvel e-mail externe depuis l'interface Groupes sans un lourd contournement (identité « Envoyer en tant que » provisionnée par API + règle de conformité renvoyant une copie au groupe, configurable uniquement dans la console d'administration web).</p>
+            <p><strong>Vigilance :</strong> Sans ce contournement, une réponse « privée » envoyée à l'expéditeur depuis l'interface Groupes ne laisse <strong>aucune trace</strong> — ni dans le groupe, ni dans les éléments envoyés de l'utilisateur.</p>
           </div>
         </div>
       </section>
@@ -176,7 +177,7 @@
                 <td><strong>Commission / Groupe projet</strong><br />Partage d'informations entre membres bénévoles</td>
                 <td><span class="tag info">Groupe Google (Collaboratif)</span></td>
                 <td><span class="tag good">Gratuit (0 licence)</span></td>
-                <td>Consulter l'interface Groupes dédiée</td>
+                <td>Consulter l'interface Groupes dédiée ; les réponses « privées » n'y laissent aucune trace</td>
               </tr>
               <tr>
                 <td><strong>Alias nominatif / Redirection simple</strong><br />Adresse de fonction attribuée à une seule personne</td>

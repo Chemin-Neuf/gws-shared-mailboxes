@@ -65,7 +65,7 @@
       Answer the questions in order — the first "yes, we need that" usually decides.
     </p>
     <div class="meta">
-      <span class="pill">📅 Last updated: 2026-09-08</span>
+      <span class="pill">📅 Last updated: 2026-09-14</span>
       <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
       <span class="pill">🏷️ Decision Support</span>
     </div>
@@ -122,7 +122,7 @@
               <tr>
                 <td><strong>B2. Shared Sent visibility</strong><br /><span class="muted">Anyone on the team can see what was answered, without asking.</span></td>
                 <td>Distribution List (4), Alias (5), Send-Mail-As (6)</td>
-                <td><strong>Delegation (2)</strong>, Shared Account (1 — rejected on security grounds). Workaround: mandatory CC of the group address — discipline-dependent, fails silently.</td>
+                <td><strong>Delegation (2)</strong>, Shared Account (1 — rejected on security grounds). Enforced workaround for the Groups options (3, 4): admin outbound compliance rule copying (BCC) replies to the group address — see <a href="topic-reply-writing.html#workaround-compliance">Topic 2</a>. Manual CC is not an option: discipline-dependent, fails silently.</td>
               </tr>
               <tr>
                 <td><strong>B3. Central read/unread state</strong><br /><span class="muted">"Already handled?" must be visible on the message itself.</span></td>
@@ -152,7 +152,7 @@
               <tr>
                 <td><strong>B8. Compose new external mail as the shared identity</strong><br /><span class="muted">Not just replying — initiating contact with arbitrary recipients.</span></td>
                 <td>Collaborative Inbox (3) alone, Chat Space (7) alone</td>
-                <td>Delegation (2), Alias/Send-Mail-As (5, 6). Hybrid: Collaborative Inbox (3) for intake + Send-Mail-As (6) for new outbound — a common combination.</td>
+                <td>Delegation (2), Alias/Send-Mail-As (5, 6). Hybrid: Collaborative Inbox (3) for intake + Send-Mail-As (6) for new outbound — a common combination; with centrally provisioned Send-As (Gmail API) plus the outbound compliance rule, this hybrid becomes the enforced workaround of <a href="topic-reply-writing.html#workaround-compliance">Topic 2</a>.</td>
               </tr>
             </tbody>
           </table>

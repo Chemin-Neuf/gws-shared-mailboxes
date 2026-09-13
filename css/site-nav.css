@@ -45,6 +45,7 @@
 
 .site-topnav .nav-links {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 2px;
   flex: 1;
@@ -52,6 +53,8 @@
 }
 
 .site-topnav a.nav-link {
+  display: inline-flex;
+  align-items: center;
   text-decoration: none;
   padding: 4px 10px;
   border-radius: 8px;
@@ -99,12 +102,14 @@
 /* ── Dropdown (parent item with children) ────────────────── */
 .site-topnav .nav-item {
   position: relative;
+  display: inline-flex;
+  align-items: center;
 }
 
 .site-topnav .nav-dropdown {
   display: none;
   position: absolute;
-  top: calc(100% + 6px);
+  top: 100%;
   left: 0;
   min-width: 230px;
   background: #ffffff;
@@ -112,7 +117,18 @@
   border-radius: 10px;
   box-shadow: 0 10px 26px rgba(15, 23, 42, 0.14);
   padding: 6px;
+  margin-top: 4px;
   z-index: 60;
+}
+
+/* Invisible bridge so the mouse can travel into the menu without closing it */
+.site-topnav .nav-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
 }
 
 .site-topnav .nav-item:hover .nav-dropdown,
@@ -144,7 +160,87 @@
 
 /* ── Print ────────────────────────────────────────────────── */
 @media print {
-  .site-topnav { display: none !important; }
+  .site-topnav, .topic-nav-bar { display: none !important; }
+}
+
+/* ── Topic Sub-Navigation Bar ─────────────────────────────── */
+.topic-nav-bar {
+  background: linear-gradient(135deg, #f0f6ff 0%, #e6f0fd 100%);
+  border: 1px solid #c7ddfc;
+  border-radius: 14px;
+  padding: 8px 14px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(29, 78, 216, 0.05);
+  font-family: "Segoe UI", Inter, Arial, sans-serif;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.topic-nav-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: #1e40af;
+  padding: 4px 12px 4px 4px;
+  margin-right: 2px;
+  border-right: 1px solid #bfdbfe;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.topic-nav-label:hover {
+  color: #1d4ed8;
+}
+
+.topic-nav-list {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.topic-nav-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 4px;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+  background: #ffffff;
+  border: 1px solid #dbeafe;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.topic-nav-item:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-color: #93c5fd;
+  transform: translateY(-1px);
+}
+
+.topic-nav-item.active {
+  background: linear-gradient(135deg, #1d4ed8, #0f766e);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 3px 10px rgba(29, 78, 216, 0.28);
+  font-weight: 700;
 }
 
 /* ── Responsive ───────────────────────────────────────────── */
@@ -162,4 +258,14 @@
     margin-right: 0;
   }
   .site-topnav .nav-actions { margin-left: 0; }
+
+  .topic-nav-bar {
+    flex-wrap: nowrap;
+    padding: 6px 10px;
+  }
+  .topic-nav-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
 }

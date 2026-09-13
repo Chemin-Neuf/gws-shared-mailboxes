@@ -202,6 +202,54 @@
     });
   }
 
+  /* ── Topic sub-navigation banner ──────────────────────────
+     For all topic-*.html pages, builds a dedicated navigation
+     banner positioned right below the .hero banner and before .topbar.
+  ────────────────────────────────────────────────────────── */
+  function buildTopicNavBar() {
+    // Only apply on individual topic pages
+    if (!currentFile.startsWith('topic-')) return;
+
+    var topicsEntry = PAGES.find(function (p) { return p.title === 'Topics' && p.children; });
+    if (!topicsEntry || !topicsEntry.children) return;
+
+    var hero = document.querySelector('.hero');
+    if (!hero) return;
+
+    var navBar = document.createElement('nav');
+    navBar.className = 'topic-nav-bar';
+    navBar.setAttribute('aria-label', 'Evaluation topics');
+
+    // Title / main link to topics.html
+    var labelLink = document.createElement('a');
+    labelLink.className = 'topic-nav-label';
+    labelLink.href = 'topics.html';
+    labelLink.title = 'View all topics overview';
+    labelLink.innerHTML = '<span>Topics</span>';
+    navBar.appendChild(labelLink);
+
+    // List of numbered buttons 1..10
+    var list = document.createElement('div');
+    list.className = 'topic-nav-list';
+
+    topicsEntry.children.forEach(function (t, index) {
+      var itemLink = document.createElement('a');
+      itemLink.className = 'topic-nav-item' + (t.file === currentFile ? ' active' : '');
+      itemLink.href = t.file;
+      itemLink.title = t.title;
+      itemLink.textContent = (index + 1).toString();
+      if (t.file === currentFile) {
+        itemLink.setAttribute('aria-current', 'page');
+      }
+      list.appendChild(itemLink);
+    });
+
+    navBar.appendChild(list);
+
+    // Insert directly after hero
+    hero.parentNode.insertBefore(navBar, hero.nextSibling);
+  }
+
   /* ── Insert nav and clean up ───────────────────────────── */
   function init() {
     var shell = document.querySelector('.shell');
@@ -209,6 +257,7 @@
     shell.insertBefore(buildNav(), shell.firstChild);
     cleanHeroActions();
     buildAutoPageNavs();
+    buildTopicNavBar();
   }
 
   if (document.readyState === 'loading') {

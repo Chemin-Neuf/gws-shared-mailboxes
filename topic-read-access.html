@@ -50,6 +50,19 @@
       flex-wrap: wrap;
     }
 
+    /* Footnotes */
+    sup a { text-decoration: none; }
+
+    .footnotes {
+      margin: 16px 0 0;
+      padding: 12px 0 0 22px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .footnotes li { margin-bottom: 6px; }
+    .footnotes li:last-child { margin-bottom: 0; }
+
     @media (max-width: 900px) {
       .topbar { grid-template-columns: 1fr; }
     }
@@ -73,7 +86,7 @@
     <div class="meta">
       <span class="pill">📅 Last updated: 2026-09-14</span>
       <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
-      <span class="pill">🏷️ Status: Draft — migrated, pending review</span>
+      <span class="pill">🏷️ Status: Written</span>
     </div>
   </div>
 
@@ -113,7 +126,7 @@
               <tr>
                 <td><strong>1. Shared Password Account</strong></td>
                 <td><span class="tag good">Yes</span> mail.google.com</td>
-                <td><span class="tag good">Yes</span> IMAP / GWSMO</td>
+                <td><span class="tag good">Yes</span> IMAP / GWSMO<sup><a href="#fn1">1</a></sup></td>
                 <td><span class="tag good">Yes</span> Gmail / native apps</td>
                 <td>Dedicated inbox. <strong>Caveat:</strong> simultaneous multi-location logins trigger severe 2FA/security lockouts. Pinned mobile web shortcuts are fragile.</td>
               </tr>
@@ -121,7 +134,7 @@
                 <td><strong>2. Gmail Delegation Account</strong></td>
                 <td><span class="tag good">Yes</span> Gmail account switcher</td>
                 <td><span class="tag bad">No</span> IMAP not supported for delegates</td>
-                <td><span class="tag good">Yes</span> native Gmail app</td>
+                <td><span class="tag good">Yes</span> native Gmail app<sup><a href="#fn2">2</a></sup></td>
                 <td>Dedicated inbox in a separate view. <strong>Caveat:</strong> dynamic session indices (<code>/u/0/</code>, <code>/u/1/</code>) make pinned mobile web shortcuts unusable.</td>
               </tr>
               <tr>
@@ -162,6 +175,23 @@
             </tbody>
           </table>
         </div>
+
+        <ol class="footnotes">
+          <li id="fn1">
+            <strong>GWSMO — Google Workspace Sync for Microsoft Outlook.</strong> A free Google
+            utility for Windows that synchronizes a Workspace account's mail, calendar and contacts
+            with the Microsoft Outlook desktop client, without manual IMAP configuration. Relevant
+            here only to the Shared Password Account: it cannot help delegates, because delegated
+            mailboxes expose no IMAP/Outlook access at all.
+          </li>
+          <li id="fn2">
+            <strong>Delegation in the Gmail mobile app is brand new.</strong> Native access to a
+            delegated mailbox in the Gmail app (Android/iOS) was introduced by Google in
+            <strong>summer 2026</strong> and is still <strong>rolling out progressively</strong> —
+            it may not yet be available on every account or device. Until rollout completes on your
+            tenant, verify availability per user and treat the mobile browser as the fallback.
+          </li>
+        </ol>
       </section>
 
       <!-- User perspective -->

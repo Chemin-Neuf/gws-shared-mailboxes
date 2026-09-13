@@ -1,9 +1,11 @@
 # **Shared Email & Collaboration Options in Google Workspace: Evaluation Matrix**
 
-> **Status (2026-09-08):** this document is the working source of the study. Its content is
+> **Status (2026-09-14):** this document is the working source of the study. Its content is
 > being progressively migrated into the HTML pages of this repository — see
-> `topics.html` for the migration status of each topic. Sections 1–3 (topics 1–3) are
-> migrated; criteria and pending sections remain authoritative here until migrated.
+> `topics.html` for the migration status of each topic. **Topic 1 is final** (written and
+> validated in `topic-read-access.html`, including footnotes not present here: GWSMO
+> definition and the summer-2026 progressive rollout of delegation in the Gmail mobile app).
+> Topics 2–3 are migrated; criteria and pending sections remain authoritative here until migrated.
 
 This document establishes a comprehensive framework to evaluate the 7 primary mechanisms for handling shared email addresses, team inboxes, and email collaboration within Google Workspace for Nonprofits.
 

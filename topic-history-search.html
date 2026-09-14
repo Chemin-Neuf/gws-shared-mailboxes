@@ -73,7 +73,7 @@
     <div class="meta">
       <span class="pill">📅 Last updated: 2026-09-14</span>
       <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
-      <span class="pill">🏷️ Status: Draft — pending review</span>
+      <span class="pill">🏷️ Status: Written</span>
     </div>
   </div>
 
@@ -117,14 +117,14 @@
                 <td>The shared mailbox (all inbound + sent, per admin setting).</td>
                 <td><span class="tag good">Yes</span> full Gmail search for all delegates</td>
                 <td><span class="tag good">Yes</span> revoke the delegate; history untouched</td>
-                <td>Best continuity story of all options.</td>
+                <td>Best continuity story of all options — but any delegate can permanently delete history (see callout below).</td>
               </tr>
               <tr>
                 <td><strong>3. Collaborative Inbox</strong></td>
                 <td>The group archive (groups.google.com); copies may also land in member inboxes.</td>
                 <td><span class="tag warn">Partial</span> Groups search is weaker than Gmail search; private replies absent</td>
                 <td><span class="tag good">Yes</span> archive is group-owned, independent of members</td>
-                <td>"Reply to author" messages leave no trace — history has holes by design.</td>
+                <td>"Reply to author" messages leave no trace — history has holes by design. The archive also dies with the group: deleting the group deletes it permanently.</td>
               </tr>
               <tr>
                 <td><strong>4. Distribution List</strong></td>
@@ -151,8 +151,8 @@
                 <td><strong>7. Email-to-Google Chat Space</strong></td>
                 <td>The Chat Space thread history + Gmail Sent for external replies.</td>
                 <td><span class="tag warn">Partial</span> Chat search covers inbound + discussion, not the Gmail-side replies</td>
-                <td><span class="tag good">Yes</span> Space history persists across member changes</td>
-                <td>History split across two tools (Chat + Gmail).</td>
+                <td><span class="tag good">Yes</span> Space history persists across member changes — provided history stays ON</td>
+                <td>History split across two tools (Chat + Gmail); with space history off, messages auto-delete after ~24 h.</td>
               </tr>
             </tbody>
           </table>
@@ -169,6 +169,14 @@
           complete copy in a durable place (delegated mailbox, group archive) are your only
           retention mechanism. Upgrading editions would change this picture — flagged here
           as context, not as a recommendation.
+        </p>
+        <p>
+          Corollary: nothing prevents deletion. Anyone with access to a shared or delegated
+          mailbox can permanently delete messages; once the trash is emptied, the only native
+          safety net is the admin's ~25-day window to restore a user's deleted data from the
+          Admin console. The planned Synology GWS backup extends that window well beyond
+          25 days — valuable, but it remains <em>backup</em>, not archiving/retention: no
+          legal holds, no eDiscovery, no policy-driven immutability.
         </p>
       </div>
 

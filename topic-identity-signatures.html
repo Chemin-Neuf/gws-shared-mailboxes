@@ -72,7 +72,7 @@
     <div class="meta">
       <span class="pill">📅 Last updated: 2026-09-14</span>
       <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
-      <span class="pill">🏷️ Status: Draft — pending review</span>
+      <span class="pill">🏷️ Status: Written</span>
     </div>
   </div>
 
@@ -114,9 +114,9 @@
               <tr>
                 <td><strong>2. Gmail Delegation Account</strong></td>
                 <td>The shared address.</td>
-                <td><span class="tag warn">Yes</span> depending on client, "sent by delegate@…" may appear in headers; Gmail shows the delegate in the web UI</td>
+                <td><span class="tag warn">Configurable</span> the admin chooses the sender display (console path below): "Show the account owner only" = no disclosure; "Show the account owner and the delegate who sent the email" = Gmail shows "sent by delegate@…" and the <code>Sender:</code> header names the delegate</td>
                 <td><span class="tag good">Yes</span> signature belongs to the shared account, applies to all delegates</td>
-                <td>Headers reveal the acting delegate — good for audit, visible to technical recipients.</td>
+                <td>With "owner only", the external identity is as clean as option 1 — but audit logs still record which delegate acted.</td>
               </tr>
               <tr>
                 <td><strong>3. Collaborative Inbox</strong></td>
@@ -163,10 +163,12 @@
         <h3>Branding vs accountability trade-off</h3>
         <p>
           The shared account (1) gives the cleanest external identity but zero internal
-          accountability. Delegation (2) is the pragmatic middle ground: recipients see the
-          collective identity, while audit logs — and message headers — still record which
-          delegate acted. For a nonprofit answering to donors and partners, a consistent
-          signature also signals professionalism: only mailbox-based options (1, 2) enforce it.
+          accountability. Delegation (2) is the pragmatic middle ground: with the delegation
+          sender display set to "account owner only", recipients see a pure collective
+          identity, while audit logs still record which delegate acted — accountability stays
+          internal, branding stays clean. For a nonprofit answering to donors and partners, a
+          consistent signature also signals professionalism: only mailbox-based options (1, 2)
+          enforce it.
         </p>
       </div>
 
@@ -176,13 +178,30 @@
         <ul>
           <li>
             <strong>From-dropdown discipline.</strong> With options 4–6, selecting the right
-            From address on every message is manual. Gmail does remember the last choice per
-            conversation, which mitigates but does not eliminate errors.
+            From address on every message is manual. One setting mitigates this for replies:
+            Settings &rarr; <em>Accounts and Import</em> &rarr; <em>Send mail as</em> &rarr;
+            "When replying to a message" &rarr; "Reply from the same address the message was
+            sent to". New outgoing messages still require a manual choice each time.
           </li>
           <li>
-            <strong>Signature maintenance.</strong> Members of a distribution list must each
-            paste the official signature into their personal settings — and update it whenever
-            it changes. In practice, signatures diverge within months.
+            <strong>Signature maintenance.</strong> Gmail does support one signature per sendAs
+            address (chosen from the dropdown above the signature editor), so the official
+            text can be attached to the shared identity specifically — but with options 4–6
+            each member must still create it and keep it up to date by hand. In practice,
+            signatures diverge within months.
+          </li>
+          <li>
+            <strong>Display-name drift.</strong> The recipient-visible name is part of each
+            member's own sendAs configuration, so the same address can appear as
+            "Support — John" on one reply and "Support Team" on another. The API push
+            described below can standardize the display name together with the signature.
+          </li>
+          <li>
+            <strong>Mobile divergence.</strong> The Gmail mobile app has a single per-account
+            "Mobile signature" that applies to everything sent from the app, whatever From
+            address is selected; if left empty, new messages fall back to the web signature.
+            There is no per-From-address signature in the app, so phone replies can silently
+            break the standardized signature.
           </li>
         </ul>
       </section>
@@ -192,15 +211,26 @@
         <h2>Administrator perspective</h2>
         <h3>Web console</h3>
         <p>
+          <strong>Mail delegation sender display</strong> (Admin console &rarr; Apps &rarr;
+          Google Workspace &rarr; Gmail &rarr; User settings &rarr; Mail delegation) offers two
+          choices: <em>Show the account owner and the delegate who sent the email</em> or
+          <em>Show the account owner only</em>. With <em>Allow users to customize this
+          setting</em> checked, each account owner can override the choice in their own Gmail
+          settings; unchecked, the admin value applies to the whole organizational unit.
+        </p>
+        <p>
           Gmail <strong>append footer</strong> (Admin console &rarr; Gmail &rarr; Compliance) can
-          append a legal footer tenant-wide, but it cannot manage per-user signatures or From
-          selection. No console setting enforces signature content.
+          append a legal footer tenant-wide or per organizational unit, but it is added at
+          transport time — invisible while composing — and it cannot manage per-user
+          signatures or From selection. With options 4–6, an OU-wide footer also stamps
+          members' personal mail. No console setting enforces signature content.
         </p>
         <h3>API &amp; automation</h3>
         <p>
           Signatures are scriptable: the Gmail API (<code>users.settings.sendAs</code>,
-          <code>signature</code> field) can push a standardized signature to every member's
-          sendAs identity — with domain-wide delegation this is a realistic scheduled task.
+          <code>signature</code> and <code>displayName</code> fields) can push a standardized
+          signature and display name to every member's sendAs identity — with domain-wide
+          delegation this is a realistic scheduled task.
           Details in <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>.
         </p>
       </section>

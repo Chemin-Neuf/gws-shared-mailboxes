@@ -32,6 +32,19 @@
     .section p  { margin: 0 0 12px; }
     .section p:last-child { margin-bottom: 0; }
 
+    /* Footnotes */
+    sup a { text-decoration: none; }
+
+    .footnotes {
+      margin: 16px 0 0;
+      padding: 12px 0 0 22px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .footnotes li { margin-bottom: 6px; }
+    .footnotes li:last-child { margin-bottom: 0; }
+
     .callout-box {
       background: linear-gradient(180deg, #fff8eb, #ffffff);
       border: 1px solid #fcd34d;
@@ -81,7 +94,7 @@
     <div class="meta">
       <span class="pill">📅 Last updated: 2026-09-14</span>
       <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
-      <span class="pill">🏷️ Status: Draft — pending review</span>
+      <span class="pill">🏷️ Status: Written</span>
     </div>
   </div>
 
@@ -143,13 +156,13 @@
                 <td><strong>1. Shared Password Account</strong></td>
                 <td>The shared account's own contacts + Directory.</td>
                 <td><span class="tag good">Yes, de facto</span> the account's contact list is the team's list</td>
-                <td>Works, but contacts accumulate with no governance; export/backup is manual.</td>
+                <td>Full native contacts UX (autocomplete, mobile sync) since everyone signs in to the account directly — but contacts accumulate with no governance; export/backup is manual.</td>
               </tr>
               <tr>
                 <td><strong>2. Gmail Delegation Account</strong></td>
-                <td>The delegated account's own contacts + Directory.</td>
-                <td><span class="tag good">Yes, de facto</span> all delegates share the mailbox's contact list</td>
-                <td><strong>Best native answer</strong> to "shared address book for this mailbox". Mobile Gmail app autocomplete included.</td>
+                <td><span class="tag warn">None while composing</span> recipient autocomplete is disabled in the delegated view<sup><a href="#fn1">1</a></sup></td>
+                <td><span class="tag good">Yes, de facto</span> all delegates share the mailbox's contact list — but editing it requires <a href="#contact-delegation">contact delegation</a> or the API</td>
+                <td><strong>Best native base</strong> for a team address book, with two gaps: delegates get no To-field autocomplete (web or mobile), and inbox delegation alone does not let them manage the list.</td>
               </tr>
               <tr>
                 <td><strong>3. Collaborative Inbox</strong></td>
@@ -184,6 +197,17 @@
             </tbody>
           </table>
         </div>
+
+        <ol class="footnotes">
+          <li id="fn1">
+            <strong>No autocomplete in delegated accounts.</strong> Google lists
+            <em>Autocomplete</em> among the features unavailable to delegates (Gmail Help,
+            "Delegate &amp; collaborate on email", checked 2026-09-14) — on the web and in the
+            Gmail mobile app alike, because recipient suggestions integrate with the Contacts
+            service, which inbox delegation does not grant. Delegates type full addresses (or
+            reply to existing threads); received mail still shows sender names as transmitted.
+          </li>
+        </ol>
       </section>
 
       <!-- Admin-managed shared contacts -->
@@ -203,17 +227,52 @@
         </ul>
       </section>
 
+      <!-- Delegated contacts (cross-option) -->
+      <section id="contact-delegation" class="section">
+        <h2>Delegated contacts — a building block across all options</h2>
+        <p>
+          Google Contacts has its own delegation mechanism, <strong>fully separate from Gmail
+          inbox delegation</strong>: an account grants another user in the same domain access to
+          its personal contact list. The delegate gets a <em>Delegated contacts</em> section at
+          contacts.google.com and can view, add and edit the delegator's contacts there.
+        </p>
+        <p>
+          Because it is account-to-account and independent of mail flow, it can be layered
+          <strong>on top of every option in this study</strong>:
+        </p>
+        <ul>
+          <li>
+            <strong>Companion to option 2.</strong> Inbox delegation grants mail only — delegates
+            cannot open or edit the mailbox's address book. Delegating the mailbox's contacts to
+            the same team members closes that gap.
+          </li>
+          <li>
+            <strong>Bolt-on for options 3, 4 and 6.</strong> These have no shared address book at
+            all: designate one account as the team's contact hub (an existing member's account or
+            a dedicated one) and delegate its contacts to the others.
+          </li>
+        </ul>
+        <h3>Limits to know before relying on it</h3>
+        <ul>
+          <li><strong>Web-only for delegates</strong> — delegated contacts are not exposed in the Google Contacts mobile app; management happens at contacts.google.com.</li>
+          <li><strong>No autocomplete feed</strong> — delegated contacts are searchable inside their section in Google Contacts but do not flow into the delegate's Gmail To-field suggestions; they fix maintenance and lookup, not typing speed.</li>
+          <li><strong>All-or-nothing</strong> — the whole list is shared, with no per-label scoping.</li>
+          <li><strong>Same domain only</strong>, and an admin must first enable contact sharing (Admin console &rarr; Directory &rarr; Directory settings &rarr; Sharing settings &rarr; Contact sharing).</li>
+          <li><strong>Provisionable by API</strong> — the Contact Delegation API lets admins create, list and delete delegations at scale (see <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>).</li>
+        </ul>
+      </section>
+
       <!-- Callout: third-party -->
       <div class="callout-box">
         <h3>Third-party "shared contacts" tools — policy check</h3>
         <p>
           A market of add-ons (e.g. Shared Contacts for Gmail-type tools) exists precisely
           because of the native gap: label-based contact sharing between users. Per the
-          <a href="topics.html">standing nonprofit policy</a>, these are <strong>excluded by
-          default</strong> (recurring per-user cost, additional vendor access to Directory data).
-          Possible exception: a free tier or a genuinely decisive feature deployed to a small
-          set of power users only. The delegated mailbox's built-in shared contact list
-          (option 2) covers most needs at zero cost.
+          <a href="topics.html#external-tools-policy">standing nonprofit policy</a>, these are
+          <strong>excluded by default</strong> (recurring per-user cost, additional vendor access
+          to Directory data). Possible exception: a free tier or a genuinely decisive feature
+          deployed to a small set of power users only. The delegated mailbox's built-in contact
+          list plus contact delegation (option 2) covers most needs at zero cost.
         </p>
       </div>
 
@@ -227,13 +286,27 @@
             deliver that — personal contacts of colleagues never autocomplete for you.
           </li>
           <li>
-            <strong>Delegation surprise.</strong> Delegates sometimes search their <em>own</em>
-            contacts while composing in the delegated mailbox and wonder why an address is
-            missing: the mailbox has its own list, which must be fed deliberately.
+            <strong>Delegation surprise.</strong> Two of them, actually: while composing in the
+            delegated mailbox there is <em>no recipient autocomplete at all</em> (see the
+            comparison table), and delegates cannot browse or edit the mailbox's own contact
+            list — inbox delegation grants mail only. Both gaps are why the shared address book
+            must be fed deliberately (admin, API, or contact delegation).
           </li>
           <li>
-            <strong>Mobile parity.</strong> Contacts sync to phone address books per account;
-            the shared mailbox's contacts only appear if that account is added to the device.
+            <strong>Mobile parity — delegated inbox.</strong> In the Gmail app, the delegated
+            account is selected from the profile menu (marked "Delegated"); composing there has
+            the same no-autocomplete restriction as the web. Which contacts do you see? Only
+            your own account's — the mailbox's list is not surfaced anywhere in the app.
+          </li>
+          <li>
+            <strong>Mobile parity — shared and delegated contacts.</strong> Contacts sync to the
+            phone's address book per signed-in account: the shared mailbox's contacts reach the
+            device only if that account itself is added to the phone (which needs its password —
+            the shared-account pattern, not delegation). Contact delegation is no help on mobile
+            either: delegated contact lists are exposed only at contacts.google.com on the web,
+            not in the mobile Contacts app. Practical fallback for on-call staff: keep the few
+            critical external numbers in the domain Directory (autocompletes everywhere) or in
+            their personal contacts.
           </li>
         </ul>
       </section>
@@ -244,18 +317,21 @@
         <h3>Web console</h3>
         <p>
           Admins control: Directory visibility (on/off per OU), shared external contacts
-          (add/edit/delete), and contact delegation (a user-level feature letting an assistant
-          manage someone's contacts — rarely used). There is no console UI to push contacts
+          (add/edit/delete), and the contact-sharing toggle that unlocks
+          <a href="#contact-delegation">contact delegation</a> (per-user granting then happens in
+          Google Contacts itself, not in the console). There is no console UI to push contacts
           <em>into</em> a mailbox's personal list.
         </p>
         <h3>API &amp; automation</h3>
         <p>
-          Two APIs matter: the <strong>Admin SDK Directory API</strong>
-          (shared external contacts for the whole tenant), and the
+          Three APIs matter: the <strong>Admin SDK Directory API</strong>
+          (shared external contacts for the whole tenant), the
           <strong>People API</strong> for per-account personal contacts
-          (<code>people.connections</code>, <code>otherContacts</code>). With domain-wide
-          delegation, a script can maintain a delegated mailbox's contact list from a source of
-          truth (e.g. a Sheet or CRM export). Details in
+          (<code>people.connections</code>, <code>otherContacts</code>), and the
+          <strong>Contact Delegation API</strong> to create, list and delete contact delegations
+          programmatically (requires the Contacts admin privilege; same-domain pairs only). With
+          domain-wide delegation, a script can also maintain a delegated mailbox's contact list
+          from a source of truth (e.g. a Sheet or CRM export). Details in
           <a href="topic-api-automation.html">Topic 10 — API &amp; Automation</a>.
         </p>
       </section>

@@ -70,9 +70,9 @@
       membership, permissions, audit logs, delegation oversight — per option.
     </p>
     <div class="meta">
-      <span class="pill">📅 Last updated: 2026-09-14</span>
+      <span class="pill">📅 Last updated: 2026-09-16</span>
       <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
-      <span class="pill">🏷️ Status: Draft — pending review</span>
+      <span class="pill">🏷️ Status: Written</span>
     </div>
   </div>
 
@@ -210,9 +210,51 @@
                 <td>Shared external contacts</td>
                 <td>Directory &rarr; Directory settings &rarr; Shared external contacts (see <a href="topic-contacts.html">Topic 7</a>)</td>
               </tr>
+              <tr>
+                <td>Delegate admin tasks without full super admin (least privilege)</td>
+                <td>Account &rarr; Admin roles (pre-built or custom roles, e.g. Groups Administrator)</td>
+              </tr>
             </tbody>
           </table>
         </div>
+      </section>
+
+      <!-- Audit evidence retention -->
+      <section id="audit-retention" class="section">
+        <h2>Audit evidence expires — retention on this edition</h2>
+        <p>
+          Every audit source cited above has a fixed retention window set by Google; administrators
+          can neither extend nor shorten it (Google Workspace Admin Help, <em>Data retention and lag
+          times</em>, checked 2026-09-16):
+        </p>
+        <div class="table-wrap" style="margin-top:14px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Audit source</th>
+                <th>Retention (fixed by Google)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Email log search</td>
+                <td><span class="tag warn">30 days</span></td>
+              </tr>
+              <tr>
+                <td>Gmail, Groups, Chat, Admin, SAML and User log events</td>
+                <td><span class="tag warn">6 months</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:14px;">
+          As with message content (<a href="topic-history-search.html">Topic 5</a>), evidence retention
+          is architectural, not policy-driven: there is no Google Vault on this edition (no holds, no
+          extended retention) and BigQuery log export is an Enterprise-tier feature — not available
+          here. If governance requires evidence older than 6 months, the only native mitigation is a
+          scheduled export via the Admin SDK Reports API (free, scriptable — see
+          <a href="topic-api-automation.html">Topic 10</a>).
+        </p>
       </section>
 
       <!-- Pager -->

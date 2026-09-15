@@ -69,7 +69,7 @@
       Google Workspace : arbitrages budgétaires, retours d'expérience et directives de sécurité.
     </p>
     <div class="meta">
-      <span class="pill">📅 Dernière mise à jour : 2026-09-14</span>
+      <span class="pill">📅 Dernière mise à jour : 2026-09-16</span>
       <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
       <span class="pill">🏷️ Décision &amp; Gouvernance</span>
     </div>
@@ -106,6 +106,13 @@
           <span class="tag info">Portée : Google Workspace</span>
           <span class="tag warn">Arbitrage Budgétaire &amp; Sécurité</span>
         </div>
+
+        <p style="margin-top:14px;">
+          Point de contexte propre à notre tenant : Google Workspace for Nonprofits ne comprend
+          <strong>ni Google Vault ni DLP</strong>. Il n'existe donc aucun mécanisme d'archivage légal ni de
+          conservation pilotée par règles ; la durée de vie des messages et des preuves d'audit est
+          structurelle, décidée par l'architecture retenue, et non par une politique de rétention.
+        </p>
       </section>
 
       <!-- Encadré synthèse -->
@@ -122,7 +129,8 @@
       <section id="recommandations" class="section">
         <h2>2. Recommandations par scénario d'usage</h2>
         <p>
-          Deux solutions officielles se détachent selon la nature du besoin :
+          Trois mécanismes se détachent selon la nature du besoin. Ils peuvent se combiner : une
+          délégation ou un groupe peut en outre être joignable sous plusieurs adresses (alias).
         </p>
 
         <div class="grid-2" style="margin-top:14px;">
@@ -144,7 +152,26 @@
             <p><strong>Contrainte :</strong> Pas de synchronisation du statut lu/non-lu dans la boîte de messagerie personnelle des membres. Impossible d'écrire un nouvel e-mail externe depuis l'interface Groupes sans un lourd contournement (identité « Envoyer en tant que » provisionnée par API + règle de conformité renvoyant une copie au groupe, configurable uniquement dans la console d'administration web).</p>
             <p><strong>Vigilance :</strong> Sans ce contournement, une réponse « privée » envoyée à l'expéditeur depuis l'interface Groupes ne laisse <strong>aucune trace</strong> — ni dans le groupe, ni dans les éléments envoyés de l'utilisateur.</p>
           </div>
+
+          <div class="card">
+            <h3>Complément : Envoi « Envoyer en tant que »</h3>
+            <p><strong>Pour qui ?</strong> Un binôme ou une petite équipe qui doit surtout <em>émettre</em> sous l'identité collective, sans boîte de réception partagée ni suivi commun.</p>
+            <p><strong>Arbitrage :</strong> Gratuit. Chaque membre envoie au nom de l'adresse partagée depuis sa propre boîte Gmail, mais les réponses et l'historique restent personnels : aucune boîte d'envoi commune, aucune visibilité d'équipe.</p>
+            <p><strong>Gouvernance :</strong> Configuré par chaque utilisateur dans ses propres paramètres, ce mécanisme est <strong>invisible pour l'administrateur</strong> (aucune vue console des autorisations) sauf s'il est provisionné centralement par API. À réserver aux cas simples, ou à provisionner et recenser par l'informatique.</p>
+          </div>
         </div>
+
+        <h3 style="margin:18px 0 8px;">Autres mécanismes — usages complémentaires</h3>
+        <p>
+          Quatre autres mécanismes complètent l'éventail, sans rivaliser avec les recommandations
+          ci-dessus pour un suivi d'équipe :
+        </p>
+        <ul style="margin:0 0 4px; padding-left:20px; color:var(--muted);">
+          <li><strong>Liste de redistribution (groupe)</strong> — informer plusieurs personnes sans suivi ni classement commun ; chaque membre reçoit sa propre copie, gérée dans sa boîte personnelle.</li>
+          <li><strong>Alias / redirection</strong> — adresse de fonction (ex. <code>tresorier@</code>) pointant vers une seule personne ; gratuit, mais sans aucun travail collaboratif.</li>
+          <li><strong>Espace Google Chat alimenté par e-mail</strong> — canal de discussion interne, sans boîte aux lettres ; l'historique n'est conservé que si l'historique de l'espace est activé.</li>
+          <li><strong>Compte à mot de passe partagé</strong> — <span class="tag bad">Proscrit</span> voir la directive de gouvernance (section 5).</li>
+        </ul>
       </section>
 
       <!-- Section 3 : Grille d'arbitrage managérial -->
@@ -184,6 +211,12 @@
                 <td>Consulter l'interface Groupes dédiée ; les réponses « privées » n'y laissent aucune trace</td>
               </tr>
               <tr>
+                <td><strong>Information / notification interne</strong><br />Diffuser à plusieurs, sans suivi ni classement commun</td>
+                <td><span class="tag info">Liste de redistribution</span></td>
+                <td><span class="tag good">Gratuit (0 licence)</span></td>
+                <td>Chacun gère sa propre copie ; aucune visibilité d'équipe</td>
+              </tr>
+              <tr>
                 <td><strong>Alias nominatif / Redirection simple</strong><br />Adresse de fonction attribuée à une seule personne</td>
                 <td><span class="tag info">Alias de messagerie</span></td>
                 <td><span class="tag good">Gratuit (0 licence)</span></td>
@@ -200,9 +233,35 @@
         </div>
       </section>
 
-      <!-- Section 4 : Directive stricte de gouvernance -->
+      <!-- Section 4 : Conservation et preuve -->
+      <section id="conservation" class="section">
+        <h2>4. Conservation des messages &amp; preuve d'audit</h2>
+        <p>
+          Notre édition (Google Workspace for Nonprofits) ne comprend ni Google Vault ni archivage
+          légal : la conservation repose entièrement sur l'architecture retenue.
+        </p>
+        <p>
+          <strong>Durée de vie des messages.</strong> Une boîte déléguée conserve l'intégralité de
+          l'historique de la boîte ; l'archive d'un groupe collaboratif est détruite si le groupe est
+          supprimé ; dans un espace Chat, les messages ne sont conservés que si l'historique est
+          activé (sinon suppression automatique sous ~24 h). En l'absence de Vault, la seule
+          protection native contre une suppression est la fenêtre de restauration administrateur
+          d'environ 25 jours ; une sauvegarde externe (ex. Synology) prolonge cette fenêtre mais
+          reste une <em>sauvegarde</em>, pas un archivage à valeur probante.
+        </p>
+        <p>
+          <strong>Preuves d'audit.</strong> Les journaux de la console d'administration ont une durée
+          de vie fixe, imposée par Google : la recherche dans les journaux e-mail est limitée aux
+          <strong>30 derniers jours</strong>, et les journaux d'audit (Gmail, Groupes, Chat,
+          administration, connexions) aux <strong>6 derniers mois</strong>. Au-delà, plus aucune preuve
+          n'est disponible nativement ; si la gouvernance exige une conservation plus longue, il faut
+          un export planifié via l'API (gratuit, scriptable).
+        </p>
+      </section>
+
+      <!-- Section 5 : Directive stricte de gouvernance -->
       <section id="gouvernance-securite" class="section">
-        <h2>4. Directive de gouvernance et sécurité</h2>
+        <h2>5. Directive de gouvernance et sécurité</h2>
         <div class="callout-box warn">
           <h3>Interdiction formelle du partage d'identifiants</h3>
           <p>
@@ -239,11 +298,21 @@
           Elle reste soumise à une validation explicite de la gouvernance et ne modifie en rien
           l'interdiction générale ci-dessus.
         </p>
+
+        <div class="callout-box warn" style="margin-top:14px;">
+          <h3>Durée de vie des preuves d'audit</h3>
+          <p>
+            Les journaux d'audit de la console d'administration expirent : recherche e-mail limitée
+            aux 30 derniers jours, journaux d'audit aux 6 derniers mois (durées fixées par Google,
+            non modifiables). Toute exigence de preuve au-delà de ces fenêtres impose un export
+            planifié via l'API — voir la section 4.
+          </p>
+        </div>
       </section>
 
-      <!-- Section 5 : Déploiement et étapes suivantes -->
+      <!-- Section 6 : Déploiement et étapes suivantes -->
       <section id="plan-action" class="section">
-        <h2>5. Plan d'action pour les services</h2>
+        <h2>6. Plan d'action pour les services</h2>
         <p>
           Démarche recommandée pour toute nouvelle demande de boîte partagée :
         </p>
@@ -274,7 +343,9 @@
 
         <p style="margin-top:20px;">
           Pour consulter les analyses techniques détaillées, la matrice d'architecture et les limites de Google Workspace :
-          <a href="options-comparison.html">consulter l'étude technique complète (en anglais)</a>.
+          <a href="options-comparison.html">consulter l'étude technique complète (en anglais)</a>,
+          la <a href="matrix.html">matrice de synthèse des 7 options</a> et le
+          <a href="decision-guide.html">guide d'aide à la décision</a>.
         </p>
       </section>
 

@@ -55,11 +55,11 @@
       One-cell verdicts per option per topic. Cells consolidate the detailed reasoning of the
       <a href="topics.html" style="color:#fff;text-decoration:underline;">10 topic pages</a>;
       follow the row links for the full analysis.
-      Status: <strong>in progress</strong> — rows 1–8 and 10 (Read access, Reply &amp; writing, Folders &amp; labels, Collaboration,
-      History &amp; search, Identity &amp; signatures, Contacts &amp; directory, Security &amp; compliance, API &amp; automation) are final; row 9 stays draft until its topic page is reviewed.
+      Status: <strong>complete</strong> — all 10 topic rows are final (rows 1–8 and 10 validated 2026-09-14;
+      row 9, Admin controls, validated 2026-09-16).
     </p>
     <div class="meta">
-      <span class="pill">📅 Last updated: 2026-09-14</span>
+      <span class="pill">📅 Last updated: 2026-09-16</span>
       <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
       <span class="pill">🏷️ Consolidated Verdicts</span>
     </div>
@@ -175,7 +175,7 @@
             <td class="cell cell-ok">OK</td>
           </tr>
           <tr>
-            <td><a href="topic-admin-controls.html">9. Admin controls</a></td>
+            <td><a href="topic-admin-controls.html">9. Admin controls</a> <span class="tag good">Written</span></td>
             <td class="cell cell-nok">NOK</td>
             <td class="cell cell-mid">+/−</td>
             <td class="cell cell-ok">OK</td>
@@ -208,9 +208,12 @@
       </table>
     </div>
     <p class="muted" style="margin-top:12px;">
-      Rows 1–8 and 10 (Read access, Reply &amp; writing, Folders &amp; labels, Collaboration, History &amp; search,
-      Identity &amp; signatures, Contacts &amp; directory, Security &amp; compliance, API &amp; automation) were validated on
-      2026-09-14; row 9 verdicts stay draft until its topic page is reviewed against the live tenant.
+      All 10 rows were validated against the live tenant: rows 1–8 and 10 on 2026-09-14, row 9
+      (Admin controls) on 2026-09-16.
+      Row 9 (Admin controls): Send-Mail-As scores NOK because grants live in each member's own Gmail
+      settings with no admin-console visibility unless centrally provisioned via API; Delegation scores
+      +/− because a tenant-wide delegate inventory requires API reporting — see
+      <a href="topic-admin-controls.html">Topic 9</a>.
       Row 2 (Reply &amp; writing): Collaborative Inbox and Distribution List score +/− rather than
       NOK only when the admin-enforced Send-As + outbound-compliance workaround is deployed — see
       <a href="topic-reply-writing.html#workaround-compliance">Topic 2</a>.

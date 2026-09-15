@@ -32,6 +32,19 @@
     .section p  { margin: 0 0 12px; }
     .section p:last-child { margin-bottom: 0; }
 
+    /* Footnotes */
+    sup a { text-decoration: none; }
+
+    .footnotes {
+      margin: 16px 0 0;
+      padding: 12px 0 0 22px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .footnotes li { margin-bottom: 6px; }
+    .footnotes li:last-child { margin-bottom: 0; }
+
     .callout-box {
       background: linear-gradient(180deg, #fff5f5, #ffffff);
       border: 1px solid #fecaca;
@@ -72,7 +85,7 @@
     <div class="meta">
       <span class="pill">📅 Last updated: 2026-09-14</span>
       <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
-      <span class="pill">🏷️ Status: Draft — pending review</span>
+      <span class="pill">🏷️ Status: Written</span>
     </div>
   </div>
 
@@ -167,9 +180,125 @@
           donor data and subject to GDPR-style obligations. Where a "shared account feel" is
           truly required, <strong>Delegation (option 2) delivers the same UX without sharing
           any secret.</strong> See the <a href="synthese-manageriale.html">synthèse managériale</a>
-          for the governance wording.
+          for the governance wording. One narrow, consciously risk-accepted exception is examined
+          <a href="#federated-sso-exception">below</a> — a bounded deviation, not a relaxation of
+          this rule.
         </p>
       </div>
+
+      <!-- Federated SSO exception -->
+      <section id="federated-sso-exception" class="section">
+        <h2>Niche pattern: federated SSO accounts for short-term external users</h2>
+        <p>
+          Scenario: a shared address that many <strong>external, short-term</strong> people must
+          use — seasonal volunteers, event teams, partner staff. The delegation route means
+          creating a licensed personal account per person, granting delegation, then
+          deprovisioning a few weeks later. That churn costs one license per person and pushes
+          the tenant toward the 2,000-user Nonprofits cap for accounts that sit idle most of
+          the year.
+        </p>
+        <p>
+          A verified-feasible variant keeps <strong>one account per shared address</strong>,
+          placed in a dedicated OU whose <strong>SSO profile points to a third-party SAML IdP
+          operated by IT</strong>.<sup><a href="#fn1">1</a></sup> Password and MFA policy then live
+          entirely at the IdP; the credential is held in the password manager and can be rotated
+          and redistributed by script. External users never see a Google password prompt: after
+          entering the shared address on the Google sign-in page they are redirected to our IdP
+          login.
+        </p>
+
+        <h3>What is verified on this edition</h3>
+        <ul>
+          <li>
+            <strong>Per-OU SSO profiles are available on the Nonprofits edition.</strong>
+            "Partial SSO" (assigning SSO profiles per OU or group) has been GA since 2021, and
+            multiple third-party IdP profiles since 2022; both announcements explicitly list
+            Nonprofits as eligible. The rest of the tenant keeps normal Google sign-in — only the
+            dedicated OU authenticates against our IdP.<sup><a href="#fn1">1</a></sup>
+          </li>
+          <li>
+            <strong>MFA policy moves to the IdP — managed, not disabled.</strong> Google does not
+            challenge SSO sign-ins with its own 2-Step Verification by default; Google-side 2SV
+            and risk-based challenges for SSO users are opt-in.<sup><a href="#fn2">2</a></sup>
+            The 2FA-relay pain of option 1 therefore disappears. Recommendation: enforce MFA at
+            the IdP with a centrally held factor rather than switching MFA off entirely — no MFA
+            at all on a mailbox full of supporter correspondence would be the worst of both
+            worlds.
+          </li>
+          <li>
+            <strong>Offboarding is fully scriptable.</strong> Rotate the IdP password, kill live
+            Google sessions with one Admin SDK call (<code>users.signOut</code>; GAM equivalent
+            <code>gam user &lt;address&gt; signout</code>), and push the new secret to the people
+            who still need it via the password manager. Until rotation runs, a departed external
+            keeps a working secret — rotation cadence <em>is</em> the revocation
+            guarantee.<sup><a href="#fn3">3</a></sup>
+          </li>
+          <li>
+            <strong>License math:</strong> one license per shared address, zero per external
+            person — instead of one license per person, with far less provisioning churn.
+          </li>
+        </ul>
+
+        <h3>What this does not fix — read before adopting</h3>
+        <ul>
+          <li>
+            <strong>Accountability stays void.</strong> Every action still maps to one shared
+            identity; blocking criterion B7 in the <a href="decision-guide.html">decision
+            guide</a> excludes shared credentials by policy. This pattern is a
+            <strong>bounded, consciously risk-accepted exception</strong> that needs explicit
+            governance sign-off, restricted to addresses whose content can tolerate the
+            accountability gap — never donor-sensitive correspondence.
+          </li>
+          <li>
+            <strong>The IdP becomes critical infrastructure.</strong> Its outage locks out every
+            federated address at once; it must be patched, monitored, and backed up. Under the
+            <a href="topics.html#external-tools-policy">external-tools policy</a> it requires a
+            formal exception — a free self-hosted IdP (Keycloak, Authentik, etc.) fits the "free
+            and limited-scope" criteria but is still one more system to operate.
+          </li>
+          <li>
+            <strong>Residual Google-side risk.</strong> One account used concurrently from many
+            networks can still trip account-level protections (verification prompts, suspension
+            for unusual activity). Super-admin accounts always keep Google password sign-in as
+            break-glass access and are unaffected by the SSO profile.
+          </li>
+        </ul>
+
+        <h3>Alternative that avoids the exception entirely</h3>
+        <p>
+          The same need is often covered without any shared secret: a <strong>Collaborative Inbox
+          (option 3) with external members</strong> consumes no licenses — external people join
+          the group with their own free consumer Google accounts, giving per-person attribution
+          and instant revocation. The costs: each person needs some Google account, and the
+          interface is the Groups web UI rather than a mailbox. When a true mailbox experience
+          for externals is not mandatory, this is the cleaner answer; the federated pattern is
+          for the cases where it is.
+        </p>
+
+        <ol class="footnotes">
+          <li id="fn1">
+            <strong>Per-OU SSO profiles.</strong> "Assign SSO profile to organizational units or
+            groups with the SAML Partial SSO feature" (Google Workspace Updates, 2021-11-19, GA)
+            and "SSO profiles for multiple third-party identity providers" (2022-05-12); both
+            list <em>Google Workspace for Nonprofits</em> among the eligible editions. Admin
+            console path: Security &rarr; Settings &rarr; Set up single sign-on (SSO) with a
+            third-party IdP &rarr; Manage SSO profile assignments. Checked 2026-09-14.
+          </li>
+          <li id="fn2">
+            <strong>Google 2SV and SSO.</strong> "Use Google 2-Step Verification and risk-based
+            login challenges with 3rd-party identity providers" (Google Workspace Updates,
+            2019-09-26): both measures are opt-in for SSO organizations — by default a user
+            authenticated by the IdP is not challenged again by Google.
+          </li>
+          <li id="fn3">
+            <strong>Session revocation.</strong> Admin SDK Directory API
+            <code>users.signOut</code> (scope <code>admin.directory.user.security</code>) "signs a
+            user out of all web and device sessions and resets their sign-in cookies"
+            (developers.google.com, checked 2026-09-14). Changing the IdP password alone does not
+            invalidate existing Google sessions — both steps are required.
+          </li>
+        </ol>
+      </section>
 
       <!-- Edition limits -->
       <section id="edition-limits" class="section">

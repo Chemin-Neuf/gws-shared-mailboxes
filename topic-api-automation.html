@@ -85,7 +85,7 @@
     <div class="meta">
       <span class="pill">📅 Last updated: 2026-09-14</span>
       <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
-      <span class="pill">🏷️ Status: Draft — pending review</span>
+      <span class="pill">🏷️ Status: Written</span>
     </div>
   </div>
 
@@ -189,9 +189,9 @@
               </tr>
               <tr>
                 <td><strong>5. Alias / Redirection</strong></td>
-                <td><span class="tag good">Full</span> user aliases + routing rules</td>
+                <td><span class="tag good">Full</span> user aliases (Directory API / GAM)</td>
                 <td><span class="tag info">N/A</span></td>
-                <td>—</td>
+                <td><span class="tag bad">Routing / redirection rules</span> (Admin console only — no API; only per-user auto-forwarding is scriptable)</td>
               </tr>
               <tr>
                 <td><strong>6. Send Mail As</strong></td>
@@ -222,6 +222,9 @@
 <code class="block"># Create a Collaborative Inbox group
 gam create group support@example.org name "Support Team"
 gam update group support@example.org collaborative inbox
+
+# Attach a shared alias address to a user account (option 5)
+gam create alias support@example.org user jane.doe@example.org
 
 # Add a delegate to a functional mailbox
 gam user compta@example.org delegate to jane.doe@example.org

@@ -55,8 +55,8 @@
       One-cell verdicts per option per topic. Cells consolidate the detailed reasoning of the
       <a href="topics.html" style="color:#fff;text-decoration:underline;">10 topic pages</a>;
       follow the row links for the full analysis.
-      Status: <strong>in progress</strong> — rows 1–7 (Read access, Reply &amp; writing, Folders &amp; labels, Collaboration,
-      History &amp; search, Identity &amp; signatures, Contacts &amp; directory) are final; other rows stay draft until their topic page is reviewed.
+      Status: <strong>in progress</strong> — rows 1–8 and 10 (Read access, Reply &amp; writing, Folders &amp; labels, Collaboration,
+      History &amp; search, Identity &amp; signatures, Contacts &amp; directory, Security &amp; compliance, API &amp; automation) are final; row 9 stays draft until its topic page is reviewed.
     </p>
     <div class="meta">
       <span class="pill">📅 Last updated: 2026-09-14</span>
@@ -165,7 +165,7 @@
             <td class="cell cell-na">n/a</td>
           </tr>
           <tr>
-            <td><a href="topic-security.html">8. Security &amp; compliance</a></td>
+            <td><a href="topic-security.html">8. Security &amp; compliance</a> <span class="tag good">Written</span></td>
             <td class="cell cell-nok">NOK</td>
             <td class="cell cell-ok">OK</td>
             <td class="cell cell-ok">OK</td>
@@ -185,12 +185,12 @@
             <td class="cell cell-mid">+/−</td>
           </tr>
           <tr>
-            <td><a href="topic-api-automation.html">10. API &amp; automation</a></td>
+            <td><a href="topic-api-automation.html">10. API &amp; automation</a> <span class="tag good">Written</span></td>
             <td class="cell cell-nok">NOK</td>
             <td class="cell cell-ok">OK</td>
             <td class="cell cell-mid">+/−</td>
             <td class="cell cell-ok">OK</td>
-            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-mid">+/−</td>
             <td class="cell cell-ok">OK</td>
             <td class="cell cell-mid">+/−</td>
           </tr>
@@ -208,9 +208,9 @@
       </table>
     </div>
     <p class="muted" style="margin-top:12px;">
-      Rows 1–7 (Read access, Reply &amp; writing, Folders &amp; labels, Collaboration, History &amp; search,
-      Identity &amp; signatures, Contacts &amp; directory) were validated on
-      2026-09-14; all other verdicts stay draft until their linked topic page is reviewed against the live tenant.
+      Rows 1–8 and 10 (Read access, Reply &amp; writing, Folders &amp; labels, Collaboration, History &amp; search,
+      Identity &amp; signatures, Contacts &amp; directory, Security &amp; compliance, API &amp; automation) were validated on
+      2026-09-14; row 9 verdicts stay draft until its topic page is reviewed against the live tenant.
       Row 2 (Reply &amp; writing): Collaborative Inbox and Distribution List score +/− rather than
       NOK only when the admin-enforced Send-As + outbound-compliance workaround is deployed — see
       <a href="topic-reply-writing.html#workaround-compliance">Topic 2</a>.
@@ -222,6 +222,9 @@
       is disabled in delegated accounts and the mailbox's own contact list is not editable by
       delegates unless contact delegation is added — see
       <a href="topic-contacts.html">Topic 7</a>.
+      Row 10 (API &amp; automation): Alias / Redirection scores +/− because aliases are fully
+      scriptable (Directory API) but routing/redirection rules are Admin-console-only — no API exists — see
+      <a href="topic-api-automation.html">Topic 10</a>.
       Option 1 (Shared Password) is excluded by security policy regardless of its scores — see
       <a href="topic-security.html">Topic 8</a>.
     </p>

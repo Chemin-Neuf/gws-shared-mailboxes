@@ -43,6 +43,19 @@
     .callout-box h3 { margin: 0 0 8px; color: var(--primary); }
     .callout-box p  { margin: 0; color: var(--muted); }
 
+    /* Footnotes */
+    sup a { text-decoration: none; }
+
+    .footnotes {
+      margin: 16px 0 0;
+      padding: 12px 0 0 22px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .footnotes li { margin-bottom: 6px; }
+    .footnotes li:last-child { margin-bottom: 0; }
+
     @media (max-width: 900px) {
       .topbar { grid-template-columns: 1fr; }
     }
@@ -215,7 +228,7 @@
                 <td><strong>2. Delegation</strong></td>
                 <td>Real Gmail (web + mobile app); no IMAP/desktop client; separate inbox view.</td>
                 <td><span class="tag warn">Medium</span> delegate list per user; Sent-folder behavior centrally set</td>
-                <td><span class="tag good">Full</span> delegates, sendAs, signatures, labels via Gmail API / GAM</td>
+                <td><span class="tag good">Full</span> delegates, sendAs, signatures, labels via Gmail API / GAM<sup><a href="#fn1">1</a></sup></td>
               </tr>
               <tr>
                 <td><strong>3. Collaborative Inbox</strong></td>
@@ -233,7 +246,7 @@
                 <td><strong>5. Alias / Redirection</strong></td>
                 <td>Zero change for the single recipient; mail blends into personal inbox.</td>
                 <td><span class="tag good">Good</span> aliases per user; routing rules centrally</td>
-                <td><span class="tag good">Good</span> alias + routing provisioning scriptable</td>
+                <td><span class="tag warn">Partial</span> aliases scriptable (Directory API); routing rules console-only, no API</td>
               </tr>
               <tr>
                 <td><strong>6. Send Mail As</strong></td>
@@ -250,6 +263,15 @@
             </tbody>
           </table>
         </div>
+
+        <ol class="footnotes">
+          <li id="fn1">
+            <strong>GAM (originally "Google Apps Manager").</strong> A free, open-source
+            command-line tool that wraps the Google Workspace admin APIs — the de facto standard
+            for scripting bulk provisioning (delegates, groups, send-as identities) and reporting.
+            See <a href="topic-api-automation.html#gam">API &amp; Automation — GAM</a> for examples.
+          </li>
+        </ol>
       </section>
 
       <!-- Section 4 -->

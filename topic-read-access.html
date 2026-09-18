@@ -84,7 +84,7 @@
       stay separate from personal mail or blend into it?
     </p>
     <div class="meta">
-      <span class="pill">📅 Last updated: 2026-09-14</span>
+      <span class="pill">📅 Last updated: 2026-09-17</span>
       <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
       <span class="pill">🏷️ Status: Written</span>
     </div>
@@ -133,7 +133,7 @@
               <tr>
                 <td><strong>2. Gmail Delegation Account</strong></td>
                 <td><span class="tag good">Yes</span> Gmail account switcher</td>
-                <td><span class="tag bad">No</span> IMAP not supported for delegates</td>
+                <td><span class="tag warn">Partial</span> via GWSMO<sup><a href="#fn1">1</a></sup> (Outlook on Windows only); no IMAP for delegates</td>
                 <td><span class="tag good">Yes</span> native Gmail app<sup><a href="#fn2">2</a></sup></td>
                 <td>Dedicated inbox in a separate view. <strong>Caveat:</strong> dynamic session indices (<code>/u/0/</code>, <code>/u/1/</code>) make pinned mobile web shortcuts unusable.</td>
               </tr>
@@ -180,9 +180,15 @@
           <li id="fn1">
             <strong>GWSMO — Google Workspace Sync for Microsoft Outlook.</strong> A free Google
             utility for Windows that synchronizes a Workspace account's mail, calendar and contacts
-            with the Microsoft Outlook desktop client, without manual IMAP configuration. Relevant
-            here only to the Shared Password Account: it cannot help delegates, because delegated
-            mailboxes expose no IMAP/Outlook access at all.
+            with the Microsoft Outlook desktop client. It connects Outlook to Google over
+            <strong>MAPI + Google's HTTPS APIs</strong> — <em>not</em> IMAP — so it works without any IMAP
+            configuration, for the main inbox too. Crucially, GWSMO also offers an
+            <strong>"Add account for delegation"</strong> feature: a delegate can add the delegated
+            mailbox as a separate account in their Outlook profile and read its mail there. This is
+            the one desktop-client path for Delegation — but it is <strong>Windows + Outlook only</strong>:
+            GWSMO does not work with Thunderbird or any other IMAP client, and delegated mailboxes
+            still expose no plain-IMAP access. See
+            <a href="https://support.google.com/a/users/answer/170961" target="_blank" rel="noopener">Google Learning Center — Set up delegation with GWSMO</a>.
           </li>
           <li id="fn2">
             <strong>Delegation in the Gmail mobile app is brand new.</strong> Native access to a
@@ -226,8 +232,9 @@
         <p>
           If your team <strong>must</strong> read shared mail in a native mobile app, the
           Collaborative Inbox as primary interface is eliminated (email-delivery fallback remains).
-          If your team <strong>must</strong> use Outlook or Thunderbird, Delegation, Collaborative
-          Inbox and Chat Space are eliminated for reading. See the
+          If your team <strong>must</strong> use a desktop email client, Delegation is possible only
+          via GWSMO on Windows + Outlook (no Thunderbird / IMAP); Collaborative Inbox and Chat Space
+          have no desktop-client path at all. See the
           <a href="decision-guide.html">Decision Guide</a> for the full logic.
         </p>
       </div>

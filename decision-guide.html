@@ -65,7 +65,7 @@
       Answer the questions in order — the first "yes, we need that" usually decides.
     </p>
     <div class="meta">
-      <span class="pill">📅 Last updated: 2026-09-14</span>
+      <span class="pill">📅 Last updated: 2026-09-21</span>
       <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
       <span class="pill">🏷️ Decision Support</span>
     </div>
@@ -116,13 +116,13 @@
             <tbody>
               <tr>
                 <td><strong>B1. Native mobile app access</strong><br /><span class="muted">Field staff read and answer on phones, in an app — not a mobile browser.</span></td>
-                <td>Collaborative Inbox (3) as primary interface; Delegation (2) for desktop-client users</td>
+                <td>Collaborative Inbox (3) as primary interface</td>
                 <td><strong>Delegation via Gmail app</strong>, Distribution List, Alias. Workaround for (3): members receive posts by email and process them in the Groups web UI later.</td>
               </tr>
               <tr>
                 <td><strong>B2. Shared Sent visibility</strong><br /><span class="muted">Anyone on the team can see what was answered, without asking.</span></td>
                 <td>Distribution List (4), Alias (5), Send-Mail-As (6)</td>
-                <td><strong>Delegation (2)</strong>, Shared Account (1 — rejected on security grounds). Enforced workaround for the Groups options (3, 4): admin outbound compliance rule copying (BCC) replies to the group address — see <a href="topic-reply-writing.html#workaround-compliance">Topic 2</a>. Manual CC is not an option: discipline-dependent, fails silently.</td>
+                <td><strong>Delegation (2)</strong>, Shared Account (1). Enforced workaround for the Groups options (3, 4): admin outbound compliance rule copying (BCC) replies to the group address — see <a href="topic-reply-writing.html#workaround-compliance">Topic 2</a>. Manual CC is not an option: discipline-dependent, fails silently.</td>
               </tr>
               <tr>
                 <td><strong>B3. Central read/unread state</strong><br /><span class="muted">"Already handled?" must be visible on the message itself.</span></td>
@@ -142,7 +142,7 @@
               <tr>
                 <td><strong>B6. Desktop email client (Outlook / Thunderbird)</strong><br /><span class="muted">Users standardized on a real IMAP/Exchange client.</span></td>
                 <td>Collaborative Inbox (3), Chat Space (7); Delegation (2) for Thunderbird/IMAP — it survives only via GWSMO on Windows + Outlook</td>
-                <td>Shared Account (1) via IMAP/GWSMO — rejected on security grounds; realistically: Distribution List / Alias <em>delivered into the personal mailbox</em>, which the client already reads. Delegation (2) works only if the team is on Windows + Outlook (GWSMO "Add account for delegation" — see <a href="topic-read-access.html#fn1">Topic 1</a>).</td>
+                <td>Shared Account (1) via IMAP/GWSMO; realistically: Distribution List / Alias <em>delivered into the personal mailbox</em>, which the client already reads. Delegation (2) works only if the team is on Windows + Outlook (GWSMO "Add account for delegation" — see <a href="topic-read-access.html#fn1">Topic 1</a>).</td>
               </tr>
               <tr>
                 <td><strong>B7. Individual accountability (audit trail per person)</strong><br /><span class="muted">Every read/reply attributable — donor data, GDPR posture.</span></td>
@@ -196,8 +196,9 @@
             <strong>Field team on phones, light volume</strong>
             <p class="muted">
               Mobile-first, no desk workflow, tolerance for blended inbox.
-              &rarr; <strong>Distribution List (4) + Send-Mail-As (6)</strong>, or Delegation (2)
-              via the Gmail app if shared Sent matters.
+              &rarr; <strong>Delegation (2)</strong> via the Gmail mobile app (delegation is now
+              fully supported there), or Distribution List (4) + Send-Mail-As (6) if shared
+              Sent visibility doesn't matter.
             </p>
           </div>
           <div class="card soft need-card">

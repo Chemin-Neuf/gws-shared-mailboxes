@@ -59,7 +59,7 @@
       row 9, Admin controls, validated 2026-09-16).
     </p>
     <div class="meta">
-      <span class="pill">📅 Last updated: 2026-09-16</span>
+      <span class="pill">📅 Last updated: 2026-09-21</span>
       <span class="pill">✍️ Chemin Neuf Community · Kimi K3</span>
       <span class="pill">🏷️ Consolidated Verdicts</span>
     </div>
@@ -150,13 +150,13 @@
             <td class="cell cell-ok">OK</td>
             <td class="cell cell-mid">+/−</td>
             <td class="cell cell-mid">+/−</td>
-            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-mid">+/−</td>
             <td class="cell cell-mid">+/−</td>
             <td class="cell cell-na">n/a</td>
           </tr>
           <tr>
             <td><a href="topic-contacts.html">7. Contacts &amp; directory</a> <span class="tag good">Written</span></td>
-            <td class="cell cell-mid">+/−</td>
+            <td class="cell cell-ok">OK</td>
             <td class="cell cell-mid">+/−</td>
             <td class="cell cell-nok">NOK</td>
             <td class="cell cell-nok">NOK</td>
@@ -169,9 +169,9 @@
             <td class="cell cell-nok">NOK</td>
             <td class="cell cell-ok">OK</td>
             <td class="cell cell-ok">OK</td>
+            <td class="cell cell-mid">+/−</td>
             <td class="cell cell-ok">OK</td>
-            <td class="cell cell-ok">OK</td>
-            <td class="cell cell-ok">OK</td>
+            <td class="cell cell-mid">+/−</td>
             <td class="cell cell-ok">OK</td>
           </tr>
           <tr>
@@ -207,30 +207,73 @@
         </tbody>
       </table>
     </div>
-    <p class="muted" style="margin-top:12px;">
-      All 10 rows were validated against the live tenant: rows 1–8 and 10 on 2026-09-14, row 9
-      (Admin controls) on 2026-09-16.
-      Row 9 (Admin controls): Send-Mail-As scores NOK because grants live in each member's own Gmail
-      settings with no admin-console visibility unless centrally provisioned via API; Delegation scores
-      +/− because a tenant-wide delegate inventory requires API reporting — see
-      <a href="topic-admin-controls.html">Topic 9</a>.
-      Row 2 (Reply &amp; writing): Collaborative Inbox and Distribution List score +/− rather than
-      NOK only when the admin-enforced Send-As + outbound-compliance workaround is deployed — see
-      <a href="topic-reply-writing.html#workaround-compliance">Topic 2</a>.
-      Row 3 (Folders &amp; labels): Collaborative Inbox scores +/− because its shared tags are flat
-      (no sub-tags or folder hierarchy) and its resolution statuses are a fixed, non-customizable
-      set — see
-      <a href="topic-organization.html">Topic 3</a>.
-      Row 7 (Contacts &amp; directory): Delegation scores +/− (not OK) because recipient autocomplete
-      is disabled in delegated accounts and the mailbox's own contact list is not editable by
-      delegates unless contact delegation is added — see
-      <a href="topic-contacts.html">Topic 7</a>.
-      Row 10 (API &amp; automation): Alias / Redirection scores +/− because aliases are fully
-      scriptable (Directory API) but routing/redirection rules are Admin-console-only — no API exists — see
-      <a href="topic-api-automation.html">Topic 10</a>.
-      Option 1 (Shared Password) is excluded by security policy regardless of its scores — see
-      <a href="topic-security.html">Topic 8</a>.
-    </p>
+    <div class="muted" style="margin-top:12px;">
+      <p>
+        All 10 rows were validated against the live tenant on 2026-09-14 and 2026-09-16;
+        cells were re-checked against the topic pages on 2026-09-21 (rows 6, 7 and 8 adjusted).
+      </p>
+      <p><strong>Notes per row:</strong></p>
+      <ul>
+        <li>
+          <strong>Row 1 (Read access &amp; platforms):</strong> Delegation scores +/− solely because
+          of desktop email clients: delegated mailboxes expose no IMAP, so only Outlook on Windows
+          (via GWSMO) can read them — Thunderbird and other clients cannot. Web browser and the
+          Gmail mobile app work fine. Shared Password scores +/− because simultaneous
+          multi-location logins trigger security lockouts — see
+          <a href="topic-read-access.html">Topic 1</a>.
+        </li>
+        <li>
+          <strong>Row 2 (Reply &amp; writing):</strong> Collaborative Inbox and Distribution List
+          score +/− rather than NOK only when the admin-enforced Send-As + outbound-compliance
+          workaround is deployed — see
+          <a href="topic-reply-writing.html#workaround-compliance">Topic 2</a>.
+        </li>
+        <li>
+          <strong>Row 3 (Folders &amp; labels):</strong> Collaborative Inbox scores +/− because its
+          shared tags are flat (no sub-tags or folder hierarchy) and its resolution statuses are a
+          fixed, non-customizable set — see
+          <a href="topic-organization.html">Topic 3</a>.
+        </li>
+        <li>
+          <strong>Row 6 (Identity &amp; signatures):</strong> Alias scores +/− (not OK) because, when
+          the alias is shared by several people, each member maintains their own Send-As signature
+          and display name — the same divergence as Distribution List — with the same possible
+          "via" disclosure — see
+          <a href="topic-identity-signatures.html">Topic 6</a>.
+        </li>
+        <li>
+          <strong>Row 7 (Contacts &amp; directory):</strong> Delegation scores +/− (not OK) because
+          recipient autocomplete is disabled in delegated accounts and the mailbox's own contact
+          list is not editable by delegates unless contact delegation is added — see
+          <a href="topic-contacts.html">Topic 7</a>.
+        </li>
+        <li>
+          <strong>Row 8 (Security &amp; compliance):</strong> Distribution List and Send-Mail-As score
+          +/− because individual accountability is only partial: for a list, who replied is not
+          centrally visible, and Send-As mail lives in members' personal Sent folders. MFA,
+          credential exposure and offboarding are clean for both — see
+          <a href="topic-security.html">Topic 8</a>.
+        </li>
+        <li>
+          <strong>Row 9 (Admin controls):</strong> Send-Mail-As scores NOK because grants live in
+          each member's own Gmail settings with no admin-console visibility unless centrally
+          provisioned via API; Delegation scores +/− because a tenant-wide delegate inventory
+          requires API reporting — see
+          <a href="topic-admin-controls.html">Topic 9</a>.
+        </li>
+        <li>
+          <strong>Row 10 (API &amp; automation):</strong> Alias / Redirection scores +/− because
+          aliases are fully scriptable (Directory API) but routing/redirection rules are
+          Admin-console-only — no API exists — see
+          <a href="topic-api-automation.html">Topic 10</a>.
+        </li>
+        <li>
+          <strong>Option 1 (Shared Password)</strong> is excluded by security policy regardless of
+          its scores — see
+          <a href="topic-security.html">Topic 8</a>.
+        </li>
+      </ul>
+    </div>
   </div>
 
 </div><!-- /.shell -->

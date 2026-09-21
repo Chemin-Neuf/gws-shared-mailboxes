@@ -69,7 +69,7 @@
       Google Workspace : arbitrages budgétaires, retours d'expérience et directives de sécurité.
     </p>
     <div class="meta">
-      <span class="pill">📅 Dernière mise à jour : 2026-09-16</span>
+      <span class="pill">📅 Dernière mise à jour : 2026-09-21</span>
       <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
       <span class="pill">🏷️ Décision &amp; Gouvernance</span>
     </div>
@@ -86,6 +86,18 @@
 
     <!-- Contenu principal -->
     <div class="content">
+
+      <!-- TL;DR — conclusions en bref -->
+      <div class="callout-box" style="margin-bottom:18px;">
+        <h3>TL;DR — l'essentiel en 30 secondes</h3>
+        <ul style="margin:0; padding-left:20px; color:var(--muted);">
+          <li><strong>Pas de boîte partagée native gratuite</strong> dans Google Workspace — tout choix est un compromis coût / ergonomie / sécurité.</li>
+          <li><strong>Services critiques</strong> (compta, secrétariat, support) → <strong>Délégation Gmail</strong> — 1 licence, suivi partagé fiable.</li>
+          <li><strong>Commissions &amp; faible volume</strong> → <strong>Groupe collaboratif</strong> — gratuit, mais limité et réponses privées sans trace.</li>
+          <li><strong>Partage de mot de passe = proscrit</strong> — 2FA incompatible, aucune auditabilité, non-conforme RGPD.</li>
+          <li><strong>Pas de Vault</strong> : conservation limitée (restauration ~25 j, journaux 30 j / 6 mois) — sauvegarde Synology en projet (fin 2026), archivage dédié à venir.</li>
+        </ul>
+      </div>
 
       <!-- Section 1 : Contexte et enjeu décisionnel -->
       <section id="contexte" class="section">
@@ -138,8 +150,8 @@
             <h3>Option recommandée n°1 : Délégation Gmail</h3>
             <p><strong>Pour qui ?</strong> Les services opérationnels critiques (Comptabilité, Secrétariat, Support, Inscriptions) où le volume d'échanges exige de savoir qui a traité, lu ou répondu à chaque message.</p>
             <p><strong>Arbitrage :</strong> Nécessite le coût d'une licence Google Workspace dédiée, mais offre l'expérience utilisateur Gmail la plus propre et réduit fortement le risque de réponses en double (état lu partagé et boîte d'envoi commune — sans toutefois le verrouillage d'un vrai logiciel de support).</p>
-            <p><strong>Identité :</strong> Les destinataires voient toujours l'identité collective et la signature du compte commun s'applique à tous les délégués, tandis que les journaux d'audit conservent la trace du délégué ayant réellement agi.</p>
-            <p><strong>Contacts :</strong> La boîte déléguée possède son propre carnet d'adresses, distinct de celui de chaque délégué. Deux limites à connaître : la saisie semi-automatique des destinataires n'est pas disponible dans une boîte déléguée (sur le web comme dans l'application mobile), et les délégués ne peuvent alimenter ce carnet que si une « délégation de contacts » est mise en place — un mécanisme natif séparé de la délégation de boîte, gérable uniquement via Google Contacts sur le web.</p>
+            <p><strong>Identité :</strong> Les destinataires voient l'identité collective (sous réserve du réglage console « n'afficher que le propriétaire du compte » ; sinon Gmail peut mentionner le délégué expéditeur) et la signature du compte commun s'applique à tous les délégués, tandis que les journaux d'audit conservent la trace du délégué ayant réellement agi.</p>
+            <p><strong>Contacts :</strong> La boîte déléguée possède son propre carnet d'adresses, distinct de celui de chaque délégué. Deux limites à connaître : la saisie semi-automatique des destinataires n'est pas disponible dans une boîte déléguée (sur le web comme dans l'application mobile), et les délégués ne peuvent alimenter ce carnet que si une « délégation de contacts » est mise en place — un mécanisme natif séparé de la délégation de boîte, activé par chaque délégué dans Google Contacts sur le web (ou provisionnable par API).</p>
             <p><strong>Contrainte :</strong> L'accès à la boîte déléguée dans l'application mobile Gmail est une nouveauté de l'été 2026, encore en déploiement progressif — l'interface web sur ordinateur reste le mode le plus fiable à ce stade.</p>
           </div>
 
@@ -246,8 +258,20 @@
           supprimé ; dans un espace Chat, les messages ne sont conservés que si l'historique est
           activé (sinon suppression automatique sous ~24 h). En l'absence de Vault, la seule
           protection native contre une suppression est la fenêtre de restauration administrateur
-          d'environ 25 jours ; une sauvegarde externe (ex. Synology) prolonge cette fenêtre mais
-          reste une <em>sauvegarde</em>, pas un archivage à valeur probante.
+          d'environ 25 jours.
+        </p>
+        <p>
+          <strong>Sauvegarde externe (projet Synology).</strong> Un projet de sauvegarde des boîtes
+          sur NAS Synology est en cours : techniquement pas encore en service en 09/2026, sa mise
+          en place est prévue avant la fin de l'année. Une fois actif, il étendra la fenêtre de
+          recouvrement bien au-delà des 25 jours natifs — se référer au projet de sauvegarde pour
+          le périmètre et le calendrier détaillés. Attention toutefois : il s'agit d'une
+          <em>sauvegarde</em> (restauration en cas de perte), pas d'un archivage à valeur probante.
+        </p>
+        <p>
+          <strong>Archivage (projet séparé).</strong> L'archivage à terme fera l'objet d'un
+          projet dédié, distinct de la sauvegarde, qui englobera également l'archivage des e-mails
+          afin de rester sous la limite de stockage mutualisé de 100&nbsp;To du tenant.
         </p>
         <p>
           <strong>Preuves d'audit.</strong> Les journaux de la console d'administration ont une durée

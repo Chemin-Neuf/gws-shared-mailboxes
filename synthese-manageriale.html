@@ -31,6 +31,19 @@
     .section p  { margin: 0 0 12px; }
     .section p:last-child { margin-bottom: 0; }
 
+    /* Footnotes */
+    sup a { text-decoration: none; }
+
+    .footnotes {
+      margin: 16px 0 0;
+      padding: 12px 0 0 22px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .footnotes li { margin-bottom: 6px; }
+    .footnotes li:last-child { margin-bottom: 0; }
+
     .callout-box {
       background: linear-gradient(180deg, #eff6ff, #ffffff);
       border: 1px solid #bfdbfe;
@@ -109,7 +122,9 @@
     <div class="meta">
       <span class="pill">📅 Dernière mise à jour : 2026-09-21</span>
       <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
-      <span class="pill">🏷️ Décision &amp; Gouvernance</span>
+      <span class="pill">👥 Public : Responsables d'équipe &amp; DSI</span>
+      <span class="pill">🌐 Portée : Google Workspace</span>
+      <span class="pill">🏷️ Décision &amp; Gouvernance — Arbitrage budgétaire &amp; sécurité</span>
     </div>
   </div>
 
@@ -129,11 +144,11 @@
       <div class="callout-box" style="margin-bottom:18px;">
         <h3>TL;DR — l'essentiel en 30 secondes</h3>
         <ul style="margin:0; padding-left:20px; color:var(--muted);">
-          <li><strong>Pas de boîte partagée native gratuite</strong> dans Google Workspace — tout choix est un compromis coût / ergonomie / sécurité.</li>
+          <li><strong>Pas de boîte partagée native gratuite</strong> (comme chez Microsoft) dans Google Workspace — tout choix est un compromis coût / ergonomie / sécurité.</li>
           <li><strong>Services critiques</strong> (compta, secrétariat, support) → <strong>Délégation Gmail</strong> — 1 licence, suivi partagé fiable.</li>
           <li><strong>Commissions &amp; faible volume</strong> → <strong>Groupe collaboratif</strong> — gratuit, mais limité et réponses privées sans trace.</li>
           <li><strong>Partage de mot de passe = proscrit</strong> — 2FA incompatible, aucune auditabilité, non-conforme RGPD.</li>
-          <li><strong>Pas de Vault</strong> : conservation limitée (restauration ~25 j, journaux 30 j / 6 mois) — sauvegarde Synology en projet (fin 2026), archivage dédié à venir.</li>
+          <li><strong>Pas de Vault</strong> : conservation limitée (restauration ~25 j, journaux 30 j / 6 mois) — sauvegarde / archivage en projet à venir.</li>
         </ul>
       </div>
 
@@ -142,7 +157,7 @@
         <h2>1. Contexte &amp; Enjeu décisionnel</h2>
         <p>
           Contrairement à Microsoft 365 / Exchange, Google Workspace ne dispose pas de fonctionnalité
-          native de « boîte partagée » gratuite fonctionnant de façon transparente et synchronisée
+          native de «&nbsp;boîte partagée&nbsp;» gratuite fonctionnant de façon transparente et synchronisée
           sur tous les appareils.
         </p>
         <p>
@@ -151,13 +166,7 @@
           un compromis managérial entre coût financier, ergonomie quotidienne et conformité sécuritaire.
         </p>
 
-        <div class="tag-row">
-          <span class="tag good">Public : Responsables d'équipe &amp; DSI</span>
-          <span class="tag info">Portée : Google Workspace</span>
-          <span class="tag warn">Arbitrage Budgétaire &amp; Sécurité</span>
-        </div>
-
-        <p style="margin-top:14px;">
+        <p>
           Point de contexte propre à notre tenant : Google Workspace for Nonprofits ne comprend
           <strong>ni Google Vault ni DLP</strong>. Il n'existe donc aucun mécanisme d'archivage légal ni de
           conservation pilotée par règles ; la durée de vie des messages et des preuves d'audit est
@@ -188,23 +197,29 @@
             <h3>Option recommandée n°1 : Délégation Gmail</h3>
             <p><strong>Pour qui ?</strong> Les services opérationnels critiques (Comptabilité, Secrétariat, Support, Inscriptions) où le volume d'échanges exige de savoir qui a traité, lu ou répondu à chaque message.</p>
             <p><strong>Arbitrage :</strong> Nécessite le coût d'une licence Google Workspace dédiée, mais offre l'expérience utilisateur Gmail la plus propre et réduit fortement le risque de réponses en double (état lu partagé et boîte d'envoi commune — sans toutefois le verrouillage d'un vrai logiciel de support).</p>
-            <p><strong>Identité :</strong> Les destinataires voient l'identité collective (sous réserve du réglage console « n'afficher que le propriétaire du compte » ; sinon Gmail peut mentionner le délégué expéditeur) et la signature du compte commun s'applique à tous les délégués, tandis que les journaux d'audit conservent la trace du délégué ayant réellement agi.</p>
-            <p><strong>Contacts :</strong> La boîte déléguée possède son propre carnet d'adresses, distinct de celui de chaque délégué. Deux limites à connaître : la saisie semi-automatique des destinataires n'est pas disponible dans une boîte déléguée (sur le web comme dans l'application mobile), et les délégués ne peuvent alimenter ce carnet que si une « délégation de contacts » est mise en place — un mécanisme natif séparé de la délégation de boîte, activé par chaque délégué dans Google Contacts sur le web (ou provisionnable par API).</p>
+            <p><strong>Identité :</strong> Les destinataires voient l'identité collective<sup><a href="#fn1">1</a></sup> et la signature du compte commun s'applique à tous les délégués, tandis que les journaux d'audit conservent la trace du délégué ayant réellement agi.</p>
+            <p><strong>Contacts :</strong> La boîte déléguée possède son propre carnet d'adresses, distinct de celui de chaque délégué. Deux limites à connaître : la saisie semi-automatique des destinataires n'est pas disponible dans une boîte déléguée (sur le web comme dans l'application mobile), et les délégués ne peuvent alimenter ce carnet que si une «&nbsp;délégation de contacts&nbsp;» est mise en place — un mécanisme natif séparé de la délégation de boîte, activé par chaque délégué dans Google Contacts sur le web (ou provisionnable par API).</p>
             <p><strong>Contrainte :</strong> L'accès à la boîte déléguée dans l'application mobile Gmail est une nouveauté de l'été 2026, encore en déploiement progressif — l'interface web sur ordinateur reste le mode le plus fiable à ce stade.</p>
+
+            <ol class="footnotes">
+              <li id="fn1">
+                Sous réserve du réglage console «&nbsp;n'afficher que le propriétaire du compte&nbsp;» ; sinon Gmail peut mentionner le délégué expéditeur.
+              </li>
+            </ol>
           </div>
 
           <div class="card accent">
             <h3>Option recommandée n°2 : Groupe Google Collaboratif</h3>
             <p><strong>Pour qui ?</strong> Les commissions, équipes projets temporaires ou adresses d'information générale à faible volume ou criticité modérée.</p>
             <p><strong>Arbitrage :</strong> Aucun coût de licence supplémentaire (inclus nativement). Permet d'affecter des sujets et d'ajouter des étiquettes depuis l'interface web <code>groups.google.com</code>.</p>
-            <p><strong>Organisation :</strong> Les étiquettes sont obligatoirement « à plat » : aucun sous-dossier ni arborescence possible. Les statuts de résolution sont figés par Google (« terminé », « doublon », « aucune action nécessaire ») et ne peuvent être ni renommés ni personnalisés — impossible de créer un statut « En attente de réponse », par exemple.</p>
+            <p><strong>Organisation :</strong> Les étiquettes sont obligatoirement «&nbsp;à plat&nbsp;» : aucun sous-dossier ni arborescence possible. Les statuts de résolution sont figés par Google («&nbsp;terminé&nbsp;», «&nbsp;doublon&nbsp;», «&nbsp;aucune action nécessaire&nbsp;») et ne peuvent être ni renommés ni personnalisés — impossible de créer un statut «&nbsp;En attente de réponse&nbsp;», par exemple.</p>
             <p><strong>Identité :</strong> Aucune signature partagée native dans l'interface Groupes : la cohérence de l'identité d'expéditeur repose entièrement sur la discipline des membres.</p>
-            <p><strong>Contrainte :</strong> Pas de synchronisation du statut lu/non-lu dans la boîte de messagerie personnelle des membres. Impossible d'écrire un nouvel e-mail externe depuis l'interface Groupes sans un lourd contournement (identité « Envoyer en tant que » provisionnée par API + règle de conformité renvoyant une copie au groupe, configurable uniquement dans la console d'administration web).</p>
-            <p><strong>Vigilance :</strong> Sans ce contournement, une réponse « privée » envoyée à l'expéditeur depuis l'interface Groupes ne laisse <strong>aucune trace</strong> — ni dans le groupe, ni dans les éléments envoyés de l'utilisateur.</p>
+            <p><strong>Contrainte :</strong> Pas de synchronisation du statut lu/non-lu dans la boîte de messagerie personnelle des membres. Impossible d'écrire un nouvel e-mail externe depuis l'interface Groupes sans un lourd contournement (identité «&nbsp;Envoyer en tant que&nbsp;» provisionnée par API + règle de conformité renvoyant une copie au groupe, configurable uniquement dans la console d'administration web).</p>
+            <p><strong>Vigilance :</strong> Sans ce contournement, une réponse «&nbsp;privée&nbsp;» envoyée à l'expéditeur depuis l'interface Groupes ne laisse <strong>aucune trace</strong> — ni dans le groupe, ni dans les éléments envoyés de l'utilisateur.</p>
           </div>
 
           <div class="card">
-            <h3>Complément : Envoi « Envoyer en tant que »</h3>
+            <h3>Complément : Envoi «&nbsp;Envoyer en tant que&nbsp;»</h3>
             <p><strong>Pour qui ?</strong> Un binôme ou une petite équipe qui doit surtout <em>émettre</em> sous l'identité collective, sans boîte de réception partagée ni suivi commun.</p>
             <p><strong>Arbitrage :</strong> Gratuit. Chaque membre envoie au nom de l'adresse partagée depuis sa propre boîte Gmail, mais les réponses et l'historique restent personnels : aucune boîte d'envoi commune, aucune visibilité d'équipe.</p>
             <p><strong>Gouvernance :</strong> Configuré par chaque utilisateur dans ses propres paramètres, ce mécanisme est <strong>invisible pour l'administrateur</strong> (aucune vue console des autorisations) sauf s'il est provisionné centralement par API. À réserver aux cas simples, ou à provisionner et recenser par l'informatique.</p>
@@ -246,8 +261,7 @@
                 <li>Authentification individuelle et 2FA conservées — aucun partage de mot de passe</li>
                 <li>Suivi fiable : état lu/non lu et boîte d'envoi partagés entre délégués</li>
                 <li>Auditabilité nominative : les journaux identifient le délégué ayant agi</li>
-                <li>Bonus inclus dans la licence : agenda partageable (fonction « dossier partagé ») et carnet d'adresses propre à la boîte</li>
-              </ul>
+                <li>Bonus inclus dans la licence : agenda partageable (fonction «&nbsp;dossier partagé&nbsp;») et carnet d'adresses propre à la boîte</li>                <li>Accès à la boîte déléguée depuis l'application mobile Gmail (nouveauté — déploiement en cours fin septembre 2026)</li>              </ul>
             </div>
 
             <div class="pc-group cons">
@@ -261,9 +275,9 @@
             <div class="pc-group neutral">
               <h4>À noter</h4>
               <ul class="pc-list">
-                <li>Contacts à partager séparément, via une « délégation de contacts » distincte</li>
+                <li>Contacts à partager séparément, via une «&nbsp;délégation de contacts&nbsp;» distincte</li>
                 <li>Un délégué ne peut pas configurer lui-même une copie systématique de tous les e-mails vers sa boîte personnelle</li>
-                <li>Accès mobile en déploiement progressif — l'interface web reste la référence</li>
+
               </ul>
             </div>
           </div>
@@ -285,9 +299,9 @@
               <ul class="pc-list">
                 <li class="major">Environnement différent de Gmail : courbe d'apprentissage et formation à prévoir</li>
                 <li>Deux interfaces : réception et classement dans Google Groupes, nouveaux messages depuis son propre compte</li>
-                <li>Classement basique : étiquettes « à plat », statuts figés par Google</li>
+                <li>Classement basique : étiquettes «&nbsp;à plat&nbsp;», statuts figés par Google</li>
                 <li>Pas d'application mobile dédiée</li>
-                <li>Réponses « privées » sans trace dans le groupe</li>
+                <li>Réponses «&nbsp;privées&nbsp;» sans trace dans le groupe</li>
               </ul>
             </div>
 
@@ -332,10 +346,106 @@
       <section id="arbitrage" class="section">
         <h2>4. Grille d'arbitrage rapide</h2>
         <p>
-          Tableau de synthèse pour orienter les demandes des pôles et des services :
+          Pour guider le choix managérial, deux grilles complémentaires sont disponibles :
+          l'approche par <strong>critères opérationnels déterminants</strong> (partir des contraintes concrètes
+          de l'équipe pour en déduire la solution technique) et l'approche classique par <strong>scénario de service</strong>.
         </p>
 
-        <div class="table-wrap" style="margin-top:14px;">
+        <h3 style="margin:22px 0 8px; font-size:1.15rem; color:var(--primary);">A. Arbitrage par critères opérationnels («&nbsp;Sens inverse&nbsp;»)</h3>
+        <p class="muted" style="margin-bottom:12px;">
+          Partez de vos contraintes de travail, de vos volumes et du profil de vos collaborateurs pour identifier immédiatement le type de boîte requis :
+        </p>
+
+        <div class="table-wrap" style="margin-top:10px;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:26%;">Critère / Contrainte clé</th>
+                <th style="width:22%;">Solution cible</th>
+                <th>Justification &amp; Règle d'arbitrage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Usage intensif &amp; flux soutenu</strong><br /><span class="muted">&gt; 10–15 e-mails/jour, plusieurs gestionnaires actifs</span></td>
+                <td><span class="tag good">Délégation Gmail</span></td>
+                <td>Indispensable pour éviter les doublons et les oublis grâce au statut lu/non-lu partagé et à la boîte d'envoi commune.</td>
+              </tr>
+              <tr>
+                <td><strong>Usage ponctuel / faible volume</strong><br /><span class="muted">Quelques e-mails/semaine, commission, projet temporaire</span></td>
+                <td><span class="tag info">Groupe collaboratif</span></td>
+                <td>Évite le coût récurrent d'une licence pour un besoin occasionnel ; centralise l'historique dans une archive d'équipe accessible à tous.</td>
+              </tr>
+              <tr>
+                <td><strong>Profil utilisateur confus / peu technophile</strong><br /><span class="muted">Résistance au changement, faible marge de progression</span></td>
+                <td><span class="tag good">Délégation Gmail</span></td>
+                <td>Expérience familière : interface Gmail strictement identique à la messagerie personnelle (simple bascule via la photo de profil). L'interface Google Groupes est austère et génère incompréhension et erreurs.</td>
+              </tr>
+              <tr>
+                <td><strong>Grand historique &amp; sous-dossiers</strong><br /><span class="muted">Arborescence hiérarchique complexe, classement fin</span></td>
+                <td><span class="tag good">Délégation Gmail</span></td>
+                <td>Prend en charge les libellés imbriqués (sous-dossiers), les filtres automatiques puissants et la recherche Gmail avancée. <em>(Dans Google Groupes, les étiquettes sont obligatoirement à plat sans sous-dossiers).</em></td>
+              </tr>
+              <tr>
+                <td><strong>Initiation de nouveaux e-mails externes</strong><br /><span class="muted">Écrire en premier à des tiers au nom de l'adresse partagée</span></td>
+                <td><span class="tag good">Délégation Gmail</span></td>
+                <td>Bouton «&nbsp;Nouveau message&nbsp;» natif sous l'adresse commune. <em>(Google Groupes seul ne permet pas d'initier un nouveau fil externe sans un lourd contournement API et règle de conformité).</em></td>
+              </tr>
+              <tr>
+                <td><strong>Visibilité commune des réponses envoyées</strong><br /><span class="muted">Savoir instantanément ce que les collègues ont répondu</span></td>
+                <td><span class="tag good">Délégation Gmail</span></td>
+                <td>Tous les messages envoyés depuis la boîte déléguée sont centralisés dans les «&nbsp;Messages envoyés&nbsp;» de l'équipe. <em>(Dans un Groupe ou une Liste, la réponse reste personnelle dans la boîte de l'expéditeur).</em></td>
+              </tr>
+              <tr>
+                <td><strong>Suivi sous forme de tickets d'assistance</strong><br /><span class="muted">Attribution nominative («&nbsp;Assigné à…&nbsp;»), statut «&nbsp;Résolu&nbsp;»</span></td>
+                <td><span class="tag info">Groupe collaboratif</span></td>
+                <td>Fonctionnalité native de boîte de réception collaborative conçue pour le triage de demandes. <em>(Dans Gmail, nécessite une discipline manuelle d'étiquettes, sans verrouillage anti-collision).</em></td>
+              </tr>
+              <tr>
+                <td><strong>Mobilité &amp; smartphone prioritaire</strong><br /><span class="muted">Consultation et réponse en déplacement sur téléphone</span></td>
+                <td><span class="tag good">Délégation Gmail</span></td>
+                <td>Accès direct via l'application mobile Gmail officielle. <em>(Google Groupes n'a pas d'application mobile et son interface web mobile est inadaptée aux flux rapides).</em></td>
+              </tr>
+              <tr>
+                <td><strong>Carnet d'adresses partagé requis</strong><br /><span class="muted">Annuaire commun au service (adhérents, fournisseurs, donateurs)</span></td>
+                <td><span class="tag good">Délégation Gmail</span></td>
+                <td>La boîte possède son propre carnet Google Contacts (administrable par l'équipe via la délégation de contacts). <em>(Google Groupes ne possède aucun carnet de contacts propre).</em></td>
+              </tr>
+              <tr>
+                <td><strong>Taille de l'équipe : grand collectif</strong><br /><span class="muted">Dizaines ou centaines de membres destinataires</span></td>
+                <td><span class="tag info">Groupe Google</span></td>
+                <td>Les Groupes gèrent des volumes de membres illimités. <em>(La délégation Gmail est bridée par Google à 40 utilisateurs simultanés maximum).</em></td>
+              </tr>
+              <tr>
+                <td><strong>Client lourd standardisé (Outlook / Thunderbird)</strong><br /><span class="muted">Utilisateurs exigeant un logiciel local sur leur poste</span></td>
+                <td><span class="tag warn">Contrainte forte</span></td>
+                <td>La délégation ne fonctionne sur client lourd qu'avec Outlook sous Windows (via GWSMO), pas sur Thunderbird ni Mac. Google Groupes est 100&nbsp;% web. À défaut de webmail, seule la Liste de redistribution (e-mails reçus dans la boîte personnelle) fonctionne sans friction.</td>
+              </tr>
+              <tr>
+                <td><strong>Contrainte budgétaire stricte</strong><br /><span class="muted">Zéro euro / Quota de licences Workspace atteint sur le tenant</span></td>
+                <td><span class="tag info">Groupe collaboratif</span> / <span class="tag info">Liste</span></td>
+                <td>100&nbsp;% gratuit et inclus dans l'édition Nonprofits sans consommation de licence utilisateur.</td>
+              </tr>
+              <tr>
+                <td><strong>Adresse de fonction à titulaire unique</strong><br /><span class="muted">Une seule personne aux commandes (ex. <code>president@</code>)</span></td>
+                <td><span class="tag info">Alias de messagerie</span></td>
+                <td>Gratuit, transparent, sans boîte séparée. La réassignation lors d'une passation se fait en quelques clics par l'informatique.</td>
+              </tr>
+              <tr>
+                <td><strong>Demande de compte à mot de passe partagé</strong><br /><span class="muted">«&nbsp;Donnez-nous simplement le mot de passe de la boîte&nbsp;»</span></td>
+                <td><span class="tag bad">Proscrit (Anti-modèle)</span></td>
+                <td>Rejet catégorique (2FA bloquant, non-conformité RGPD, zéro auditabilité). Redirection obligatoire vers la Délégation Gmail ou un Groupe.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="margin:28px 0 8px; font-size:1.15rem; color:var(--primary);">B. Arbitrage par scénario de service</h3>
+        <p class="muted" style="margin-bottom:12px;">
+          Grille de cadrage rapide par grand profil d'usage au sein de la communauté :
+        </p>
+
+        <div class="table-wrap" style="margin-top:10px;">
           <table>
             <thead>
               <tr>
@@ -362,7 +472,7 @@
                 <td><strong>Commission / Groupe projet</strong><br />Partage d'informations entre membres bénévoles</td>
                 <td><span class="tag info">Groupe Google (Collaboratif)</span></td>
                 <td><span class="tag good">Gratuit (0 licence)</span></td>
-                <td>Consulter l'interface Groupes dédiée ; les réponses « privées » n'y laissent aucune trace</td>
+                <td>Consulter l'interface Groupes dédiée ; les réponses «&nbsp;privées&nbsp;» n'y laissent aucune trace</td>
               </tr>
               <tr>
                 <td><strong>Information / notification interne</strong><br />Diffuser à plusieurs, sans suivi ni classement commun</td>
@@ -457,7 +567,7 @@
 
         <p class="muted" style="margin-top:14px;">
           Exception bornée documentée : pour les adresses consultées par de nombreux intervenants
-          externes de courte durée, une variante « compte fédéré » (SSO SAML dédié sur une unité
+          externes de courte durée, une variante «&nbsp;compte fédéré&nbsp;» (SSO SAML dédié sur une unité
           organisationnelle isolée, identifiants détenus et renouvelés par l'informatique via le
           gestionnaire de mots de passe, sessions révoquées par script) est décrite dans la
           <a href="topic-security.html#federated-sso-exception">fiche technique n°8 (en anglais)</a>.

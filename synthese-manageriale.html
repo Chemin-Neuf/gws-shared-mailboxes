@@ -49,6 +49,44 @@
     .callout-box.warn h3 { color: var(--warn); }
     .callout-box p  { margin: 0; color: var(--muted); }
 
+    /* Listes avantages / limites / points neutres (section 3) */
+    .pc-legend.pros    { color: var(--accent); font-weight: 600; }
+    .pc-legend.cons    { color: var(--danger); font-weight: 600; }
+    .pc-legend.neutral { color: var(--muted);  font-weight: 600; }
+
+    .pc-group { margin-top: 12px; }
+    .pc-group h4 { margin: 0 0 6px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .pc-group.pros h4    { color: var(--accent); }
+    .pc-group.cons h4    { color: var(--danger); }
+    .pc-group.neutral h4 { color: var(--muted); }
+
+    .pc-list { list-style: none; margin: 0; padding: 0; }
+    .pc-list li {
+      position: relative;
+      padding: 4px 0 4px 26px;
+      color: var(--text);
+      font-size: 0.93rem;
+    }
+    .pc-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 5px;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .pc-group.pros .pc-list li::before    { content: "\2713"; background: var(--accent-soft); color: var(--accent); }
+    .pc-group.cons .pc-list li::before    { content: "\2717"; background: var(--danger-soft); color: var(--danger); }
+    .pc-group.neutral .pc-list li::before { content: "\2022"; background: var(--surface-soft); color: var(--muted); border: 1px solid var(--border); }
+    .pc-list li.major { font-weight: 600; }
+
     @media (max-width: 900px) {
       .topbar { grid-template-columns: 1fr; }
     }
@@ -182,13 +220,117 @@
           <li><strong>Liste de redistribution (groupe)</strong> — informer plusieurs personnes sans suivi ni classement commun ; chaque membre reçoit sa propre copie, gérée dans sa boîte personnelle.</li>
           <li><strong>Alias / redirection</strong> — adresse de fonction (ex. <code>tresorier@</code>) pointant vers une seule personne ; gratuit, mais sans aucun travail collaboratif.</li>
           <li><strong>Espace Google Chat alimenté par e-mail</strong> — canal de discussion interne, sans boîte aux lettres ; l'historique n'est conservé que si l'historique de l'espace est activé.</li>
-          <li><strong>Compte à mot de passe partagé</strong> — <span class="tag bad">Proscrit</span> voir la directive de gouvernance (section 5).</li>
+          <li><strong>Compte à mot de passe partagé</strong> — <span class="tag bad">Proscrit</span> voir la directive de gouvernance (section 6).</li>
         </ul>
       </section>
 
-      <!-- Section 3 : Grille d'arbitrage managérial -->
+      <!-- Section 3 : Avantages, limites et points de vigilance -->
+      <section id="avantages-limites" class="section">
+        <h2>3. Avantages, limites &amp; points de vigilance</h2>
+        <p>
+          Synthèse comparative des trois mécanismes préconisés :
+          <span class="pc-legend pros">vert = point fort</span>,
+          <span class="pc-legend cons">rouge = limite</span>,
+          <span class="pc-legend neutral">gris = point neutre à connaître</span>.
+          Les éléments en gras sont les facteurs décisifs de l'arbitrage.
+        </p>
+
+        <div class="grid-3" style="margin-top:14px;">
+          <div class="card primary">
+            <h3>Délégation Gmail</h3>
+
+            <div class="pc-group pros">
+              <h4>Points forts</h4>
+              <ul class="pc-list">
+                <li>Environnement Gmail connu, quasi identique à une boîte personnelle</li>
+                <li>Authentification individuelle et 2FA conservées — aucun partage de mot de passe</li>
+                <li>Suivi fiable : état lu/non lu et boîte d'envoi partagés entre délégués</li>
+                <li>Auditabilité nominative : les journaux identifient le délégué ayant agi</li>
+                <li>Bonus inclus dans la licence : agenda partageable (fonction « dossier partagé ») et carnet d'adresses propre à la boîte</li>
+              </ul>
+            </div>
+
+            <div class="pc-group cons">
+              <h4>Limites</h4>
+              <ul class="pc-list">
+                <li class="major">Coût d'une licence Workspace dédiée</li>
+                <li>Courte phase de formation nécessaire au démarrage (bascule de compte)</li>
+              </ul>
+            </div>
+
+            <div class="pc-group neutral">
+              <h4>À noter</h4>
+              <ul class="pc-list">
+                <li>Contacts à partager séparément, via une « délégation de contacts » distincte</li>
+                <li>Un délégué ne peut pas configurer lui-même une copie systématique de tous les e-mails vers sa boîte personnelle</li>
+                <li>Accès mobile en déploiement progressif — l'interface web reste la référence</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card accent">
+            <h3>Groupe collaboratif</h3>
+
+            <div class="pc-group pros">
+              <h4>Points forts</h4>
+              <ul class="pc-list">
+                <li class="major">Gratuit : aucune licence supplémentaire</li>
+                <li>Conçu pour attribuer les sujets aux membres et suivre leur résolution</li>
+                <li>Archive consultable par tous les membres — transparence pour les nouveaux arrivants</li>
+              </ul>
+            </div>
+
+            <div class="pc-group cons">
+              <h4>Limites</h4>
+              <ul class="pc-list">
+                <li class="major">Environnement différent de Gmail : courbe d'apprentissage et formation à prévoir</li>
+                <li>Deux interfaces : réception et classement dans Google Groupes, nouveaux messages depuis son propre compte</li>
+                <li>Classement basique : étiquettes « à plat », statuts figés par Google</li>
+                <li>Pas d'application mobile dédiée</li>
+                <li>Réponses « privées » sans trace dans le groupe</li>
+              </ul>
+            </div>
+
+            <div class="pc-group neutral">
+              <h4>À noter</h4>
+              <ul class="pc-list">
+                <li>Pas de carnet de contacts partagé</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Alias / redirection</h3>
+
+            <div class="pc-group pros">
+              <h4>Points forts</h4>
+              <ul class="pc-list">
+                <li class="major">Gratuit : aucune licence supplémentaire</li>
+                <li>Mise en place immédiate, transparente pour les expéditeurs externes</li>
+              </ul>
+            </div>
+
+            <div class="pc-group cons">
+              <h4>Limites</h4>
+              <ul class="pc-list">
+                <li>Aucun historique propre à l'adresse : les messages vivent dans la boîte personnelle du titulaire (et repartent avec lui)</li>
+                <li>Aucun travail collaboratif possible</li>
+              </ul>
+            </div>
+
+            <div class="pc-group neutral">
+              <h4>À noter</h4>
+              <ul class="pc-list">
+                <li>Réservé à une seule personne — adresse de fonction nominative</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4 : Grille d'arbitrage managérial -->
       <section id="arbitrage" class="section">
-        <h2>3. Grille d'arbitrage rapide</h2>
+        <h2>4. Grille d'arbitrage rapide</h2>
         <p>
           Tableau de synthèse pour orienter les demandes des pôles et des services :
         </p>
@@ -245,9 +387,9 @@
         </div>
       </section>
 
-      <!-- Section 4 : Conservation et preuve -->
+      <!-- Section 5 : Conservation et preuve -->
       <section id="conservation" class="section">
-        <h2>4. Conservation des messages &amp; preuve d'audit</h2>
+        <h2>5. Conservation des messages &amp; preuve d'audit</h2>
         <p>
           Notre édition (Google Workspace for Nonprofits) ne comprend ni Google Vault ni archivage
           légal : la conservation repose entièrement sur l'architecture retenue.
@@ -283,9 +425,9 @@
         </p>
       </section>
 
-      <!-- Section 5 : Directive stricte de gouvernance -->
+      <!-- Section 6 : Directive stricte de gouvernance -->
       <section id="gouvernance-securite" class="section">
-        <h2>5. Directive de gouvernance et sécurité</h2>
+        <h2>6. Directive de gouvernance et sécurité</h2>
         <div class="callout-box warn">
           <h3>Interdiction formelle du partage d'identifiants</h3>
           <p>
@@ -329,14 +471,14 @@
             Les journaux d'audit de la console d'administration expirent : recherche e-mail limitée
             aux 30 derniers jours, journaux d'audit aux 6 derniers mois (durées fixées par Google,
             non modifiables). Toute exigence de preuve au-delà de ces fenêtres impose un export
-            planifié via l'API — voir la section 4.
+            planifié via l'API — voir la section 5.
           </p>
         </div>
       </section>
 
-      <!-- Section 6 : Déploiement et étapes suivantes -->
+      <!-- Section 7 : Déploiement et étapes suivantes -->
       <section id="plan-action" class="section">
-        <h2>6. Plan d'action pour les services</h2>
+        <h2>7. Plan d'action pour les services</h2>
         <p>
           Démarche recommandée pour toute nouvelle demande de boîte partagée :
         </p>

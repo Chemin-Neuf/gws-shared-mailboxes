@@ -398,6 +398,75 @@ details summary { cursor: pointer; font-weight: 700; }
 /* ── Utility ────────────────────────────────────────────────── */
 .muted { color: var(--muted); }
 
+/* ── Shared layout blocks (used by most content pages) ─────── */
+.topbar {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+}
+
+.section h2 { margin: 0 0 14px; font-size: 1.35rem; }
+.section h3 { margin: 18px 0 8px; font-size: 1.08rem; }
+.section p  { margin: 0 0 12px; }
+.section p:last-child { margin-bottom: 0; }
+
+/* Callout box — base theme (blue); override via .warn / .danger */
+.callout-box {
+  --callout-bg: #eff6ff;
+  --callout-border: #bfdbfe;
+  --callout-accent: var(--primary);
+  background: linear-gradient(180deg, var(--callout-bg), #ffffff);
+  border: 1px solid var(--callout-border);
+  border-left: 6px solid var(--callout-accent);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+}
+
+.callout-box.warn {
+  --callout-bg: #fff8eb;
+  --callout-border: #fcd34d;
+  --callout-accent: var(--warn);
+}
+
+.callout-box.danger {
+  --callout-bg: #fff5f5;
+  --callout-border: #fecaca;
+  --callout-accent: var(--danger);
+}
+
+.callout-box h3 { margin: 0 0 8px; color: var(--callout-accent); }
+.callout-box p  { margin: 0; color: var(--muted); }
+
+/* Topic pager (prev/next navigation between topic pages) */
+.topic-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ── Footnotes ──────────────────────────────────────────────── */
+sup a { text-decoration: none; }
+
+.footnotes {
+  margin: 16px 0 0;
+  padding: 12px 0 0 22px;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.footnotes li { margin-bottom: 6px; }
+.footnotes li:last-child { margin-bottom: 0; }
+
 /* ── Print ──────────────────────────────────────────────────── */
 @media print {
   body { background: white; }
@@ -412,6 +481,10 @@ details summary { cursor: pointer; font-weight: 700; }
   .grid-2, .grid-3, .grid-4,
   .field-grid.two               { grid-template-columns: 1fr; }
   .step                         { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
+  .topbar                       { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 600px) {

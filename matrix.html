@@ -12,18 +12,6 @@
   <style>
     /* ── matrix.html page-specific styles ── */
 
-    .section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 22px;
-    }
-
-    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
-    .section p  { margin: 0 0 12px; }
-    .section p:last-child { margin-bottom: 0; }
-
     /* Compact master matrix */
     .master-matrix th, .master-matrix td {
       font-size: 0.84rem;
@@ -39,10 +27,6 @@
     .cell-mid    { background: var(--warn-soft);   color: #92400e; }
     .cell-na     { color: var(--muted); }
     .cell-pending{ background: #f3f4f6; color: var(--muted); font-weight: 500; }
-
-    @media print {
-      .site-topnav { display: none; }
-    }
   </style>
 </head>
 <body>

@@ -12,56 +12,6 @@
   <style>
     /* ── synthese-manageriale.html styles spécifiques ── */
 
-    .topbar {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 18px;
-      align-items: start;
-    }
-
-    .section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 22px;
-    }
-
-    .section h2 { margin: 0 0 14px; font-size: 1.35rem; }
-    .section p  { margin: 0 0 12px; }
-    .section p:last-child { margin-bottom: 0; }
-
-    /* Footnotes */
-    sup a { text-decoration: none; }
-
-    .footnotes {
-      margin: 16px 0 0;
-      padding: 12px 0 0 22px;
-      border-top: 1px solid var(--border);
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .footnotes li { margin-bottom: 6px; }
-    .footnotes li:last-child { margin-bottom: 0; }
-
-    .callout-box {
-      background: linear-gradient(180deg, #eff6ff, #ffffff);
-      border: 1px solid #bfdbfe;
-      border-left: 6px solid var(--primary);
-      border-radius: var(--radius);
-      padding: 18px 22px;
-    }
-
-    .callout-box.warn {
-      background: linear-gradient(180deg, #fffbeb, #ffffff);
-      border-color: #fde68a;
-      border-left-color: var(--warn);
-    }
-
-    .callout-box h3 { margin: 0 0 8px; color: var(--primary); }
-    .callout-box.warn h3 { color: var(--warn); }
-    .callout-box p  { margin: 0; color: var(--muted); }
-
     /* Listes avantages / limites / points neutres (section 3) */
     .pc-legend.pros    { color: var(--accent); font-weight: 600; }
     .pc-legend.cons    { color: var(--danger); font-weight: 600; }
@@ -99,14 +49,6 @@
     .pc-group.cons .pc-list li::before    { content: "\2717"; background: var(--danger-soft); color: var(--danger); }
     .pc-group.neutral .pc-list li::before { content: "\2022"; background: var(--surface-soft); color: var(--muted); border: 1px solid var(--border); }
     .pc-list li.major { font-weight: 600; }
-
-    @media (max-width: 900px) {
-      .topbar { grid-template-columns: 1fr; }
-    }
-
-    @media print {
-      .site-topnav { display: none; }
-    }
   </style>
 </head>
 <body>

@@ -4,8 +4,9 @@ applyTo: "**"
 <!-- AUTO-SYNCED from github.com/Chemin-Neuf/dev-standards DO NOT EDIT HERE — edit in dev-standards and re-sync -->
 <!--
   Chemin-Neuf dev-standards — global rules
-  Last Updated: 2026-05-23
+  Last Updated: 2026-09-21
   Original Author: Claude Sonnet 4.6 (Anthropic / GitHub Copilot)
+  Major Contributors: Gemini 3.8 Flash (Google / GitHub Copilot)
   This file is AI-generated operational instructions for use by AI coding assistants.
   It is derived from and must remain consistent with PRINCIPLES.md, which is the
   human-authored authoritative source. Do not edit PRINCIPLES.md with AI assistance.
@@ -20,7 +21,7 @@ applyTo: "**"
 | Topic | In brief |
 |---|---|
 | License | GPL-3.0-only; every source file carries a license notice; preserve third-party notices |
-| Encoding | UTF-8 everywhere; prefer ASCII; no BOM; LF line endings; no trailing-space Markdown hard breaks |
+| Encoding | UTF-8 everywhere; prefer ASCII; no BOM; LF; doc typography (`&nbsp;`); no trailing-space breaks |
 | Design Principles | DRY, Simplicity, Single Source of Truth, No Magic Values, Safe File Output, No Legacy by Default |
 | AI Attribution | Record model name in file header when AI wrote or significantly changed the file |
 | Security Baseline | No secrets in tracked files; credentials from env/vault/prompt; validate all external input |
@@ -30,6 +31,7 @@ applyTo: "**"
 | README Requirements | Purpose · Structure · Prerequisites · Quick Start · License |
 | Script Placement | PS repos: scripts at root; non-PS repos with helper scripts: `scripts/` subfolder |
 | Working Language | Code and docs in English; end-user console output in French |
+| Pricing & Currency | Euro by default (1.234,56&nbsp;€); non-breaking space (`&nbsp;`) before €; € in docs, EUR in code |
 
 </details>
 
@@ -54,6 +56,7 @@ applyTo: "**"
 - Log files are UTF-8 encoded plain text
 - All files use LF (`\n`) line endings; the only exception is `.bat` and `.cmd` files, which require CRLF for Windows compatibility
 - In Markdown, do not rely on trailing spaces to force hard line breaks; use a normal paragraph break or an explicit `<br>` only when a forced line break is genuinely required
+- In documentation files only (Markdown, HTML), use `&nbsp;` with quotation marks (`«&nbsp;` / `&nbsp;»`), punctuation (`:`, `;`, `?`, `!`), and symbols (`€`, `%`) to prevent isolated orphan characters on line wraps. Never use non-breaking spaces in source code or code comments.
 
 ## Design Principles
 
@@ -224,3 +227,18 @@ GPL-3.0-only — see [LICENSE](LICENSE).
 - Log files and error messages (audience: IT team): **English**
 - End-user-facing console output and interactive prompts (audience: end users): **French**
 - Add multilingual support for end-user content if the overhead is small
+
+## Pricing and Currency Format
+
+**STATUS: DECIDED**
+
+- **Default currency**: Always state prices and costs in Euro (`€` / `EUR`).
+- **Foreign currencies**: If pricing is only available in a foreign currency (e.g. USD), state the original price followed by an approximate Euro conversion in parentheses (e.g. `$120 (~110&nbsp;€)`).
+- **Symbol vs ISO code**:
+  - **Documentation & user-facing text**: Use the `€` symbol.
+  - **Code, logs, and configuration**: Use the three-letter ISO code `EUR` (conforms to the ASCII preference for code/logs).
+- **Number format**:
+  - Use European format across all documentation, even when written in English:
+    - **Comma (`,`)** as the decimal separator.
+    - **Dot (`.`)** as the thousand separator.
+  - Separate the amount and the `€` symbol with a **non-breaking space**; recommend using the HTML entity `&nbsp;` (e.g. `1.234,56&nbsp;€`) in Markdown and HTML documents to prevent accidental stripping by formatters or editors.

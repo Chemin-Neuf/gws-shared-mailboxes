@@ -4,8 +4,9 @@ applyTo: "**/*.html,**/*.htm"
 <!-- AUTO-SYNCED from github.com/Chemin-Neuf/dev-standards DO NOT EDIT HERE — edit in dev-standards and re-sync -->
 <!--
   Chemin-Neuf dev-standards — HTML document rules
-  Last Updated: 2026-09-07
+  Last Updated: 2026-09-21
   Original Author: Claude Sonnet 4.6 (Anthropic / GitHub Copilot)
+  Major Contributors: Gemini 3.8 Flash (Google / GitHub Copilot)
   This file is AI-generated operational instructions for use by AI coding assistants.
   It extends global.instructions.md with language-specific rules.
   The authoritative source of principles is PRINCIPLES.md (human-authored, never AI-edited).
@@ -20,7 +21,7 @@ applyTo: "**/*.html,**/*.htm"
 
 | Topic | In brief |
 |---|---|
-| Encoding | UTF-8; self-closing void elements (`/>`); `&nbsp;` not bare U+00A0 |
+| Encoding & Typography | UTF-8; self-closing void elements (`/>`); `&nbsp;` for guillemets (`«`/`»`) & punctuation; no bare U+00A0 |
 | License Notice | Two SPDX comment lines in `<head>`, year range |
 | File Naming | Lowercase, hyphens, `.html` only; `index.html` recommended entry point |
 | Folder Structure | `css/`, `js/`, `assets/` subdirectories; HTML files at site root |
@@ -37,7 +38,7 @@ applyTo: "**/*.html,**/*.htm"
 
 </details>
 
-## Encoding Declaration
+## Encoding Declaration & Typography
 
 **STATUS: DECIDED**
 
@@ -48,7 +49,17 @@ All HTML files must declare UTF-8 encoding with a self-closing void element:
 See Document Structure / Template for the full required `<head>` order.
 
 - Never use a bare U+00A0 non-breaking space character in HTML source — always use the HTML entity `&nbsp;` instead. Bare U+00A0 is visually silent and routinely converted to a regular space by AI tools and some editors, silently breaking layout.
-- Save HTML files with LF (`\n`) line endings (global rule; applies to all project files)
+- Save HTML files with LF (`\n`) line endings (global rule; applies to all project files).
+
+### Non-Breaking Spaces (`&nbsp;`) & Punctuation
+
+To prevent orphan characters and punctuation from ending up lonely at the beginning or end of a line during wrapping:
+
+- **Opening quotation marks (`«`, `‹`)**: Must be followed by a non-breaking space (e.g. `«&nbsp;texte`) so the opening quote is never stranded alone at the end of a line.
+- **Closing quotation marks (`»`, `›`)**: Must be preceded by a non-breaking space (e.g. `texte&nbsp;»`) so the closing quote never wraps alone to the beginning of the next line.
+- **High / two-part French punctuation (`:`, `;`, `?`, `!`)**: Precede with `&nbsp;` (e.g. `Attention&nbsp;:`, `Pourquoi&nbsp;?`) to prevent the punctuation mark from wrapping to a line by itself.
+- **Symbols and units (`€`, `%`, etc.)**: Precede with `&nbsp;` (e.g. `1.234,56&nbsp;€`, `50&nbsp;%`) so the symbol stays attached to its number.
+- Always use the explicit HTML entity `&nbsp;` (or `&#8239;` / `&thinsp;` for narrow spaces where required) rather than standard spaces or bare U+00A0 characters.
 
 ## License Notice
 
@@ -236,15 +247,9 @@ Formal WCAG compliance is explicitly out of scope for internal management docume
 **STATUS: DECIDED**
 
 - A `@media print` block is recommended when a document is likely to be printed or exported to PDF
-- At minimum, consider hiding the navigation bar and adjusting colours for black-and-white output
-- Place print styles at the end of the page `<style>` block
-
-```css
-@media print {
-  .site-topnav { display: none; }
-  /* add further print adjustments here */
-}
-```
+- At minimum, consider hiding the navigation and adjusting colours for black-and-white output
+- Print rules for shared components (navigation bar, header, footer) belong in the shared stylesheet (`css/site-nav.css` / `css/site.css`) — write them once, not per page
+- Per-page `@media print` rules are only for hiding or adjusting page-specific elements; place them at the end of the page `<style>` block
 
 ## Security
 

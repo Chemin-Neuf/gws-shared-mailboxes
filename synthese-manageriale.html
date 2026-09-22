@@ -159,7 +159,8 @@
             <p><strong>Arbitrage :</strong> Aucun coût de licence supplémentaire (inclus nativement). Permet d'affecter des sujets et d'ajouter des étiquettes depuis l'interface web <code>groups.google.com</code>.</p>
             <p><strong>Organisation :</strong> Les étiquettes sont obligatoirement «&nbsp;à plat&nbsp;» : aucun sous-dossier ni arborescence possible. Les statuts de résolution sont figés par Google («&nbsp;terminé&nbsp;», «&nbsp;doublon&nbsp;», «&nbsp;aucune action nécessaire&nbsp;») et ne peuvent être ni renommés ni personnalisés — impossible de créer un statut «&nbsp;En attente de réponse&nbsp;», par exemple.</p>
             <p><strong>Identité :</strong> Aucune signature partagée native dans l'interface Groupes : la cohérence de l'identité d'expéditeur repose entièrement sur la discipline des membres.</p>
-            <p><strong>Contrainte :</strong> Pas de synchronisation du statut lu/non-lu dans la boîte de messagerie personnelle des membres. Impossible d'écrire un nouvel e-mail externe depuis l'interface Groupes sans un lourd contournement (identité «&nbsp;Envoyer en tant que&nbsp;» provisionnée par API + règle de conformité renvoyant une copie au groupe, configurable uniquement dans la console d'administration web).</p>
+            <p><strong>Prérequis quasi systématique :</strong> un groupe collaboratif n'a presque jamais vocation à recevoir sans jamais écrire. Tout déploiement suppose donc d'office le contournement «&nbsp;Envoyer en tant que&nbsp;» — identité provisionnée par API + règle de conformité renvoyant une copie au groupe — configurable uniquement dans la console d'administration web, à intégrer dès le provisionnement initial.</p>
+            <p><strong>Contrainte :</strong> Pas de synchronisation du statut lu/non-lu dans la boîte de messagerie personnelle des membres.</p>
             <p><strong>Vigilance :</strong> Même avec ce contournement, une réponse «&nbsp;privée&nbsp;» envoyée à l'auteur depuis l'interface Groupes échappe à tout contrôle et ne laisse <strong>aucune trace</strong> — ni dans le groupe, ni dans les éléments envoyés. Pour colmater ce trou noir, il est indispensable de désactiver l'autorisation «&nbsp;Répondre en privé aux auteurs&nbsp;» dans les paramètres du groupe.</p>
           </div>
 
@@ -307,7 +308,7 @@
           de l'équipe pour en déduire la solution technique) et l'approche classique par <strong>scénario de service</strong>.
         </p>
 
-        <h3 style="margin:22px 0 8px; font-size:1.15rem; color:var(--primary);">A. Arbitrage par critères opérationnels («&nbsp;Sens inverse&nbsp;»)</h3>
+        <h3 style="margin:22px 0 8px; font-size:1.15rem; color:var(--primary);">A. Arbitrage par critères opérationnels</h3>
         <p class="muted" style="margin-bottom:12px;">
           Partez de vos contraintes de travail, de vos volumes et du profil de vos collaborateurs pour identifier immédiatement le type de boîte requis :
         </p>
@@ -343,14 +344,14 @@
                 <td>Prend en charge les libellés imbriqués (sous-dossiers), les filtres automatiques puissants et la recherche Gmail avancée. <em>(Dans Google Groupes, les étiquettes sont obligatoirement à plat sans sous-dossiers).</em></td>
               </tr>
               <tr>
-                <td><strong>Initiation de nouveaux e-mails externes</strong><br /><span class="muted">Écrire en premier à des tiers au nom de l'adresse partagée</span></td>
+                <td><strong>Initiation de nombreux nouveaux e-mails externes</strong><br /><span class="muted">Écrire régulièrement en premier à des tiers au nom de l'adresse partagée</span></td>
                 <td><span class="tag good">Délégation Gmail</span></td>
-                <td>Bouton «&nbsp;Nouveau message&nbsp;» natif sous l'adresse commune. <em>(Google Groupes seul ne permet pas d'initier un nouveau fil externe sans un lourd contournement API et règle de conformité).</em></td>
+                <td>Bouton «&nbsp;Nouveau message&nbsp;» natif sous l'adresse commune, sans configuration préalable.</td>
               </tr>
               <tr>
-                <td><strong>Visibilité commune des réponses envoyées</strong><br /><span class="muted">Savoir instantanément ce que les collègues ont répondu</span></td>
+                <td><strong>Distinction claire réception / envoi</strong><br /><span class="muted">Boîte d'envoi commune séparée des messages reçus</span></td>
                 <td><span class="tag good">Délégation Gmail</span></td>
-                <td>Tous les messages envoyés depuis la boîte déléguée sont centralisés dans les «&nbsp;Messages envoyés&nbsp;» de l'équipe. <em>(Dans un Groupe ou une Liste, la réponse reste personnelle dans la boîte de l'expéditeur).</em></td>
+                <td>Les «&nbsp;Messages envoyés&nbsp;» forment une vue séparée et partagée entre délégués. <em>(Un groupe collaboratif offre une visibilité équivalente des envois grâce à la règle de conformité, mais les copies renvoyées s'archivent comme de simples sujets, mélangés aux messages reçus — sans vue «&nbsp;envoyés&nbsp;» distincte).</em></td>
               </tr>
               <tr>
                 <td><strong>Suivi sous forme de tickets d'assistance</strong><br /><span class="muted">Attribution nominative («&nbsp;Assigné à…&nbsp;»), statut «&nbsp;Résolu&nbsp;»</span></td>
@@ -390,7 +391,7 @@
               <tr>
                 <td><strong>Demande de compte à mot de passe partagé</strong><br /><span class="muted">«&nbsp;Donnez-nous simplement le mot de passe de la boîte&nbsp;»</span></td>
                 <td><span class="tag bad">Proscrit (Anti-modèle)</span></td>
-                <td>Rejet catégorique (2FA bloquant, non-conformité RGPD, zéro auditabilité). Redirection obligatoire vers la Délégation Gmail ou un Groupe.</td>
+                <td>Rejet catégorique (2FA bloquant, non-conformité RGPD, zéro auditabilité). Redirection obligatoire vers la Délégation Gmail ou un Groupe.<br /><small class="muted">Exception bornée possible : variante «&nbsp;compte fédéré&nbsp;» SSO pour intervenants externes de courte durée, sur validation explicite de la gouvernance — voir la <a href="#gouvernance-securite">section 6</a>.</small></td>
               </tr>
             </tbody>
           </table>
@@ -426,27 +427,27 @@
               </tr>
               <tr>
                 <td><strong>Commission / Groupe projet</strong><br />Partage d'informations entre membres bénévoles</td>
-                <td><span class="tag info">Groupe Google (Collaboratif)</span></td>
-                <td><span class="tag good">Gratuit (0 licence)</span></td>
+                <td><span class="tag info">Groupe Collaboratif</span></td>
+                <td><span class="tag good">0 licence</span></td>
                 <td>Consulter l'interface Groupes dédiée ; les réponses «&nbsp;privées&nbsp;» n'y laissent aucune trace</td>
               </tr>
               <tr>
                 <td><strong>Information / notification interne</strong><br />Diffuser à plusieurs, sans suivi ni classement commun</td>
-                <td><span class="tag info">Liste de redistribution</span></td>
-                <td><span class="tag good">Gratuit (0 licence)</span></td>
+                <td><span class="tag info">Liste de distribution</span></td>
+                <td><span class="tag good">0 licence</span></td>
                 <td>Chacun gère sa propre copie ; aucune visibilité d'équipe</td>
               </tr>
               <tr>
                 <td><strong>Alias nominatif / Redirection simple</strong><br />Adresse de fonction attribuée à une seule personne</td>
                 <td><span class="tag info">Alias de messagerie</span></td>
-                <td><span class="tag good">Gratuit (0 licence)</span></td>
+                <td><span class="tag good">0 licence</span></td>
                 <td>Pas de travail collaboratif possible</td>
               </tr>
               <tr>
                 <td><strong>Partage de mot de passe commun</strong><br />Compte partagé identifiant/mot de passe</td>
                 <td><span class="tag bad">Proscrit (Anti-modèle)</span></td>
-                <td>1 licence inutile</td>
-                <td>Blocages 2FA, risque légal, absence d'audit</td>
+                <td>1 licence</td>
+                <td>Blocages 2FA, risque légal, absence d'audit<br /><small class="muted">Exception bornée possible : «&nbsp;compte fédéré&nbsp;» SSO, sur validation de la gouvernance — voir la <a href="#gouvernance-securite">section 6</a>.</small></td>
               </tr>
             </tbody>
           </table>

@@ -10,6 +10,17 @@
    Hero styles are handled by site.css.
    ============================================================ */
 
+/* ── Anchor scroll clearance ──────────────────────────────── */
+:root {
+  /* Clearance for anchor jumps so targets are not hidden under the sticky nav.
+     Nav height (~50px desktop) + top offset (8px) + breathing room. */
+  --nav-offset: 72px;
+}
+
+html {
+  scroll-padding-top: var(--nav-offset);
+}
+
 /* ── Top navigation bar ───────────────────────────────────── */
 .site-topnav {
   position: sticky;
@@ -244,7 +255,14 @@
 }
 
 /* ── Responsive ───────────────────────────────────────────── */
+/* Nav items wrap into multiple rows on medium / tablet widths */
+@media (max-width: 1050px) {
+  :root { --nav-offset: 144px; }
+}
+
 @media (max-width: 820px) {
+  :root { --nav-offset: 144px; }
+
   .site-topnav {
     gap: 4px;
     padding: 8px 12px;
@@ -268,4 +286,12 @@
     overflow-x: auto;
     padding-bottom: 2px;
   }
+}
+
+@media (max-width: 600px) {
+  :root { --nav-offset: 175px; }
+}
+
+@media (max-width: 420px) {
+  :root { --nav-offset: 270px; }
 }

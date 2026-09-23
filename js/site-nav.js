@@ -53,6 +53,7 @@
     },
     { file: 'decision-guide.html',        title: 'Decision Guide' },
     { file: 'matrix.html',                title: 'Matrix' },
+    { file: 'technical-overview.html',    title: 'Tech Overview' },
     { file: 'synthese-manageriale.html',  title: 'Synthèse (FR)' },
   ];
 

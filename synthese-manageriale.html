@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <!-- SPDX-FileCopyrightText: 2026 Chemin-Neuf -->
   <!-- SPDX-License-Identifier: GPL-3.0-only -->
+  <!-- Major Contributors: Gemini 3.8 Flash, Kimi K3, GitHub Copilot -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GWS Boîtes Partagées — Synthèse managériale</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
@@ -62,8 +63,8 @@
       Google Workspace : arbitrages budgétaires, retours d'expérience et directives de sécurité.
     </p>
     <div class="meta">
-      <span class="pill">📅 Dernière mise à jour : 2026-09-21</span>
-      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3</span>
+      <span class="pill">📅 Dernière mise à jour : 2026-09-23</span>
+      <span class="pill">✍️ Chemin Neuf Community · Gemini 3.8 Flash · Kimi K3 · GitHub Copilot</span>
       <span class="pill">👥 Public : Responsables d'équipe &amp; DSI</span>
       <span class="pill">🌐 Portée : Google Workspace</span>
       <span class="pill">🏷️ Décision &amp; Gouvernance — Arbitrage budgétaire &amp; sécurité</span>
@@ -130,13 +131,27 @@
       <section id="recommandations" class="section">
         <h2>2. Recommandations par scénario d'usage</h2>
         <p>
-          Trois mécanismes se détachent selon la nature du besoin. Ils peuvent se combiner : une
-          délégation ou un groupe peut en outre être joignable sous plusieurs adresses (alias).
+          Trois mécanismes se détachent selon la nature du besoin.
+        </p>
+        <p>
+          Le plafond de <strong>2.000 comptes Google Workspace est une limite absolue à ne pas franchir</strong>.
+          Ce nombre offre une marge importante, mais il ne permet pas d'attribuer systématiquement
+          un compte dédié à chaque mission, maison ou pays. Chaque boîte déléguée mobilise un compte
+          et une licence : les contraintes économiques et commerciales de Google Workspace invitent
+          donc à réserver ce choix aux besoins qui le justifient.
+        </p>
+        <p>
+          Le <strong>groupe collaboratif est ainsi proposé comme point de départ</strong> lorsque ses
+          fonctions suffisent, et non comme une solution imposée. Dès qu'un des critères de la
+          <a href="#arbitrage">grille d'arbitrage (section 4)</a> indique qu'une boîte déléguée
+          répond mieux au besoin de l'équipe, la délégation Gmail est l'option à retenir. L'enjeu
+          est de donner à chaque service un outil adapté tout en préservant des comptes pour les
+          autres besoins de la communauté.
         </p>
 
         <div class="grid-2" style="margin-top:14px;">
           <div class="card primary">
-            <h3>Option recommandée n°1 : Délégation Gmail</h3>
+            <h3>Délégation Gmail — selon les besoins identifiés</h3>
             <p><strong>Pour qui ?</strong> Les services opérationnels critiques (Comptabilité, Secrétariat, Support, Inscriptions) où le volume d'échanges exige de savoir qui a traité, lu ou répondu à chaque message.</p>
             <p><strong>Arbitrage :</strong> Nécessite le coût d'une licence Google Workspace dédiée, mais offre l'expérience utilisateur Gmail la plus propre et réduit fortement le risque de réponses en double (état lu partagé et boîte d'envoi commune — sans toutefois le verrouillage d'un vrai logiciel de support).</p>
             <p><strong>Identité :</strong> Les destinataires voient l'identité collective<sup><a href="#fn1">1</a></sup> et la signature du compte commun s'applique à tous les délégués, tandis que les journaux d'audit conservent la trace du délégué ayant réellement agi.</p>
@@ -154,7 +169,7 @@
           </div>
 
           <div class="card accent">
-            <h3>Option recommandée n°2 : Groupe Google Collaboratif</h3>
+            <h3>Groupe Google Collaboratif — point de départ</h3>
             <p><strong>Pour qui ?</strong> Les commissions, équipes projets temporaires ou adresses d'information générale à faible volume ou criticité modérée.</p>
             <p><strong>Arbitrage :</strong> Aucun coût de licence supplémentaire (inclus nativement). Permet d'affecter des sujets et d'ajouter des étiquettes depuis l'interface web <code>groups.google.com</code>.</p>
             <p><strong>Organisation :</strong> Les étiquettes sont obligatoirement «&nbsp;à plat&nbsp;» : aucun sous-dossier ni arborescence possible. Les statuts de résolution sont figés par Google («&nbsp;terminé&nbsp;», «&nbsp;doublon&nbsp;», «&nbsp;aucune action nécessaire&nbsp;») et ne peuvent être ni renommés ni personnalisés — impossible de créer un statut «&nbsp;En attente de réponse&nbsp;», par exemple.</p>
@@ -165,7 +180,7 @@
           </div>
 
           <div class="card">
-            <h3>Option n°3 : Alias</h3>
+            <h3>Alias — pour un titulaire unique</h3>
             <p><strong>Pour qui ?</strong> Une adresse de fonction gérée par une seule personne (ex. <code>tresorier@</code>, <code>president@</code>), sans travail en équipe sur les messages.</p>
             <p><strong>Arbitrage :</strong> Gratuit et immédiat : l'adresse redirige vers la boîte personnelle du titulaire, de façon transparente pour les expéditeurs externes — aucune boîte séparée à consulter.</p>
             <p><strong>Limites :</strong> Aucun historique propre à l'adresse : les messages vivent dans la boîte personnelle du titulaire (et repartent avec lui). Aucun travail collaboratif possible.</p>
@@ -231,7 +246,7 @@
 
             <ol class="footnotes">
               <li id="fn3-1">
-                Contacts à partager séparément, via une «&nbsp;délégation de contacts&nbsp;» distincte de la délégation de boîte (<a href="#recommandations">voir la fiche détaillée en section 2, option n°1</a>).
+                Contacts à partager séparément, via une «&nbsp;délégation de contacts&nbsp;» distincte de la délégation de boîte (<a href="#recommandations">voir la délégation Gmail en section 2</a>).
               </li>
               <li id="fn3-2">
                 Nouveauté Google — déploiement progressif en cours fin septembre 2026 ; l'interface web sur ordinateur reste le mode le plus fiable à ce stade.

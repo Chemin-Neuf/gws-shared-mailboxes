@@ -43,3 +43,5 @@ secrets.*
 *.dll
 
 # >>>>> REPO-SPECIFIC IGNORES — lines below are preserved during sync <<<<<
+
+pdf/

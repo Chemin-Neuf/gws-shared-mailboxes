@@ -349,6 +349,34 @@ Remarks:
   access (Google admin help, "Let users delegate access to a Gmail account"). With the OU
   model (one personal-user OU + shared-user OU tree), simplest is to enable it on both
   branches, or at the top-level OU.
+  - **Checking the setting** (verified 2026-10-28): readable — **not writable** — through
+    the **Cloud Identity Policy API**: setting type `gmail.mail_delegation`, field
+    `enable_mailbox_group_delegation` (boolean). Changes stay in the Admin console.
+    Not exposed by the Gmail API (`users.settings.delegates`) nor the Directory API.
+  - **No per-user call**: policies target OUs or groups. To get the effective value for
+    one user, list the policies (`policies.list`, scope
+    `cloud-identity.policies.readonly`), keep those for the user's OU (and parents) and
+    the user's groups, then apply the **Merge** reducer: per field, the value from the
+    policy with the highest `sortOrder` that sets it wins. Google default (system)
+    policies are part of the list. Group-targeted policies must be considered too.
+  - **GAM7** wraps the same API (enable scope `22r`, "Cloud Identity - Policy" read-only,
+    via `gam oauth create`), but does not reduce to a per-user value:
+
+    ```powershell
+    # All policies for this setting (per OU / group, plus Google defaults)
+    gam info policies settings/gmail.mail_delegation formatjson
+    # Policies limited to OUs whose path matches a pattern
+    gam print policies ou "^/Shared" formatjson
+    # OU of a given user, to match against the list above
+    gam info user contact@chemin-neuf.org
+    ```
+
+    GAM's wiki also asks to grant the GAM project the GCP role *Organization Policy
+    Administrator* — broad; possibly only needed for the DLP commands. Test read-only
+    first in the test tenant.
+  - **Proposed exodus consistency check**: for each shared mailbox and each (expanded)
+    `su-` member, verify the effective value is `true` — catches the "member silently
+    gets no access" case.
 - **Propagation up to 24 h** for delegation and membership changes, including
   **removals** → removing someone from `su-` is not an immediate revocation; urgent cases
   need another lever (e.g. suspend the account).
@@ -379,6 +407,9 @@ Remarks:
    mailbox (the `su-` → `sd-` membership is decided).
 4. **Contacts** — needed at all? If yes: per-user delegation synced from `su-` (API to
    verify), or Domain Shared Contacts instead.
+5. **Group-delegation policy check** — adopt the proposed exodus consistency check
+   (3b.4)? Confirm the minimum permissions needed to read policies (scope only, or also
+   the GCP role).
 
 ## 4. Candidate page sections
 

@@ -3,7 +3,8 @@
   SPDX-License-Identifier: GPL-3.0-only
 
   Original Author: Kimi K3 (Moonshot AI / GitHub Copilot)
-  Last Updated: 2026-09-30
+  Major Contributors: Claude (Anthropic / GitHub Copilot)
+  Last Updated: 2026-10-28
 -->
 
 # Brainstorm — Technical Overview page
@@ -59,9 +60,9 @@ happen directly in the HTML, to avoid two diverging sources of truth.
 | 2 | Alias management | User alias, group alias | HRIS → GWS | ? | |
 | 3 | Groups & membership sync | Group, Member | HRIS → GWS | ? | |
 | 4 | Shared mailbox provisioning | User (functional account) or Group | mixed | ? | Some HRIS-backed (function / mission / responsibility), some GWS-native — see ownership model below |
-| 5 | Inbox delegation grants | Gmail delegates | mixed | ? | |
+| 5 | Inbox delegation grants | Gmail delegates, `su-` security group | mixed | ? | One group delegate per mailbox; access = group membership (see section 3b) |
 | 6 | Contacts — delegation / sharing | Contacts (People API / Domain Shared Contacts) | mixed | ? | Exact mechanism TBD (see open questions) |
-| 7 | Calendar sharing | Calendar ACLs | mixed | ? | Part of the mailbox bundle (see section 1) |
+| 7 | Calendar sharing | Calendar ACLs, `sa-` security group | mixed | ? | Part of the mailbox bundle (see section 1); one `writer` ACL per calendar granted to `sa-` (see section 3b) |
 | 8 | Shared drives — provisioning & membership | Shared drive, members | mixed | ? | |
 | 9 | Consistency checks & reconciliation | All managed objects | both | ? | REQUIRED. Personal users: see section 3.5 (automatic or selective manual correction). Other objects: policy parked |
 | 10 | Failure handling & recovery | — | — | REQUIRED | Partial-run recovery, alerting (see section 7) |
@@ -249,6 +250,136 @@ without its UUID. The photo requires a separate call. Make the UUID field **inde
 highest-risk combination — a onesime bug or bulk data change could suspend many accounts
 at once. A mass-change safety threshold should be discussed with offboarding.
 
+## 3b. Shared mailboxes — access groups (`su-` / `sa-`)
+
+> Proposed 2026-10-26, updated 2026-10-28. Status: draft — open points in 3b.6.
+
+### 3b.1 Model
+
+Access to a shared mailbox and its calendar is granted through **security groups**, never
+to individual users directly — same pattern as `sd-<shared-drive-name>@security.chemin-neuf.net`
+for shared drives.
+
+| Group | Meaning | Grants | Members |
+|---|---|---|---|
+| `su-<mailbox>@security.chemin-neuf.net` | **s**hared **u**ser | Gmail delegation on the shared mailbox (the group is the single delegate) | People who read / send for the mailbox |
+| `sa-<mailbox>@security.chemin-neuf.net` | **s**hared **a**genda (*agenda*, not *address book* — avoids confusing calendar and contacts) | Calendar ACL on the mailbox's primary calendar, role **`writer`** ("Make changes to events") — read/write, no sharing management | `su-<mailbox>@…` (nested) + calendar-only people, if any |
+| `saro-<mailbox>@security.chemin-neuf.net` | **s**hared **a**genda **r**ead-**o**nly | Calendar ACL on the same calendar, role **`reader`** ("See all event details") | Read-only calendar people |
+| `sd-<shared-drive>@security.chemin-neuf.net` (existing convention) | **s**hared **d**rive | Shared drive linked to the shared mailbox | `su-<mailbox>@…` (nested) + others as needed |
+
+- **Nesting**: `su-` is a member of `sa-` → mail access implies calendar access; the
+  reverse (calendar-only access) remains possible by adding people to `sa-` only.
+  `su-` is also a member of the `sd-` group of the shared drive linked to the mailbox
+  (decided 2026-10-28; **how a shared drive is linked to a shared user is still to be
+  discussed**).
+- A person in both `sa-` and `saro-` gets the higher role (`writer`).
+- **Nested groups work for Gmail delegation** — confirmed by test (2026-10-26). Google's
+  admin doc does not state it (some third-party sources even claim the opposite), so
+  record the test details (nesting depth tested, add **and** removal propagation) and
+  re-test after notable Google changes.
+- **Calendar roles** (decided 2026-10-28): `sa-` = `writer`, `saro-` = `reader`, **never
+  `owner`** — members can edit (or read) events but cannot change the calendar's sharing.
+  Access is managed **only by adding / removing people in the groups**; the calendar ACLs
+  themselves are set once and stay under admin / exodus control (no ACL drift to detect).
+- **Why separate calendar groups even when members are identical**: future access changes
+  become membership changes only — no per-calendar ACL calls.
+- **Contacts**: no group — see 3b.4 (contact delegation is per user).
+
+### 3b.2 Naming rule (decided 2026-10-26)
+
+- Shared mailbox on **`@chemin-neuf.org`** → use only the local part (before `@`).
+- Shared mailbox on **any other domain** → use the full address with `---` replacing `@`.
+
+| Shared mailbox | `su-` group | `sa-` group |
+|---|---|---|
+| `contact@chemin-neuf.org` | `su-contact@security.chemin-neuf.net` | `sa-contact@security.chemin-neuf.net` |
+| `contact@chemin-neuf.fr` | `su-contact---chemin-neuf.fr@security.chemin-neuf.net` | `sa-contact---chemin-neuf.fr@security.chemin-neuf.net` |
+
+`saro-` and `sd-` follow the same pattern.
+
+Constraints the rule implies:
+
+- **64-character limit** on a group's local part (Google: "no more than 64 characters
+  before the at sign"). Compute the length with the **longest prefix (`saro-`, 5
+  characters)**, so that `su-`, `sa-` and `saro-` of one mailbox always share the same
+  body.
+- **`---` is reserved**: no mailbox local part may contain `---`, otherwise names could
+  collide.
+- **Renames**: when a shared mailbox address changes, exodus renames all its groups (GWS keeps
+  the old group address as an alias — to verify).
+
+#### Length fallback (proposed 2026-10-28 — step 2 to fix)
+
+Apply in order until the name fits:
+
+1. Replace `chemin-neuf` with `-ccn-` → `x---chemin-neuf.fr` becomes `x----ccn-.fr`.
+2. Replace `-ccn-` with `..` → `x---...fr`. **Invalid as written**: Google rejects
+   consecutive periods (and a leading / trailing period) in addresses. Replacement
+   string TBD.
+3. Shorten the mailbox local part (before `---`), marking the cut with a single `.`.
+
+Remarks:
+
+- Steps 1 and 3 are fine for Google, but limit `chemin-neuf` replacement to the **domain
+  part**, so a mailbox local part containing `chemin-neuf` is not altered.
+- Step 1 produces `----` (the `---` separator followed by `-ccn-`) — valid, but the name is
+  no longer easy to read back. Consider `ccn` (no hyphens) instead of `-ccn-`.
+- Step 3 can create **collisions** (two long mailboxes with the same beginning) → exodus
+  must check uniqueness and add a discriminator (e.g. a digit) when needed.
+- Once shortened, the group name can no longer be derived from the mailbox address →
+  store the **full mailbox address in the group description**, and have exodus find
+  groups by that link, not by recomputing the name.
+
+### 3b.3 Group settings (decided 2026-10-28)
+
+- **Security label** on all access groups (permanent once applied).
+- **Not a mailing list, no email**: who can post = nobody, no web archive — otherwise
+  people will email `su-…@` believing it is the mailbox.
+- **Hidden from the directory**.
+
+### 3b.4 Google constraints to respect
+
+- **Only security groups can join a security group** → `su-` into `sa-` is fine, but an
+  existing collaborative / exodus-managed group can only be nested into `su-` / `sa-` if it
+  is itself a security group.
+- **Admin setting required — on both sides**: Gmail → User settings → Mail delegation →
+  "Allow users to grant their mailbox access to a Google group" must be enabled for the
+  OU of the **delegating account** (the shared mailbox) **and** for the OU of **every
+  group member** (each person receiving access) — otherwise that member silently gets no
+  access (Google admin help, "Let users delegate access to a Gmail account"). With the OU
+  model (one personal-user OU + shared-user OU tree), simplest is to enable it on both
+  branches, or at the top-level OU.
+- **Propagation up to 24 h** for delegation and membership changes, including
+  **removals** → removing someone from `su-` is not an immediate revocation; urgent cases
+  need another lever (e.g. suspend the account).
+- **Limits**: 1,000 delegates per mailbox (a group counts as one); ~40 concurrent delegate
+  sessions with typical use — a large `su-` group can hit the concurrency limit.
+- **Contact delegation is per user, not per group** (checked 2026-10-28): Google's help
+  page "Give another user access to your contacts" only mentions delegating to people in
+  the same domain (up to 25 per invite, desktop only); groups are never mentioned. It is
+  also separate from Gmail delegation ("access to your contacts doesn't grant access to
+  your email account", and the reverse). Consequence: if shared contacts are needed,
+  exodus would have to expand `su-` membership into individual contact delegates and keep
+  them in sync — API support for contact delegation still to verify.
+
+### 3b.5 Benefits
+
+- One delegate entry per mailbox → exodus avoids the slow per-user Gmail API delegation
+  calls (see caveats, section 7).
+- Audit = group membership; Gmail's delegate list shows only the group.
+- Consistent with the existing `sd-` convention.
+
+### 3b.6 Open points
+
+1. **Membership management** — HRIS-backed mailboxes: exodus from onesime; GWS-native
+   mailboxes: group managers or admins? (mixed ownership, section 2)
+2. **Length fallback step 2** — replacement for `-ccn-` (`..` is invalid), and the
+   collision discriminator for step 3.
+3. **Shared drive ↔ shared user link** — how a shared drive is associated with a shared
+   mailbox (the `su-` → `sd-` membership is decided).
+4. **Contacts** — needed at all? If yes: per-user delegation synced from `su-` (API to
+   verify), or Domain Shared Contacts instead.
+
 ## 4. Candidate page sections
 
 > To be reordered / trimmed / expanded as we brainstorm.
@@ -291,6 +422,10 @@ at once. A mass-change safety threshold should be discussed with offboarding.
 | Mode-2 sync scope: UUID, photo, postal address, name (+ primary-address rename), phone | Sync all onesime fields (title, department, manager…) | Only fields with a clear consumer in GWS; title/department/manager too org-specific to keep authoritative in onesime |
 | Primary address follows name changes | Name syncs but address stays | Identity stays consistent; GWS keeps the old address as an alias, so no mail is lost |
 | UUID-missing matching: auto on email match, admin chooses otherwise | Auto-link on name; fully manual table | Email keys are unambiguous; name-only matching risks linking the wrong homonym |
+| Shared mailbox access via security groups `su-` (mail) nested in `sa-` (calendar) | Per-user delegates and per-user calendar ACLs | One delegate / one ACL per mailbox; access = membership; mirrors the `sd-` shared-drive convention |
+| Group name = local part on `@chemin-neuf.org`, full address with `---` for `@` otherwise | Always local part; always full address | Short names for the main domain, no collisions across domains |
+| `sa-` gets calendar role `writer`, `saro-` gets `reader`; access managed by group membership only | `owner` (manage sharing) | Members edit / read events but cannot re-share the calendar; ACLs stay admin/exodus-controlled |
+| `su-` is a member of the linked shared drive's `sd-` group | Separate drive grants | Mailbox team gets the drive automatically; one membership to manage |
 | … | … | … |
 
 ## 6. Open questions
@@ -320,18 +455,21 @@ at once. A mass-change safety threshold should be discussed with offboarding.
   (web console vs API vs exodus — per object type)
   - [x] Personal users — model described (section 3), updated 2026-09-30 (language
     sync, homonym & accountType proposals, drift trade-off); remaining follow-ups in 3.7
-  - [ ] Shared users
-  - [ ] Collaborative groups
+  - [ ] Shared users — access groups `su-` / `sa-` proposed (section 3b, 2026-10-26);
+    account creation, OU sub-tree and ownership still open  - [ ] Collaborative groups
   - [ ] Aliases
 - [ ] Per-feature status (live / planned / idea) in the section 2 table.
 
 **2. NEXT — The mailbox bundle**
 
 - [ ] Contacts mechanism: per-mailbox contact delegation vs Domain Shared Contacts
-  (Directory API)?
-- [ ] Calendars: ACL grants on the functional account's calendar vs separate shared
-  calendars / resources?
-- [ ] Shared drives: who becomes Manager; in scope now or later?
+  (Directory API)? Note (2026-10-28): contact delegation is per user only, no groups
+  (section 3b.4).
+- [x] ~~Calendars: ACL grants on the functional account's calendar vs separate shared
+  calendars / resources?~~ → DECIDED (2026-10-28): `writer` ACL on the functional
+  account's calendar, granted to the `sa-` group; `reader` via `saro-` (section 3b).
+- [ ] Shared drives: who becomes Manager; in scope now or later? (`su-` is a member of
+  the linked drive's `sd-` group — section 3b; the mailbox ↔ drive link is TBD.)
 
 **3. PARKED — later topics (do not discuss yet)**
 
@@ -349,6 +487,7 @@ at once. A mass-change safety threshold should be discussed with offboarding.
 
 - **Delegation grants are per-user Gmail API operations** — at scale (delegates ×
   mailboxes) this is the slowest part of any sync and the first to hit quota.
+  Largely mitigated by delegating to the `su-` group (one grant per mailbox, section 3b).
 - **Shared drives**: creation requires a Shared-Drives-enabled edition (OK on GWN), but
   membership and roles (Manager, Content manager, …) via the Drive API differ from
   groups — verify exodus's actual usage.

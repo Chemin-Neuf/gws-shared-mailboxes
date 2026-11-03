@@ -1,7 +1,7 @@
 ---
 applyTo: "**/*.html,**/*.htm"
 ---
-<!-- AUTO-SYNCED from github.com/Chemin-Neuf/dev-standards DO NOT EDIT HERE — edit in dev-standards and re-sync -->
+<!-- AUTO-SYNCED from github.com/Chemin-Neuf/dev-standards DO NOT EDIT HERE - edit in dev-standards and re-sync -->
 <!--
   Chemin-Neuf dev-standards — HTML document rules
   Last Updated: 2026-09-21

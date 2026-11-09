@@ -4,7 +4,7 @@
 
   Original Author: Kimi K3 (Moonshot AI / GitHub Copilot)
   Major Contributors: Claude (Anthropic / GitHub Copilot)
-  Last Updated: 2026-10-28
+  Last Updated: 2026-11-09
 -->
 
 # Brainstorm — Technical Overview page
@@ -332,51 +332,61 @@ Remarks:
 
 ### 3b.3 Group settings (updated 2026-11-09)
 
-- **Security label** on all access groups (permanent once applied).
-- **Not a mailing list, no email**: who can post = nobody, no web posting, and no
-  conversation archive/history. Otherwise people may email `su-…@` believing it is the
-  mailbox. Also set who can post as the group, attach files, and reply privately to authors
-  to nobody / the most restrictive available option.
-- **Hidden from the directory**. Hiding is not a security boundary: people who know an
-  address may still try to use it.
-- **Language**: `en-GB`, for any system-generated group messages.
-- **Join and membership management**: invitation-only; only designated administrators or
-  managers (or exodus, where applicable) may add/remove members. Do not allow self-join
-  or join requests.
-- **View conversations**: nobody / the most restrictive available option; conversations
-  should not be used by access groups.
-- **View members**: all group members may view the membership list. In this community,
-  transparency about who has access is useful and can reduce unnecessary forwarding of
-  sensitive content. **Large-group exception to investigate**: for groups with more than
-  100 members, determine whether membership visibility should be more restricted and
-  whether Google supports a suitable group-specific setting. The threshold and exception
-  policy are not yet decided.
-- **Contact owners**: restrict to the smallest practical audience (owners/managers or
-  equivalent). This permission controls who can use the Groups UI to send a message to
-  the group owners; it is not a post to the group.
-- **External membership**: disallow external members. Do not rely on the Security label
-  alone; verify and apply the available organization/group controls.
-- **Ownership**: prefer no explicit group owner, if Google permits it. Verify whether an
-  owner is required and how administrator ownership applies. If an owner is mandatory for
-  `su-`, `sa-` or `sd-` groups, the fallback preference is the corresponding shared user,
-  rather than a person whose administrative role may change frequently. Keep changes to
-  group settings administrator-controlled; note that granting ownership to a shared user
-  may grant it powerful Groups permissions and must be tested/assessed before adoption.
-- **Message moderation**: moderate all messages (defense in depth, although posting is
-  disabled).
-- **New-member post moderation**: enable the most restrictive available setting. This
-  moderates a new member's posts; it does not approve their membership, and is redundant
-  while posting is disabled.
-- **Spam handling**: use the strictest available handling that does not create an
-  unmonitored moderation queue; confirm the actual choices during tenant testing.
-- **Default subscription / delivery**: `NONE` where configurable. This is a per-member
-  delivery preference, not a group-wide posting control or a way to remove membership.
-- **Subject prefix, custom footer**: leave unset; access groups should not distribute
-  messages.
-- **Default reply-to**: leave at the default; if a choice is required, reply to sender,
-  not to the access-group address.
-- **Maximum message size**: do not rely on `maxMessageBytes` (for example, 250 kB); the
-  Groups Settings API field is deprecated.
+The table gives the intended setting and the GAM7 setting name/value where GAM exposes it.
+GAM names and values use the documented command-line spelling; `N/A` means the current
+GAM Groups Settings mapping does not expose that UI control. These are access groups, not
+mailing lists.
+
+| Setting | Intended value | GAM7 setting / literal |
+|---|---|---|
+| Security label | On for all access groups; permanent once applied | `makesecuritygroup` (flag; no `false`/off option) |
+| Group email language | English (UK), for any system-generated group messages | `primarylanguage en-GB` |
+| Who can see/discover group | Members only (hidden from wider directory discovery); hiding is not a security boundary | `whocandiscovergroup all_members_can_discover` |
+| Who can view conversations | Owners only, the most restrictive available role | `whocanviewgroup all_owners_can_view` |
+| Who can post | Nobody | `whocanpostmessage none_can_post` |
+| Allow web posting | Off | `allowwebposting false` |
+| Conversation history/archive | Off; does not erase previously archived conversations | `isarchived false` |
+| Who can join | Invitation only; no self-join or join requests | `whocanjoin invited_can_join` |
+| Who can manage members | Owners and managers (administrative membership management only) | `whocanmoderatemembers owners_and_managers` |
+| Who can invite members | Managers only, where separately configurable | `whocaninvite all_managers_can_invite` |
+| Who can view members | All group members, for community transparency. **Large-group exception to investigate**: for groups with more than 100 members, decide whether to restrict this and confirm a group-specific option. | `whocanviewmembership all_members_can_view` |
+| Who can contact group owners | Owners only; this controls the Groups UI's message-to-owners feature, not posting to the group | `whocancontactowner all_owners_can_contact` |
+| Who can view member email addresses | Most restrictive available; this is separate from permission to view the roster | N/A in GAM's current mapping |
+| Allow external members | Off; also limit who can add externals to admins | `allowexternalmembers false`; `whocanaddexternalmembers only_admins_can_add_external_members` |
+| Who can post as the group | Nobody | `memberscanpostasthegroup false` |
+| Who can attach files | Nobody / most restrictive available | N/A in GAM's current mapping |
+| Who can reply privately to authors | Nobody / most restrictive available | N/A in GAM's current mapping |
+| Message moderation | All messages, as defense in depth while posting is disabled | `messagemoderationlevel moderate_all_messages` |
+| New-member post moderation | Most restrictive available. This controls new members' posts, not approval to join; all-message moderation already covers it. | No separate GAM setting in the current mapping; `moderate_all_messages` is the available all-posts policy |
+| Spam message handling | Reject spam; avoid an unmonitored review queue | `spammoderationlevel reject` |
+| Default subscription/delivery | No group email delivery, without removing membership | Per member, not a group setting: `delivery none` when adding/updating a member |
+| Subject prefix | Unset | N/A in GAM's current mapping |
+| Custom footer | Off / unset | `includecustomfooter false`; leave `customfootertext` unset |
+| Default reply-to | Reply to sender, not the access-group address | `replyto reply_to_sender` |
+| Maximum message size | Do not set or rely on 250 kB | `maxmessagebytes` is deprecated; no effective control |
+| Explicit group owner | Prefer no extra human owner if possible; Google says administrators are automatically assigned the owner role for all organization groups, but docs do not establish whether zero explicit owner memberships is supported. Verify in the test tenant before deciding. If an explicit owner is required, fallback preference for each `su-`/`sa-`/`sd-` group is its corresponding shared user, rather than a frequently changing administrator. | Not a group setting; membership role `OWNER`. GAM adds/updates owners through group membership commands. |
+
+Keep group-setting changes administrator-controlled. An explicit `OWNER` role is powerful:
+Google says owners can change settings, manage members, and delete groups. Google also
+states that admins are automatically assigned the owner role for all organization groups
+and recommends keeping the number of owners low. The documentation does not clearly say
+whether a group may have zero explicit owner entries despite that administrator ownership;
+do not assume it works until tested.
+
+**Member delivery note:** `delivery none` is distinct from `delivery disabled`: `NONE`
+means no mail is delivered while the person remains a member; `DISABLED` removes the
+subscription. The Directory API also lists `ALL_MAIL`, `DAILY` and `DIGEST`.
+
+**GAM/API caveat:** GAM's current Groups documentation marks some older settings
+deprecated and lists certain current Groups UI controls as unavailable through its
+Groups Settings API mapping. For UI-only settings above, apply the restrictive UI value
+and verify it in the tenant rather than assuming a GAM command exists.
+
+**Sources checked 2026-11-09:** [GAM Groups documentation](https://gam.docs.oxl.app/usage/Groups.html),
+[Google group roles](https://support.google.com/a/users/answer/10385278?hl=en),
+[Directory API Group resource](https://developers.google.com/workspace/admin/directory/reference/rest/v1/groups),
+[Directory API Member resource](https://developers.google.com/workspace/admin/directory/reference/rest/v1/members),
+and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs/reference/rest/v1/groups).
 
 ### 3b.4 Google constraints to respect
 
@@ -390,6 +400,15 @@ Remarks:
   before making this a dependency; the current Google Admin Help edition list does not
   include Workspace for Nonprofits. Restrictions reject future noncompliant additions;
   they do not automatically remove existing members.
+- **Group UUID / custom attribute**: the Admin SDK Directory API Group resource does not
+  support user-style custom schemas (`customSchemas`). The Cloud Identity Groups API has
+  an `externalIds` field for an ID assigned by an external directory/identity provider;
+  its only supported namespace is `system/external`, and the caller must keep IDs unique
+  within that namespace. This could be evaluated for an exodus UUID, but it is not an
+  arbitrary custom attribute, and write support/operational handling must be tested.
+  The Directory API's immutable group `id` is another stable identifier; otherwise keep
+  an exodus mapping. GAM documents `externalids` among Cloud Identity group fields to
+  display, but its Groups guide does not establish a write command for it.
 - **Admin setting required — on both sides**: Gmail → User settings → Mail delegation →
   "Allow users to grant their mailbox access to a Google group" must be enabled for the
   OU of the **delegating account** (the shared mailbox) **and** for the OU of **every
@@ -458,6 +477,15 @@ Remarks:
 5. **Group-delegation policy check** — adopt the proposed exodus consistency check
    (3b.4)? Confirm the minimum permissions needed to read policies (scope only, or also
    the GCP role).
+6. **Explicit group owner** — test whether an organization group can be managed with no
+   explicit owner member, given that Google states administrators are automatically
+   assigned the owner role. If not, confirm the shared-user owner fallback and which
+   owner capabilities admins can restrict.
+7. **Large-group member visibility** — determine whether groups above 100 members need a
+   different roster-visibility policy and confirm whether it can be configured per group.
+8. **Group UUID** — test whether exodus can write and reliably read a UUID through the
+   Cloud Identity Groups API `externalIds` field; decide between that and an exodus-side
+   mapping. This is not a user-style custom schema.
 
 ## 4. Candidate page sections
 

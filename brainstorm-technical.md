@@ -330,18 +330,66 @@ Remarks:
   store the **full mailbox address in the group description**, and have exodus find
   groups by that link, not by recomputing the name.
 
-### 3b.3 Group settings (decided 2026-10-28)
+### 3b.3 Group settings (updated 2026-11-09)
 
 - **Security label** on all access groups (permanent once applied).
-- **Not a mailing list, no email**: who can post = nobody, no web archive — otherwise
-  people will email `su-…@` believing it is the mailbox.
-- **Hidden from the directory**.
+- **Not a mailing list, no email**: who can post = nobody, no web posting, and no
+  conversation archive/history. Otherwise people may email `su-…@` believing it is the
+  mailbox. Also set who can post as the group, attach files, and reply privately to authors
+  to nobody / the most restrictive available option.
+- **Hidden from the directory**. Hiding is not a security boundary: people who know an
+  address may still try to use it.
+- **Language**: `en-GB`, for any system-generated group messages.
+- **Join and membership management**: invitation-only; only designated administrators or
+  managers (or exodus, where applicable) may add/remove members. Do not allow self-join
+  or join requests.
+- **View conversations**: nobody / the most restrictive available option; conversations
+  should not be used by access groups.
+- **View members**: all group members may view the membership list. In this community,
+  transparency about who has access is useful and can reduce unnecessary forwarding of
+  sensitive content. **Large-group exception to investigate**: for groups with more than
+  100 members, determine whether membership visibility should be more restricted and
+  whether Google supports a suitable group-specific setting. The threshold and exception
+  policy are not yet decided.
+- **Contact owners**: restrict to the smallest practical audience (owners/managers or
+  equivalent). This permission controls who can use the Groups UI to send a message to
+  the group owners; it is not a post to the group.
+- **External membership**: disallow external members. Do not rely on the Security label
+  alone; verify and apply the available organization/group controls.
+- **Ownership**: prefer no explicit group owner, if Google permits it. Verify whether an
+  owner is required and how administrator ownership applies. If an owner is mandatory for
+  `su-`, `sa-` or `sd-` groups, the fallback preference is the corresponding shared user,
+  rather than a person whose administrative role may change frequently. Keep changes to
+  group settings administrator-controlled; note that granting ownership to a shared user
+  may grant it powerful Groups permissions and must be tested/assessed before adoption.
+- **Message moderation**: moderate all messages (defense in depth, although posting is
+  disabled).
+- **New-member post moderation**: enable the most restrictive available setting. This
+  moderates a new member's posts; it does not approve their membership, and is redundant
+  while posting is disabled.
+- **Spam handling**: use the strictest available handling that does not create an
+  unmonitored moderation queue; confirm the actual choices during tenant testing.
+- **Default subscription / delivery**: `NONE` where configurable. This is a per-member
+  delivery preference, not a group-wide posting control or a way to remove membership.
+- **Subject prefix, custom footer**: leave unset; access groups should not distribute
+  messages.
+- **Default reply-to**: leave at the default; if a choice is required, reply to sender,
+  not to the access-group address.
+- **Maximum message size**: do not rely on `maxMessageBytes` (for example, 250 kB); the
+  Groups Settings API field is deprecated.
 
 ### 3b.4 Google constraints to respect
 
 - **Only security groups can join a security group** → `su-` into `sa-` is fine, but an
   existing collaborative / exodus-managed group can only be nested into `su-` / `sa-` if it
   is itself a security group.
+- **Membership restrictions** are distinct from invitation-only joining. If available in
+  this Workspace edition, configure the restrictions to allow only the intended internal
+  user accounts and security groups (and service accounts only where needed), while
+  preserving required nesting: `su-` into `sa-` and `sd-`. Check edition availability
+  before making this a dependency; the current Google Admin Help edition list does not
+  include Workspace for Nonprofits. Restrictions reject future noncompliant additions;
+  they do not automatically remove existing members.
 - **Admin setting required — on both sides**: Gmail → User settings → Mail delegation →
   "Allow users to grant their mailbox access to a Google group" must be enabled for the
   OU of the **delegating account** (the shared mailbox) **and** for the OU of **every

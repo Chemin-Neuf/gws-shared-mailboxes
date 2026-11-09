@@ -250,6 +250,97 @@ without its UUID. The photo requires a separate call. Make the UUID field **inde
 highest-risk combination — a onesime bug or bulk data change could suspend many accounts
 at once. A mass-change safety threshold should be discussed with offboarding.
 
+### 3.8 Community addresses for people without a GWS account
+
+> Proposed 2026-11-09. Status: investigation — validate the group design in the test
+> tenant before deciding.
+
+- **Requirement**: every brother and sister in the community has a
+  `firstname.surname@chemin-neuf.org` address. A person without a full GWS account can
+  receive mail at that address through redirection to their personal address, but cannot
+  send from the community address. Mass mailings use the Onesime function and the
+  community address; sending personal email from that address requires migration to a
+  full GWS account.
+- **Preferred candidate — one Google Group per person without an account**: create a
+  group at the community address and add that person's personal address as its sole
+  external member, with delivery set to `ALL_MAIL`. Exodus could create the group and
+  manage its membership through the Admin SDK Directory API; the Groups Settings API
+  exposes group access and posting controls. This is automated and avoids creating a
+  licensed GWS user. A group is a distribution endpoint, **not** a mailbox or a true
+  redirect: test message headers, sender authentication, spam handling, and bounces with
+  Onesime and representative external providers.
+  - **Proposed group settings** (validate in the test tenant):
+
+    | Setting | Proposed value | Reason |
+    |---|---|---|
+    | Allow external members | On | Required for the recipient's personal address to be a group member. |
+    | Who can add external members | Admins only | Prevents users from adding arbitrary external addresses. |
+    | External recipient's role | `MEMBER`, delivery `ALL_MAIL` | Receives every message; no owner or manager permissions. |
+    | Who can join | Invitation only | The recipient should be added and removed only by exodus/admins. |
+    | Who can post | Anyone on the internet (`ANYONE_CAN_POST`) | Required to receive ordinary mail from arbitrary external senders, not just Onesime. |
+    | Message moderation | None (`MODERATE_NONE`) | Ensures messages are delivered directly; moderating non-members would also hold ordinary mail from correspondents. |
+    | Members can post as the group | Off | The external member must not send using the community address. |
+    | Who can view members / conversations | Managers only | The recipient needs delivery only, not access to the group roster or archived conversations. |
+    | Conversation history / archive | Off, if configurable | This is a delivery list, not a mailbox; avoid retaining another copy of messages. |
+    | Directory / global address list visibility | Hidden | These are personal delivery endpoints, not groups people should browse or join. |
+    | Footer, reply-to override, digest | Off / default / immediate mail | Avoid modifying messages; deliver each message promptly. |
+
+    Set the external-membership setting before adding the member. Google's 2026
+    membership-classification change makes this a prerequisite for groups intended to
+    contain external members. Do not set `archiveOnly=true`: that makes a group inactive
+    and causes it to reject new messages; it is different from disabling conversation
+    history.
+  - **Important send/receive distinction**: `ANYONE_CAN_POST` lets anyone submit a
+    message *to* the group so that it can be delivered to the member. It does not by
+    itself let the member send *as* the group; keep `membersCanPostAsTheGroup=false`.
+    However, `ANYONE_CAN_POST` is intentionally broad: Google Groups does not provide a
+    per-sender allowlist in this setting. Google's recommended anti-spam setting,
+    `MODERATE_NON_MEMBERS`, would queue all non-member messages—including normal mail
+    from correspondents and likely Onesime—so it conflicts with unattended delivery.
+    Accept this exposure only if the address is meant to receive mail from anyone; test
+    Google spam handling and abuse reporting. Onesime's properly configured
+    SPF/DKIM/DMARC helps authenticate its messages, but the complete forwarded path still
+    needs a delivery test at external providers.
+  - **Owner and least privilege**: Google Workspace documentation says administrators
+    are automatically assigned the owner role on all groups in the organization. The
+    Directory API can create a group with no explicit members, so do not make the
+    recipient an owner or manager. Prefer admin/exodus-managed lifecycle and the
+    implicit administrator ownership. If the implementation requires an explicit owner,
+    use a dedicated Workspace exodus service **user** (not a Google Cloud service
+    account) as `OWNER`; give it no message delivery (`delivery_settings=NONE`) and no
+    interactive use if feasible. An owner has powerful group-management permissions,
+    including changing settings and deleting the group, so this is not a minimal
+    privilege role and must be narrowly controlled. Confirm in the test tenant whether
+    an explicit owner is needed for the chosen creation API and for exodus operations.
+  - When someone migrates to a full GWS account, the group and user cannot own the same
+    address simultaneously. Exodus needs an ordered hand-off (remove/rename/delete the
+    group, then create the user) and a test for address-release/propagation behavior.
+- **Alternative — recipient address maps**: Google's Admin help documents bulk
+  entry (up to 5,000 recipient addresses across maps), so 1,500 addresses fit the
+  published limit. The documented workflow is in the Admin console and supports bulk
+  entry; no public API for managing these maps was found. This could work for a
+  manually refreshed roster, but is a poor fit for automated Onesime lifecycle updates.
+- **Not an equivalent**: Gmail API forwarding configures forwarding for a Gmail user
+  account and requires a verified/eligible destination. It does not create a recipient
+  address for someone without a GWS account.
+- **Pilot questions**: Confirm Onesime's mass-mailing service can deliver to the groups
+  with the expected `From` identity, and verify end-to-end delivery/authentication after
+  Google forwards to representative external providers. Also test ordinary external
+  correspondence, spam/abuse handling, bounces, external-member delivery, owner
+  management, address hand-off, and relevant group/domain recipient quotas before
+  adopting this model.
+
+**References (checked 2026-11-09)**:
+[Google: redirect or forward messages, including address maps](https://knowledge.workspace.google.com/admin/gmail/advanced/redirect-or-forward-gmail-messages-to-another-user);
+[Directory API: create groups](https://developers.google.com/workspace/admin/directory/reference/rest/v1/groups/insert);
+[Directory API: add group members](https://developers.google.com/workspace/admin/directory/reference/rest/v1/members/insert);
+[Directory API: member delivery settings and external members](https://developers.google.com/workspace/admin/directory/reference/rest/v1/members);
+[Groups Settings API](https://developers.google.com/workspace/admin/groups-settings/v1/reference/groups);
+[Google: roles and administrator ownership of groups](https://knowledge.workspace.google.com/admin/groups/assign-roles-to-a-groups-members);
+[Cloud Identity Groups API: initial owner options](https://cloud.google.com/identity/docs/how-to/create-google-groups);
+[Google: internal/external group classifications](https://knowledge.workspace.google.com/admin/groups/changes-to-internal-and-external-classifications-in-google-groups);
+[Gmail API: forwarding requirements](https://developers.google.com/workspace/gmail/api/guides/forwarding_settings).
+
 ## 3b. Shared mailboxes — access groups (`su-` / `sa-`)
 
 > Proposed 2026-10-26, updated 2026-10-28. Status: draft — open points in 3b.6.

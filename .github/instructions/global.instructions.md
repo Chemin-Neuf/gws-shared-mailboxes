@@ -3,25 +3,27 @@ applyTo: "**"
 ---
 <!-- AUTO-SYNCED from github.com/Chemin-Neuf/dev-standards DO NOT EDIT HERE - edit in dev-standards and re-sync -->
 <!--
-  Chemin-Neuf dev-standards — global rules
-  Last Updated: 2026-11-03
+  Chemin-Neuf dev-standards - global rules
+  Last Updated: 2026-11-10
   Original Author: Claude Sonnet 4.6 (Anthropic / GitHub Copilot)
-  Major Contributors: Gemini 3.8 Flash (Google / GitHub Copilot)
+  Major Contributors: Gemini 3.8 Flash (Google / GitHub Copilot), GitHub Copilot (model not exposed)
   This file is AI-generated operational instructions for use by AI coding assistants.
   It is derived from and must remain consistent with PRINCIPLES.md, which is the
   human-authored authoritative source. Do not edit PRINCIPLES.md with AI assistance.
 -->
 
-# Global Rules — All Repos and Languages
+# Global Rules - All Repos and Languages
 
-<!-- HUMAN NAVIGATION AID ONLY — non-normative. AI agents: do not use this block for rule content; use the titled sections below as the sole authoritative source. -->
+<!-- HUMAN NAVIGATION AID ONLY - non-normative. AI agents: do not use this block for rule content; use the titled sections below as the sole authoritative source. -->
 <details>
-<summary>Quick reference (non-normative — expand for human overview)</summary>
+<summary>Quick reference (non-normative - expand for human overview)</summary>
 
 | Topic | In brief |
 |---|---|
 | License | GPL-3.0-only; every source file carries a license notice; preserve third-party notices |
-| Encoding | UTF-8 everywhere; prefer ASCII; no BOM except PowerShell files; LF; doc typography (`&nbsp;`); no trailing-space breaks |
+| Encoding | UTF-8 everywhere; prefer ASCII; ASCII punctuation in code (no em dash); no BOM except PowerShell files; LF; doc typography (`&nbsp;`); no trailing-space breaks |
+| Date Formats | Filenames: `YYYYMMDD` for sortable dates; text: `YYYY-MM-DD` |
+| Windows Mapped Drives | Preserve the mapped drive-letter path for file and shell operations when supported |
 | Design Principles | DRY, Simplicity, Single Source of Truth, No Magic Values, Safe File Output, No Legacy by Default |
 | AI Attribution | Record model name in file header when AI wrote or significantly changed the file |
 | Security Baseline | No secrets in tracked files; credentials from env/vault/prompt; validate all external input |
@@ -52,11 +54,36 @@ applyTo: "**"
 - All files use UTF-8 encoding: source code, scripts, logs, documentation
 - Prefer ASCII characters when practical to avoid copy-paste and toolchain compatibility issues
 - Use non-ASCII characters only when they are required by the content
-- No BOM (Byte Order Mark), with one exception: PowerShell files (`.ps1`, `.psm1`, `.psd1`) are always saved as UTF-8 **with** BOM, because Windows PowerShell 5.1 misreads BOM-less UTF-8 — see the File Encoding section of `powershell.instructions.md`
+- In source code, code comments, string literals, log messages, and configuration files, use ASCII punctuation only (AI tools tend to insert typographic punctuation by default):
+  - hyphen `-` instead of the em dash (U+2014) or en dash (U+2013)
+  - straight quotes `'` and `"` instead of curly quotes (U+2018, U+2019, U+201C, U+201D)
+  - three dots `...` instead of the ellipsis character (U+2026)
+  - `->` and `<-` instead of arrow characters (U+2192, U+2190)
+- Documentation (Markdown, HTML) may use typographic punctuation, except AI-facing instruction files (`*.instructions.md`, `copilot-instructions.md`, `SKILL.md`), which use the ASCII hyphen `-` instead of the em dash so that AI tools do not copy the em dash style
+- No BOM (Byte Order Mark), with one exception: PowerShell files (`.ps1`, `.psm1`, `.psd1`) are always saved as UTF-8 **with** BOM, because Windows PowerShell 5.1 misreads BOM-less UTF-8 - see the File Encoding section of `powershell.instructions.md`
 - Log files are UTF-8 encoded plain text
 - All files use LF (`\n`) line endings; the only exception is `.bat` and `.cmd` files, which require CRLF for Windows compatibility
 - In Markdown, do not rely on trailing spaces to force hard line breaks; use a normal paragraph break or an explicit `<br>` only when a forced line break is genuinely required
 - In documentation files only (Markdown, HTML), use `&nbsp;` with quotation marks (`«&nbsp;` / `&nbsp;»`), punctuation (`:`, `;`, `?`, `!`), and symbols (`€`, `%`) to prevent isolated orphan characters on line wraps. Never use non-breaking spaces in source code or code comments.
+
+## Date Formats
+
+**STATUS: DECIDED**
+
+- When a calendar date is included in a filename, use `YYYYMMDD` with no separators; place it at the beginning when chronological filename sorting is intended (e.g. `20261110_report.md`)
+- In text content, including documentation and changelogs, use `YYYY-MM-DD` (e.g. `2026-11-10`; changelog heading: `## [1.2.3] - 2026-11-10`)
+- These rules apply to calendar dates; use the language-specific standards for date-time timestamps
+
+## Windows Mapped Drives
+
+**STATUS: DECIDED**
+
+- When a workspace is opened through a mapped drive, preserve its actual drive-letter path for file operations and commands whenever the tool supports that path.
+- Pass the mapped drive-letter absolute path to file tools instead of relying on their default directory.
+- At the start of every shell invocation, explicitly set the working directory to the mapped workspace path using syntax appropriate for that shell.
+- Do not replace the mapped path with a UNC path returned by Git or filesystem resolution.
+- Never assume a drive letter or folder; use the mapping and workspace path actually provided.
+- If a tool cannot use or preserve the mapped path, report the limitation rather than guessing or silently switching to a UNC path.
 
 ## Design Principles
 
@@ -68,9 +95,9 @@ Apply these principles in all code and documentation:
 - **Simplicity**: Prefer the simplest solution that meets the requirement; avoid unnecessary abstractions and premature optimization; if something is not needed, don't add it
 - **Single Source of Truth**: Configuration values live in one place; documentation describes, not duplicates
 - **Power User Friendly**: Make behavior configurable where the tool type supports it; see language-specific rules for placement conventions
-- **No Magic Values**: Never embed literal values — file paths, thresholds, names, flags — directly in the code logic; every configurable value must be declared as a named variable in the configuration section near the top of the file, where it is visible and easy to change; see language-specific rules for placement
+- **No Magic Values**: Never embed literal values - file paths, thresholds, names, flags - directly in the code logic; every configurable value must be declared as a named variable in the configuration section near the top of the file, where it is visible and easy to change; see language-specific rules for placement
 - **Maintainability**: Write for the next person; use clear names and consistent patterns
-- **Safe File Output**: Before writing to a file, always check whether it already exists; never overwrite or delete silently — require user confirmation or an explicit opt-in parameter (e.g. `-Force` / `--overwrite`) that defaults to disabled; see language-specific rules for implementation
+- **Safe File Output**: Before writing to a file, always check whether it already exists; never overwrite or delete silently - require user confirmation or an explicit opt-in parameter (e.g. `-Force` / `--overwrite`) that defaults to disabled; see language-specific rules for implementation
 - **No Legacy Support by Default**: Do not add backwards compatibility or legacy file format support unless explicitly requested; legacy constraints must be stated as a requirement, not assumed
 
 ## Script Placement
@@ -87,8 +114,8 @@ Apply these principles in all code and documentation:
 **STATUS: DECIDED**
 
 When AI substantially assists in creating or modifying a file, record attribution in the file header:
-- `Original Author: [Model name]` — if AI wrote the initial version
-- `Major Contributors: [Model names]` — if AI made significant changes
+- `Original Author: [Model name]` - if AI wrote the initial version
+- `Major Contributors: [Model names]` - if AI made significant changes
 
 Applies to: scripts, modules, documentation, configuration files.
 
@@ -104,12 +131,12 @@ Applies to: scripts, modules, documentation, configuration files.
 
 ### Executable code (PowerShell, Bash)
 
-- Credentials must come from environment variables, a secure vault, or an interactive prompt — never hardcoded
+- Credentials must come from environment variables, a secure vault, or an interactive prompt - never hardcoded
 - Interactive credential prompts must never echo input back to the screen
-- Log files may contain machine names, usernames, IP addresses, and hardware identifiers — acceptable in our controlled IT environment
+- Log files may contain machine names, usernames, IP addresses, and hardware identifiers - acceptable in our controlled IT environment
 - Log files must never contain passwords, tokens, or other authentication material
 - Scripts that require elevation must detect the need and request it explicitly; document which operations require administrator rights
-- Validate all external input before use; strictness scales with the source — config files and environment variables are untrusted until validated, typed CLI parameters from IT team members are lower risk
+- Validate all external input before use; strictness scales with the source - config files and environment variables are untrusted until validated, typed CLI parameters from IT team members are lower risk
 
 ### Language-specific security rules
 
@@ -162,7 +189,7 @@ Decide: adopt this formally for all repos?
 - Sections within a version entry: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`
 - No `[Unreleased]` section: a version entry is created when the version is actually incremented, not before
 - Write entries in plain language for the people who use the tool, not for developers
-- The CHANGELOG is maintained by the author of the change — human or AI
+- The CHANGELOG is maintained by the author of the change - human or AI
 - Every code change that increments the version must include a CHANGELOG entry in the same commit
 - Documentation-only changes do not require a CHANGELOG entry
 - Breaking changes must be clearly marked under `Removed` or `Changed`
@@ -175,15 +202,15 @@ Decide: adopt this formally for all repos?
 
 - Every repository must have a `README.md` at the root
 - Written in English
-- Keep content stable — avoid details that go stale (exact version numbers, full parameter references)
+- Keep content stable - avoid details that go stale (exact version numbers, full parameter references)
 - Use the standard template below when creating a new repository
 
 Minimum sections, in this order:
-1. **Purpose** — one paragraph: what it does, for whom, why it exists
-2. **Structure** — table or list of key files/folders with their purpose
-3. **Prerequisites** — what is needed to run it, when prerequisites exist; use ranges not exact versions (e.g. `PowerShell 5.1+`)
-4. **Quick Start** — 2–3 lines showing the most common usage, when a quick start is useful
-5. **License** — one line pointing to the `LICENSE` file
+1. **Purpose** - one paragraph: what it does, for whom, why it exists
+2. **Structure** - table or list of key files/folders with their purpose
+3. **Prerequisites** - what is needed to run it, when prerequisites exist; use ranges not exact versions (e.g. `PowerShell 5.1+`)
+4. **Quick Start** - 2–3 lines showing the most common usage, when a quick start is useful
+5. **License** - one line pointing to the `LICENSE` file
 
 ### Standard README template
 
@@ -214,7 +241,7 @@ Omit this section if not applicable.
 
 ## License
 
-GPL-3.0-only — see [LICENSE](LICENSE).
+GPL-3.0-only - see [LICENSE](LICENSE).
 ````
 
 ## Working Language

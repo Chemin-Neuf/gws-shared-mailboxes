@@ -9,10 +9,26 @@
 
 # Brainstorm — Technical Overview page
 
+**Contents**
+
+- [1. Purpose & audience](#section-1)
+- [2. exodus — required feature list](#section-2)
+- [3. Community member accounts & email access](#section-3)
+  - [3.1 Full GWS account](#section-3-1)
+  - [3.2 Google Group email delivery](#section-3-2)
+- [4. Shared mailboxes — access groups](#section-4)
+- [5. Candidate page sections](#section-5)
+- [6. Choices to document](#section-6)
+- [7. Open questions](#section-7)
+- [8. Caveats & blind spots register](#section-8)
+- [9. Transfer checklist (MD → HTML)](#section-9)
+
 Working draft for [technical-overview.html](technical-overview.html), aimed at **Google Workspace
 tenant admins and script developers**. Once the content below is mature, it will be ported to
 the HTML page (section by section) and this file will be **deleted** — afterwards all updates
 happen directly in the HTML, to avoid two diverging sources of truth.
+
+<a id="section-1"></a>
 
 ## 1. Purpose & audience
 
@@ -50,6 +66,8 @@ happen directly in the HTML, to avoid two diverging sources of truth.
 - **GAM snippets live on this page too.** In an ideal world they'd be centralized elsewhere,
   but keeping them here is good enough — no separate snippets repo/page.
 
+<a id="section-2"></a>
+
 ## 2. exodus — required feature list
 
 > The contract between the HRIS and GWS. Per-feature status to be confirmed.
@@ -60,13 +78,13 @@ happen directly in the HTML, to avoid two diverging sources of truth.
 | 2 | Alias management | User alias, group alias | HRIS → GWS | ? | |
 | 3 | Groups & membership sync | Group, Member | HRIS → GWS | ? | |
 | 4 | Shared mailbox provisioning | User (functional account) or Group | mixed | ? | Some HRIS-backed (function / mission / responsibility), some GWS-native — see ownership model below |
-| 5 | Inbox delegation grants | Gmail delegates, `su-` security group | mixed | ? | One group delegate per mailbox; access = group membership (see section 3b) |
+| 5 | Inbox delegation grants | Gmail delegates, `su-` security group | mixed | ? | One group delegate per mailbox; access = group membership (see section 4) |
 | 6 | Contacts — delegation / sharing | Contacts (People API / Domain Shared Contacts) | mixed | ? | Exact mechanism TBD (see open questions) |
-| 7 | Calendar sharing | Calendar ACLs, `sa-` security group | mixed | ? | Part of the mailbox bundle (see section 1); one `writer` ACL per calendar granted to `sa-` (see section 3b) |
+| 7 | Calendar sharing | Calendar ACLs, `sa-` security group | mixed | ? | Part of the mailbox bundle (see section 1); one `writer` ACL per calendar granted to `sa-` (see section 4) |
 | 8 | Shared drives — provisioning & membership | Shared drive, members | mixed | ? | |
-| 9 | Consistency checks & reconciliation | All managed objects | both | ? | REQUIRED. Personal users: see section 3.5 (automatic or selective manual correction). Other objects: policy parked |
-| 10 | Failure handling & recovery | — | — | REQUIRED | Partial-run recovery, alerting (see section 7) |
-| 11 | Language & country sync | User settings (language, country) | onesime → GWS | ? | Language from nationality, country from country of residence (see 3.3) |
+| 9 | Consistency checks & reconciliation | All managed objects | both | ? | REQUIRED. Personal users: see section 3.1.5 (automatic or selective manual correction). Other objects: policy parked |
+| 10 | Failure handling & recovery | — | — | REQUIRED | Partial-run recovery, alerting (see section 8) |
+| 11 | Language & country sync | User settings (language, country) | onesime → GWS | ? | Language from nationality, country from country of residence (see 3.1.3) |
 
 **Explicitly out of scope (for now)**: OU management (exodus *uses* OUs but does not
 manage them), signature provisioning, license assignment as a distinct feature.
@@ -81,11 +99,34 @@ manage them), signature provisioning, license assignment as a distinct feature.
 - Admins may act directly in the tenant; exodus must **detect** such changes and
   **reconcile** — automatically or with manual intervention (per-object policy TBD).
 
-## 3. Personal users — creation & management (onesime → GWS)
+<a id="section-3"></a>
 
-> Described 2026-09-30. Status: draft — follow-up questions in 3.7.
+## 3. Community member accounts & email access
 
-### 3.1 Identity link
+Community members have one of two ways to receive mail at a
+`firstname.surname@chemin-neuf.org` address:
+
+- **Full GWS account** — provision one when the person is a member of a *frat de vie*,
+  or is a *responsable* in a *frat de quartier*. Once created, the account remains
+  while the person is a community member, even if they later no longer meet the
+  creation criteria. See [3.1](#section-3-1).
+- **Google Group delivery** — for a community member who does not meet either
+  full-account creation criterion and does not already have a full GWS account, route
+  mail for their community address to their personal address. This provides mail
+  reception only; it does not let them send from the community address. See
+  [3.2](#section-3-2).
+
+The Google Group approach is a proposed design to investigate; validate its behavior
+before adopting it.
+
+> Full-account model described 2026-09-30. Status: draft — follow-up questions in
+> 3.1.7; group design proposed 2026-11-09.
+
+<a id="section-3-1"></a>
+
+### 3.1 Full GWS account (onesime → GWS)
+
+#### 3.1.1 Identity link
 
 - Every person in onesime has a **UUID**. Every exodus-managed GWS personal user carries
   that UUID in a **custom user attribute** (custom schema field). The UUID is the only
@@ -93,7 +134,7 @@ manage them), signature provisioning, license assignment as a distinct feature.
 - Personal users can technically be created in three ways: Admin console, GAM, Directory
   API. exodus uses the API.
 
-### 3.2 Eligibility criteria
+#### 3.1.2 Eligibility criteria
 
 | Rule | Condition |
 |---|---|
@@ -103,7 +144,7 @@ manage them), signature provisioning, license assignment as a distinct feature.
 
 Creation criteria are intentionally stricter than retention criteria.
 
-### 3.3 Mode 1 — Create
+#### 3.1.3 Mode 1 — Create
 
 1. Create the GWS user.
 2. Write the onesime UUID into the custom UUID attribute.
@@ -119,7 +160,7 @@ Creation criteria are intentionally stricter than retention criteria.
 8. Send a welcome email to the personal address; the password is delivered via a
    password-pusher link, never in plain text.
 
-### 3.4 Mode 2 — Update
+#### 3.1.4 Mode 2 — Update
 
 - UUID missing in GWS → exodus writes it from onesime.
 - Photo or postal address changed in onesime → exodus overwrites GWS. onesime is SPOT:
@@ -132,7 +173,7 @@ Creation criteria are intentionally stricter than retention criteria.
 - **Never synced** (too organization-specific to keep authoritative in onesime —
   decided 2026-10-01): job title / role, department, manager.
 
-### 3.5 Triggers & correction modes
+#### 3.1.5 Triggers & correction modes
 
 | Trigger | Provisioning | Update |
 |---|---|---|
@@ -151,16 +192,16 @@ Consistency checks:
 Correction modes after a check: **automatic** (fix everything per the rules) or
 **manual** (an exodus user selects which actions to apply).
 
-### 3.6 Admin rules (draft — to confirm)
+#### 3.1.6 Admin rules (draft — to confirm)
 
 - Personal users are created and updated **through exodus only** (automatic or manual
   trigger) — never by hand in the Admin console or via GAM. Such accounts would lack the
   UUID and be flagged by consistency check (b).
 - Synced fields (photo, postal address): permanent changes are made **in onesime**.
   Users may temporarily change their photo in GWS, but it will be overwritten at the
-  next onesime change (see 3.7 item 11).
+  next onesime change (see 3.1.7 item 11).
 
-### 3.7 Questions & remarks (to answer)
+#### 3.1.7 Questions & remarks (to answer)
 
 1. ~~[Push back] Personal email overwritten in onesime~~ → RESOLVED (2026-09-30):
    the personal address is **moved within onesime** to an `old-personal-e-mail` field;
@@ -219,7 +260,7 @@ Correction modes after a check: **automatic** (fix everything per the rules) or
    happens if it expires unused (re-send = new password = manual trigger?). Password
    pusher self-hosted or public service (external-tools policy)?
 10. **Welcome email** — language can follow the synced user language (from nationality,
-    see 3.3 step 4). Still open: sender address and deliverability
+    see 3.1.3 step 4). Still open: sender address and deliverability
     (SPF / DKIM / DMARC), since it goes to external personal mailboxes.
 11. ~~Attribute drift~~ → RESOLVED (2026-09-30): conscious trade-off. Changes made in
     GWS are **not** synced back to onesime. Users **may** change their photo in GWS
@@ -250,7 +291,9 @@ without its UUID. The photo requires a separate call. Make the UUID field **inde
 highest-risk combination — a onesime bug or bulk data change could suspend many accounts
 at once. A mass-change safety threshold should be discussed with offboarding.
 
-### 3.8 Community addresses for people without a GWS account
+<a id="section-3-2"></a>
+
+### 3.2 Google Group email delivery for people without a full GWS account
 
 > Proposed 2026-11-09. Status: investigation — validate the group design in the test
 > tenant before deciding.
@@ -341,11 +384,13 @@ at once. A mass-change safety threshold should be discussed with offboarding.
 [Google: internal/external group classifications](https://knowledge.workspace.google.com/admin/groups/changes-to-internal-and-external-classifications-in-google-groups);
 [Gmail API: forwarding requirements](https://developers.google.com/workspace/gmail/api/guides/forwarding_settings).
 
-## 3b. Shared mailboxes — access groups (`su-` / `sa-`)
+<a id="section-4"></a>
 
-> Proposed 2026-10-26, updated 2026-10-28. Status: draft — open points in 3b.6.
+## 4. Shared mailboxes — access groups (`su-` / `sa-`)
 
-### 3b.1 Model
+> Proposed 2026-10-26, updated 2026-10-28. Status: draft — open points in 4.6.
+
+### 4.1 Model
 
 Access to a shared mailbox and its calendar is granted through **security groups**, never
 to individual users directly — same pattern as `sd-<shared-drive-name>@security.chemin-neuf.net`
@@ -374,9 +419,9 @@ for shared drives.
   themselves are set once and stay under admin / exodus control (no ACL drift to detect).
 - **Why separate calendar groups even when members are identical**: future access changes
   become membership changes only — no per-calendar ACL calls.
-- **Contacts**: no group — see 3b.4 (contact delegation is per user).
+- **Contacts**: no group — see 4.4 (contact delegation is per user).
 
-### 3b.2 Naming rule (decided 2026-10-26)
+### 4.2 Naming rule (decided 2026-10-26)
 
 - Shared mailbox on **`@chemin-neuf.org`** → use only the local part (before `@`).
 - Shared mailbox on **any other domain** → use the full address with `---` replacing `@`.
@@ -421,7 +466,7 @@ Remarks:
   store the **full mailbox address in the group description**, and have exodus find
   groups by that link, not by recomputing the name.
 
-### 3b.3 Group settings (updated 2026-11-09)
+### 4.3 Group settings (updated 2026-11-09)
 
 The table gives the intended setting and the GAM7 setting name/value where GAM exposes it.
 GAM names and values use the documented command-line spelling; `N/A` means the current
@@ -479,7 +524,7 @@ and verify it in the tenant rather than assuming a GAM command exists.
 [Directory API Member resource](https://developers.google.com/workspace/admin/directory/reference/rest/v1/members),
 and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs/reference/rest/v1/groups).
 
-### 3b.4 Google constraints to respect
+### 4.4 Google constraints to respect
 
 - **Only security groups can join a security group** → `su-` into `sa-` is fine, but an
   existing collaborative / exodus-managed group can only be nested into `su-` / `sa-` if it
@@ -548,14 +593,14 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
   exodus would have to expand `su-` membership into individual contact delegates and keep
   them in sync — API support for contact delegation still to verify.
 
-### 3b.5 Benefits
+### 4.5 Benefits
 
 - One delegate entry per mailbox → exodus avoids the slow per-user Gmail API delegation
-  calls (see caveats, section 7).
+  calls (see caveats, section 8).
 - Audit = group membership; Gmail's delegate list shows only the group.
 - Consistent with the existing `sd-` convention.
 
-### 3b.6 Open points
+### 4.6 Open points
 
 1. **Membership management** — HRIS-backed mailboxes: exodus from onesime; GWS-native
    mailboxes: group managers or admins? (mixed ownership, section 2)
@@ -566,7 +611,7 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
 4. **Contacts** — needed at all? If yes: per-user delegation synced from `su-` (API to
    verify), or Domain Shared Contacts instead.
 5. **Group-delegation policy check** — adopt the proposed exodus consistency check
-   (3b.4)? Confirm the minimum permissions needed to read policies (scope only, or also
+   (4.4)? Confirm the minimum permissions needed to read policies (scope only, or also
    the GCP role).
 6. **Explicit group owner** — test whether an organization group can be managed with no
    explicit owner member, given that Google states administrators are automatically
@@ -578,7 +623,9 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
    Cloud Identity Groups API `externalIds` field; decide between that and an exodus-side
    mapping. This is not a user-style custom schema.
 
-## 4. Candidate page sections
+<a id="section-5"></a>
+
+## 5. Candidate page sections
 
 > To be reordered / trimmed / expanded as we brainstorm.
 
@@ -589,7 +636,7 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
 3. **API landscape** — Admin SDK (Directory, Groups Settings, Reports), Gmail API, People API,
    Drive API; what each covers here.
 4. **Choices made & rationale** — service account + domain-wide delegation, GAM, no paid
-   third-party tools (nonprofit external-tools policy). (see section 5)
+   third-party tools (nonprofit external-tools policy). (see section 6)
 5. **exodus: features & implementation** — the feature list (section 2), architecture,
    scheduling, error handling, credentials.
 6. **Admin how-to & pitfalls** — what to do / how / what to avoid per object type
@@ -597,7 +644,9 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
 7. **Limits & quotas** — API rate limits, GWN edition constraints relevant to scripting.
 8. **Links** — official Google docs, GAM wiki, related topic pages (9, 10).
 
-## 5. Choices to document (initial list)
+<a id="section-6"></a>
+
+## 6. Choices to document (initial list)
 
 | Choice | Alternatives considered | Rationale |
 |---|---|---|
@@ -626,7 +675,9 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
 | `su-` is a member of the linked shared drive's `sd-` group | Separate drive grants | Mailbox team gets the drive automatically; one membership to manage |
 | … | … | … |
 
-## 6. Open questions
+<a id="section-7"></a>
+
+## 7. Open questions
 
 > Ordered by priority (agreed 2026-09-22). We work top-down; parked topics stay parked
 > until the earlier ones are settled.
@@ -651,9 +702,10 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
 
 - [ ] How are users / shared users / collaborative groups / aliases created & managed?
   (web console vs API vs exodus — per object type)
-  - [x] Personal users — model described (section 3), updated 2026-09-30 (language
-    sync, homonym & accountType proposals, drift trade-off); remaining follow-ups in 3.7
-  - [ ] Shared users — access groups `su-` / `sa-` proposed (section 3b, 2026-10-26);
+  - [x] Personal users — full-account model described in section 3.1, updated 2026-09-30
+    (language sync, homonym & accountType proposals, drift trade-off); remaining
+    follow-ups in 3.1.7. Google Group delivery proposed in section 3.2.
+  - [ ] Shared users — access groups `su-` / `sa-` proposed (section 4, 2026-10-26);
     account creation, OU sub-tree and ownership still open  - [ ] Collaborative groups
   - [ ] Aliases
 - [ ] Per-feature status (live / planned / idea) in the section 2 table.
@@ -662,12 +714,12 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
 
 - [ ] Contacts mechanism: per-mailbox contact delegation vs Domain Shared Contacts
   (Directory API)? Note (2026-10-28): contact delegation is per user only, no groups
-  (section 3b.4).
+  (section 4.4).
 - [x] ~~Calendars: ACL grants on the functional account's calendar vs separate shared
   calendars / resources?~~ → DECIDED (2026-10-28): `writer` ACL on the functional
-  account's calendar, granted to the `sa-` group; `reader` via `saro-` (section 3b).
+  account's calendar, granted to the `sa-` group; `reader` via `saro-` (section 4).
 - [ ] Shared drives: who becomes Manager; in scope now or later? (`su-` is a member of
-  the linked drive's `sd-` group — section 3b; the mailbox ↔ drive link is TBD.)
+  the linked drive's `sd-` group — section 4; the mailbox ↔ drive link is TBD.)
 
 **3. PARKED — later topics (do not discuss yet)**
 
@@ -676,7 +728,9 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
   mechanism. Parked (reconciliation is a *required feature*, its policy comes later).
 - [ ] Change management: who may modify exodus; how changes are announced.
 
-## 7. Caveats & blind spots register
+<a id="section-8"></a>
+
+## 8. Caveats & blind spots register
 
 > Raised during the 2026-09-22 session; to be discussed, then moved into the relevant
 > page sections.
@@ -685,7 +739,7 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
 
 - **Delegation grants are per-user Gmail API operations** — at scale (delegates ×
   mailboxes) this is the slowest part of any sync and the first to hit quota.
-  Largely mitigated by delegating to the `su-` group (one grant per mailbox, section 3b).
+  Largely mitigated by delegating to the `su-` group (one grant per mailbox, section 4).
 - **Shared drives**: creation requires a Shared-Drives-enabled edition (OK on GWN), but
   membership and roles (Manager, Content manager, …) via the Drive API differ from
   groups — verify exodus's actual usage.
@@ -716,7 +770,9 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
    test-before-production practice.
 5. **Change management** → to be discussed later.
 
-## 8. Transfer checklist (MD → HTML)
+<a id="section-9"></a>
+
+## 9. Transfer checklist (MD → HTML)
 
 - [ ] One `<section class="section">` per retained section, with a stable `id`
 - [ ] Sidebar nav is auto-generated by `js/site-nav.js` — no manual links needed

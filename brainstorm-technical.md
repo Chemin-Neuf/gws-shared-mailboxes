@@ -116,11 +116,13 @@ Community members have one of two ways to receive mail at a
   reception only; it does not let them send from the community address. See
   [3.2](#section-3-2).
 
-The Google Group approach is a proposed design to investigate; validate its behavior
-before adopting it.
+The Google Group approach has been investigated and validated. The specific group
+settings and end-to-end delivery behavior still need the pilot checks listed in 3.2
+before rollout.
 
 > Full-account model described 2026-09-30. Status: draft — follow-up questions in
-> 3.1.7; group design proposed 2026-11-09.
+> 3.1.7; Google Group delivery approach validated, implementation details remain to
+> be confirmed.
 
 <a id="section-3-1"></a>
 
@@ -295,16 +297,19 @@ at once. A mass-change safety threshold should be discussed with offboarding.
 
 ### 3.2 Google Group email delivery for people without a full GWS account
 
-> Proposed 2026-11-09. Status: investigation — validate the group design in the test
-> tenant before deciding.
+> Investigated and validated. Status: approach accepted; verify implementation details
+> and end-to-end delivery in the test tenant before rollout.
 
 - **Requirement**: every brother and sister in the community has a
-  `firstname.surname@chemin-neuf.org` address. A person without a full GWS account can
-  receive mail at that address through redirection to their personal address, but cannot
-  send from the community address. Mass mailings use the Onesime function and the
-  community address; sending personal email from that address requires migration to a
-  full GWS account.
-- **Preferred candidate — one Google Group per person without an account**: create a
+  `firstname.surname@chemin-neuf.org` address. The goal is to limit the differences
+  between *frat de vie* and *frat de quartier* members: all receive a community address.
+  Because the free GWS tenant for NGOs is capped at 2.000 GWS accounts, not every member
+  can have a full account — hence the redirection to the personal address. A person
+  without a full GWS account can receive mail at that address through redirection to
+  their personal address, but cannot send from the community address.
+  Mass mailings use the Onesime function and a community address; sending personal email from that
+  address requires migration to a full GWS account.
+- **Validated approach — one Google Group per person without an account**: create a
   group at the community address and add that person's personal address as its sole
   external member, with delivery set to `ALL_MAIL`. Exodus could create the group and
   manage its membership through the Admin SDK Directory API; the Groups Settings API
@@ -371,7 +376,7 @@ at once. A mass-change safety threshold should be discussed with offboarding.
   Google forwards to representative external providers. Also test ordinary external
   correspondence, spam/abuse handling, bounces, external-member delivery, owner
   management, address hand-off, and relevant group/domain recipient quotas before
-  adopting this model.
+  rolling out this model.
 
 **References (checked 2026-11-09)**:
 [Google: redirect or forward messages, including address maps](https://knowledge.workspace.google.com/admin/gmail/advanced/redirect-or-forward-gmail-messages-to-another-user);

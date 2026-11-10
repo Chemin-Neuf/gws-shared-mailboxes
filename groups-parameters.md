@@ -8,17 +8,18 @@
 
 # Google Workspace Groups — API and GAM configuration reference
 
-**Research checked:** 10 November 2026
-**Scope:** Google Workspace Groups Settings API v1, Admin SDK Directory API `groups` resource, Cloud Identity Groups API v1 group metadata, and GAMADV-XTD3 command mapping.
+This document is a neutral, exhaustive inventory of the settings and properties that Google Workspace exposes for Google Groups through its APIs, with the matching GAM7 commands (GAM7 is the GAM version used throughout). It is a reference, not a set of recommendations: it is meant to be used later as the basis for choosing recommended configurations for shared-mailbox groups.
+
+**Scope:** Google Workspace Groups Settings API v1, Admin SDK Directory API `groups` resource, Cloud Identity Groups API v1 group metadata, and GAM7 command mapping.
 
 ## Contents
 
 - [1. API overview](#1-api-overview)
+  - [Group types and modes](#group-types-and-modes)
 - [2. Groups Settings API — complete documented property inventory](#2-groups-settings-api--complete-documented-property-inventory)
   - [API vs GAM naming](#api-vs-gam-naming)
   - [Current and non-deprecated properties](#current-and-non-deprecated-properties)
   - [Legacy and deprecated properties](#legacy-and-deprecated-properties)
-  - [Important interaction rules](#important-interaction-rules)
   - [Groups Settings API methods](#groups-settings-api-methods)
 - [3. Admin SDK Directory API — Group resource](#3-admin-sdk-directory-api--group-resource)
   - [Directory API group methods](#directory-api-group-methods)
@@ -36,6 +37,8 @@
   - [Update examples](#update-examples)
   - [Member management examples](#member-management-examples)
 - [8. Practical interpretation / cautions](#8-practical-interpretation--cautions)
+  - [Interaction rules between settings](#interaction-rules-between-settings)
+  - [General cautions](#general-cautions)
 - [9. Official and community references](#9-official-and-community-references)
 
 > **Important scope note:** “All group settings” is not one API. The Groups Settings API covers email/discussion permissions and behaviour. The Directory API covers the directory group object and membership. Cloud Identity Groups API covers group classification, dynamic groups, and security-group metadata. Some Google Groups UI controls are not exposed by any of these group-level APIs. Member-specific subscription/delivery settings are also separate from group-level settings.
@@ -50,13 +53,25 @@
 | Admin SDK Directory API — `groups.members` | Membership, role and member delivery preference | `GET/POST https://admin.googleapis.com/admin/directory/v1/groups/{groupKey}/members`; <BR> `GET/PATCH/PUT/DELETE https://admin.googleapis.com/admin/directory/v1/groups/{groupKey}/members/{memberKey}`; <BR> `GET https://admin.googleapis.com/admin/directory/v1/groups/{groupKey}/hasMember/{memberKey}` | **Commands:**<br>`gam update group <groupEmail> add member <memberEmail>`<br>`gam update group <groupEmail> add manager <memberEmail>`<br>`gam update group <groupEmail> update member <delivery-option> <memberEmail>`<br>**Coverage:** membership roles and individual delivery settings |
 | Cloud Identity Groups API v1 — `groups` | Group classification labels, security/dynamic group metadata, external identifiers and resource hierarchy | `GET/PATCH/DELETE https://cloudidentity.googleapis.com/v1/groups/{groupId}`; <BR> `POST https://cloudidentity.googleapis.com/v1/groups` | **Commands:** `gam update group <groupEmail> makesecuritygroup` (where supported)<br>**Coverage:** security-group labeling is irreversible; dynamic groups use the Cloud Identity workflow |
 
+### Group types and modes
+
+> **Collaborative Inbox is a mode, not a group type.** It is a standard Google Group with `enableCollaborativeInbox=true`; it is not a separate Directory API resource type.
+
+| Group type / mode | Groups Settings API | Directory API | Cloud Identity Groups API | Notes |
+|---|---|---|---|---|
+| Standard Google Group / mailing list | Yes | Yes | Group metadata/classification may be exposed | Typical email-enabled group. |
+| Collaborative Inbox | Yes | Yes | Google Group classification | Mode of a Google Group, enabled with `enableCollaborativeInbox=true`. |
+| Google Groups discussion forum | Yes | Yes | `groups.discussion_forum` label | Discussion/forum features and topic permissions may be relevant. |
+| Security group | Not the defining mechanism | Google Group object may remain | `groups.security` label | Security classification is separate from email posting permissions. |
+| Dynamic group | Not the defining mechanism | Not the primary dynamic-membership interface | `groups.dynamic` plus `dynamicGroupMetadata` | Membership is query-driven. |
+| Identity-mapped external group | No ordinary Google Groups settings assumption | Not an ordinary Workspace group | `system/groups/external` label | Cloud Identity / Cloud Search identity-mapping scenario. |
 
 ## 2. Groups Settings API — complete documented property inventory
 
 ### API vs GAM naming
 
 - The **API property** column below uses the exact JSON property spelling (camelCase).
-- GAMADV-XTD3 accepts group attributes in its `gam update group` command. Its documentation commonly shows lowercase snake_case forms such as `who_can_post_message` and `enablecollaborativeinbox`; GAM's parser also accepts many API-style names. The exact accepted aliases can vary by GAM release. Check the installed build with `gam help update group` and `gam help print groups`.
+- GAM7 accepts group attributes in its `gam update group` command. Its documentation commonly shows lowercase snake_case forms such as `who_can_post_message` and `enablecollaborativeinbox`; GAM's parser also accepts many API-style names. The exact accepted aliases can vary by GAM release. Check the installed build with `gam help update group` and `gam help print groups`.
 - Do not assume a property is writable just because it appears in a GET response. Some properties are deprecated, read-only, ignored on update, or have conditions.
 - The Groups Settings API represents several boolean values as strings in its resource schema; use `true` / `false` as shown by Google and GAM.
 - A GAM attribute being absent from an example is not proof that the API property is unsupported by GAM.
@@ -77,7 +92,7 @@ The table includes the current settings, legacy/deprecated properties still pres
 | `defaultSender` | `default_sender` | Default sender identity | `DEFAULT_SELF`; `GROUP` | Groups where members can post as the group | Determines whether the default sender is the individual user or the group when posting as the group. |
 | `description` | `description` | Group description | Text; max 4,096 characters | All | Description of the group's purpose. |
 | `email` | `email` | Group email address | Email address | All | Primary group address. Change through Directory API / GAM group update, not the Groups Settings API. |
-| `enableCollaborativeInbox` | `enablecollaborativeinbox` / `collaborative` | Collaborative Inbox | `true`; `false` | Standard Google Group; enables Collaborative Inbox mode | Turns Collaborative Inbox functionality on/off for the group. It is a setting on a Google Group, not a separate Directory group resource type. |
+| `enableCollaborativeInbox` | `enablecollaborativeinbox` / `collaborative` | Collaborative Inbox | `true`; `false` | Standard Google Group; enables Collaborative Inbox mode | Turns Collaborative Inbox functionality on/off for the group. See [Group types and modes](#group-types-and-modes). |
 | `favoriteRepliesOnTop` | `favorite_replies_on_top` | Show favourite replies at top | `true`; `false` | Forum / Collaborative Inbox topic workflow | Controls whether favourite replies are displayed above other replies. Not explicitly marked deprecated in the current resource description. |
 | `includeCustomFooter` | `include_custom_footer` | Include custom footer | `true`; `false` | All | Enables/disables the custom footer on group messages. |
 | `includeInGlobalAddressList` | `include_in_global_address_list` / `gal` | Include in Global Address List (GAL) | `true`; `false` | All | Controls whether the group is included in the Workspace Global Address List. |
@@ -104,52 +119,28 @@ The table includes the current settings, legacy/deprecated properties still pres
 
 ### Legacy and deprecated properties
 
-| API property | GAM attribute / practical spelling | Human-readable setting | Allowed values / format | Applicability | Description / notes |
-|---|---|---|---|---|---|
-| `allowGoogleCommunication` | `allow_google_communication` | Allow Google communication (legacy) | `true`; `false` | Legacy | Deprecated legacy preference controlling Google communications to group managers. Retained in the resource schema. |
-| `maxMessageBytes` | `max_message_bytes` | Maximum message size (legacy) | Integer; API marks deprecated; documented maximum is 25 MB | Legacy | Deprecated. Google states the maximum message size is 25 MB; do not rely on this field to change the limit. |
-| `messageDisplayFont` | `message_display_font` | Message display font (legacy) | `DEFAULT_FONT`; `FIXED_WIDTH_FONT` in legacy schema | Legacy | Deprecated; Google says the default display font always has the value `DEFAULT_FONT`. |
-| `showInGroupDirectory` | `show_in_group_directory` | Show in Groups directory (legacy) | `true`; `false` | Legacy | Deprecated; Google says this is merged into `whoCanDiscoverGroup`. |
-| `whoCanAdd` | `who_can_add` | Who can directly add members (legacy) | `ALL_MEMBERS_CAN_ADD`; `ALL_MANAGERS_CAN_ADD`; `ALL_OWNERS_CAN_ADD`; `NONE_CAN_ADD` | Legacy; member-management/forum permissions | Deprecated; merged into `whoCanModerateMembers`. |
-| `whoCanAddReferences` | `who_can_add_references` | Who can add references (legacy) | `NONE` (Google says value is always `NONE`) | Legacy forum | Deprecated; functionality no longer supported in the Google Groups UI. |
-| `whoCanApproveMembers` | `who_can_approve_members` | Who can approve membership requests (legacy) | `ALL_MEMBERS_CAN_APPROVE`; `ALL_MANAGERS_CAN_APPROVE`; `ALL_OWNERS_CAN_APPROVE`; `NONE_CAN_APPROVE` | Legacy member moderation | Deprecated; merged into `whoCanModerateMembers`. |
-| `whoCanApproveMessages` | `who_can_approve_messages` | Who can approve pending messages (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy content moderation | Deprecated; merged into `whoCanModerateContent`. |
-| `whoCanAssignTopics` | `who_can_assign_topics` | Who can assign topics (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | Legacy forum / Collaborative Inbox topic workflow | Deprecated; merged into `whoCanAssistContent`. |
-| `whoCanBanUsers` | `who_can_ban_users` | Who can ban/deny users (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy member moderation | Deprecated; merged into `whoCanModerateMembers`. |
-| `whoCanDeleteAnyPost` | `who_can_delete_any_post` | Who can delete any post (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy forum | Deprecated; merged into `whoCanModerateContent`. Authors can always delete their own posts. |
-| `whoCanDeleteTopics` | `who_can_delete_topics` | Who can delete topics (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy forum | Deprecated; merged into `whoCanModerateContent`. |
-| `whoCanEnterFreeFormTags` | `who_can_enter_free_form_tags` | Who can enter free-form tags (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | Legacy forum / Collaborative Inbox topic workflow | Deprecated; merged into `whoCanAssistContent`. |
-| `whoCanHideAbuse` | `who_can_hide_abuse` | Who can hide/report abusive posts (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy forum | Deprecated; merged into `whoCanModerateContent`. |
-| `whoCanInvite` | `who_can_invite` | Who can invite members (legacy) | `ALL_MEMBERS_CAN_INVITE`; `ALL_MANAGERS_CAN_INVITE`; `ALL_OWNERS_CAN_INVITE`; `NONE_CAN_INVITE` | Legacy; member-management/forum permissions | Deprecated; merged into `whoCanModerateMembers`. Kept here because it remains in the API schema. |
-| `whoCanLockTopics` | `who_can_lock_topics` | Who can lock topics (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy forum | Deprecated; merged into `whoCanModerateContent`. |
-| `whoCanMakeTopicsSticky` | `who_can_make_topics_sticky` | Who can make topics sticky (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy forum | Deprecated; merged into `whoCanModerateContent`. |
-| `whoCanMarkDuplicate` | `who_can_mark_duplicate` | Who can mark topics as duplicate (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | Legacy forum / Collaborative Inbox topic workflow | Deprecated; merged into `whoCanAssistContent`. |
-| `whoCanMarkFavoriteReplyOnAnyTopic` | `who_can_mark_favorite_reply_on_any_topic` | Who can mark a favourite reply on any topic (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | Legacy forum / Collaborative Inbox topic workflow | Deprecated; merged into `whoCanAssistContent`. |
-| `whoCanMarkFavoriteReplyOnOwnTopic` | `who_can_mark_favorite_reply_on_own_topic` | Who can mark a favourite reply on own topic (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | Legacy forum / Collaborative Inbox topic workflow | Deprecated; merged into `whoCanAssistContent`. |
-| `whoCanMarkNoResponseNeeded` | `who_can_mark_no_response_needed` | Who can mark no response needed (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | Legacy forum / Collaborative Inbox topic workflow | Deprecated; merged into `whoCanAssistContent`. |
-| `whoCanModifyMembers` | `who_can_modify_members` | Who can modify member roles (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy member moderation | Deprecated; merged into `whoCanModerateMembers`. |
-| `whoCanModifyTagsAndCategories` | `who_can_modify_tags_and_categories` | Who can modify tags and categories (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | Legacy forum / Collaborative Inbox topic workflow | Deprecated; merged into `whoCanAssistContent`. |
-| `whoCanMoveTopicsIn` | `who_can_move_topics_in` | Who can move topics into the group (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy forum | Deprecated; merged into `whoCanModerateContent`. |
-| `whoCanMoveTopicsOut` | `who_can_move_topics_out` | Who can move topics out of the group (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy forum | Deprecated; merged into `whoCanModerateContent`. |
-| `whoCanPostAnnouncements` | `who_can_post_announcements` | Who can post announcements (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy forum | Deprecated; merged into `whoCanModerateContent`. |
-| `whoCanTakeTopics` | `who_can_take_topics` | Who can take/claim topics (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | Legacy forum / Collaborative Inbox topic workflow | Deprecated; merged into `whoCanAssistContent`. |
-| `whoCanUnassignTopic` | `who_can_unassign_topic` | Who can unassign topics (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | Legacy forum / Collaborative Inbox topic workflow | Deprecated; merged into `whoCanAssistContent`. |
-| `whoCanUnmarkFavoriteReplyOnAnyTopic` | `who_can_unmark_favorite_reply_on_any_topic` | Who can remove favourite-reply status (legacy) | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | Legacy forum / Collaborative Inbox topic workflow | Deprecated; merged into `whoCanAssistContent`. |
+These properties are still present in Google's resource schema and are kept here for completeness and audit compatibility. For every property below, the GAM attribute is the snake_case form of the API property name (for example `whoCanAddReferences` becomes `who_can_add_references`). New configurations should use the replacement property.
 
-### Important interaction rules
+**Merged into a current property**
 
-| Setting / combination | Behaviour |
-|---|---|
-| `archiveOnly=true` | Deactivates the group, rejects new messages and forces `whoCanPostMessage=NONE_CAN_POST`. Re-enabling it resets posting permission to `ALL_MANAGERS_CAN_POST`. |
-| `whoCanPostMessage=NONE_CAN_POST` while `archiveOnly=false` | Google rejects the update. |
-| `whoCanAddExternalMembers` while `allowExternalMembers=false` | Google ignores updates to `whoCanAddExternalMembers`. |
-| `replyTo=REPLY_TO_CUSTOM` | `customReplyTo` must contain a valid email address. |
-| `sendMessageDenyNotification=true` | Enables the rejection notification; `defaultMessageDenyNotificationText` customises its text. |
-| `whoCanPostMessage=ANYONE_CAN_POST` | Google recommends `messageModerationLevel=MODERATE_NON_MEMBERS` to reduce spam. |
-| `membersCanPostAsTheGroup=true` | Individual/new-member moderation settings do not apply to messages sent as the group. |
-| `whoCanDiscoverGroup` vs `whoCanViewGroup` | Discovery controls whether users can find the group; view controls access to conversations. They are not equivalent. |
-| `whoCanViewMembership` vs `whoCanViewGroup` | Member-list visibility and conversation visibility are separate permissions. |
-| Deprecated moderation properties | Prefer the consolidated `whoCanModerateMembers`, `whoCanModerateContent` and `whoCanAssistContent` properties for current configurations. |
+| Replaced by | Deprecated API properties | Allowed values | Notes |
+|---|---|---|---|
+| `whoCanDiscoverGroup` | `showInGroupDirectory` | `true`; `false` | Legacy "Show in Groups directory". |
+| `whoCanModerateMembers` | `whoCanAdd` | `ALL_MEMBERS_CAN_ADD`; `ALL_MANAGERS_CAN_ADD`; `ALL_OWNERS_CAN_ADD`; `NONE_CAN_ADD` | Who can directly add members. |
+| `whoCanModerateMembers` | `whoCanInvite` | `ALL_MEMBERS_CAN_INVITE`; `ALL_MANAGERS_CAN_INVITE`; `ALL_OWNERS_CAN_INVITE`; `NONE_CAN_INVITE` | Who can invite members. |
+| `whoCanModerateMembers` | `whoCanApproveMembers` | `ALL_MEMBERS_CAN_APPROVE`; `ALL_MANAGERS_CAN_APPROVE`; `ALL_OWNERS_CAN_APPROVE`; `NONE_CAN_APPROVE` | Who can approve membership requests. |
+| `whoCanModerateMembers` | `whoCanBanUsers`<br>`whoCanModifyMembers` | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Who can ban/deny users; who can modify member roles. |
+| `whoCanModerateContent` | `whoCanApproveMessages`<br>`whoCanDeleteAnyPost`<br>`whoCanDeleteTopics`<br>`whoCanHideAbuse`<br>`whoCanLockTopics`<br>`whoCanMakeTopicsSticky`<br>`whoCanMoveTopicsIn`<br>`whoCanMoveTopicsOut`<br>`whoCanPostAnnouncements` | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | Legacy content moderation / forum permissions. Authors can always delete their own posts. |
+| `whoCanAssistContent` | `whoCanAssignTopics`<br>`whoCanEnterFreeFormTags`<br>`whoCanMarkDuplicate`<br>`whoCanMarkFavoriteReplyOnAnyTopic`<br>`whoCanMarkFavoriteReplyOnOwnTopic`<br>`whoCanMarkNoResponseNeeded`<br>`whoCanModifyTagsAndCategories`<br>`whoCanTakeTopics`<br>`whoCanUnassignTopic`<br>`whoCanUnmarkFavoriteReplyOnAnyTopic` | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | Legacy forum / Collaborative Inbox topic workflow. |
+
+**Deprecated without a replacement**
+
+| API property | Allowed values / format | Notes |
+|---|---|---|
+| `allowGoogleCommunication` | `true`; `false` | Legacy preference controlling Google communications to group managers. |
+| `maxMessageBytes` | Integer; documented maximum is 25 MB | Google states the maximum message size is 25 MB; do not rely on this field to change the limit. |
+| `messageDisplayFont` | `DEFAULT_FONT`; `FIXED_WIDTH_FONT` in legacy schema | Google says the default display font always has the value `DEFAULT_FONT`. |
+| `whoCanAddReferences` | `NONE` (Google says the value is always `NONE`) | Legacy forum; functionality no longer supported in the Google Groups UI. |
 
 ### Groups Settings API methods
 
@@ -213,7 +204,7 @@ A “security group” is not defined by a Groups Settings API permission. Googl
 | `updateTime` | `updateTime` | Last update time | RFC 3339 timestamp; output-only | Cloud Identity groups | Last update timestamp. |
 | `labels` | `labels` | Group classification / state labels | Map of label key to empty value | Cloud Identity groups | Required classification labels. See the specific labels below. |
 | `labels["cloudidentity.googleapis.com/groups.discussion_forum"]` | Label key | Google Group / discussion forum | Empty value | Standard Google Groups | Default label for Google Groups. |
-| `labels["cloudidentity.googleapis.com/groups.security"]` | `makesecuritygroup` in GAMADV-XTD3 where supported | Security group | Empty value | Google Groups classified as security groups | Adds security-group classification to an existing Google Group. Google documents this as irreversible: it cannot be removed. Check GAM version and API permissions before applying. |
+| `labels["cloudidentity.googleapis.com/groups.security"]` | `makesecuritygroup` in GAM7 where supported | Security group | Empty value | Google Groups classified as security groups | Adds security-group classification to an existing Google Group. Google documents this as irreversible: it cannot be removed. Check GAM version and API permissions before applying. |
 | `labels["cloudidentity.googleapis.com/groups.dynamic"]` | Cloud Identity dynamic-group workflow | Dynamic group | Empty value | Dynamic groups | Marks a dynamic group. Membership is calculated from a query rather than maintained only by manual member additions. |
 | `labels["cloudidentity.googleapis.com/groups.locked"]` | Cloud Identity API | Locked group | Empty value | Supported Google Groups | Adding this label locks the group; removing it unlocks the group. |
 | `labels["system/groups/external"]` | Cloud Identity API | Identity-mapped external group | Empty value | Cloud Search identity-mapped groups | Used for external identity-mapped groups. |
@@ -221,17 +212,6 @@ A “security group” is not defined by a Groups Settings API permission. Googl
 | `dynamicGroupMetadata.queries[]` | Cloud Identity API | Dynamic membership queries | `resourceType` plus query string | Dynamic groups | Membership is the union of query results. Current documentation says only one USER resource query entry is supported and customers can create up to 500 dynamic groups. |
 | `dynamicGroupMetadata.status` | Cloud Identity API | Dynamic group status | Object; output-only | Dynamic groups | Reports the dynamic group's processing status. |
 | `externalIds[]` | Cloud Identity API | External identifiers | Array of `ExternalId`; supported namespace `system/external` | Groups integrated with external identity sources | Lets external identity providers/directory sync tools associate their native identifier with the group. |
-
-**Type distinctions**
-
-| Group type / mode | Groups Settings API | Directory API | Cloud Identity Groups API | Notes |
-|---|---|---|---|---|
-| Standard Google Group / mailing list | Yes | Yes | Group metadata/classification may be exposed | Typical email-enabled group. |
-| Collaborative Inbox | Yes | Yes | Google Group classification | It is a Google Group with `enableCollaborativeInbox=true`, not a separate Directory resource type. |
-| Google Groups discussion forum | Yes | Yes | `groups.discussion_forum` label | Discussion/forum features and topic permissions may be relevant. |
-| Security group | Not the defining mechanism | Google Group object may remain | `groups.security` label | Security classification is separate from email posting permissions. |
-| Dynamic group | Not the defining mechanism | Not the primary dynamic-membership interface | `groups.dynamic` plus `dynamicGroupMetadata` | Membership is query-driven. |
-| Identity-mapped external group | No ordinary Google Groups settings assumption | Not an ordinary Workspace group | `system/groups/external` label | Cloud Identity / Cloud Search identity-mapping scenario. |
 
 ### Cloud Identity Groups API methods
 
@@ -251,7 +231,7 @@ These methods manage the group resource and its security-settings subresource. M
 
 ## 5. Settings shown in Google Groups UI but not exposed as a Groups Settings API property
 
-The following UI controls are identified in GAMADV-XTD3's Admin Console-to-API mapping as not available through the Groups Settings API. Availability and labels can change in the Google Groups UI.
+The following UI controls are identified in GAM7's “GUI API Group settings mapping” as not available through the Groups Settings API. Availability and labels can change in the Google Groups UI.
 
 | Admin Console / Google Groups UI control | Groups Settings API property | Notes |
 |---|---|---|
@@ -317,7 +297,7 @@ gam group group@example.org print allfields
 
 ### JSON backup of settings
 
-GAMADV-XTD3 documentation shows exporting settings with `formatjson` and restoring from the JSON column. Example:
+GAM7 documentation shows exporting settings with `formatjson` and restoring from the JSON column. Example:
 
 ```bash
 gam redirect csv groups.csv print groups query "name:test*" settings formatjson quotechar "'"
@@ -342,7 +322,7 @@ gam update group group@example.org enablecollaborativeinbox true
 gam update group group@example.org is_archived true
 ```
 
-GAM syntax evolves. Confirm accepted attribute/value spellings in the installed GAMADV-XTD3 help before applying changes to production groups.
+GAM syntax evolves. Confirm accepted attribute/value spellings in the installed GAM7 help before applying changes to production groups.
 
 ### Member management examples
 
@@ -362,15 +342,28 @@ gam update group group@example.org update manager user@example.net
 
 ## 8. Practical interpretation / cautions
 
+### Interaction rules between settings
+
+| Setting / combination | Behaviour |
+|---|---|
+| `archiveOnly=true` | Deactivates the group, rejects new messages and forces `whoCanPostMessage=NONE_CAN_POST`. Re-enabling it resets posting permission to `ALL_MANAGERS_CAN_POST`. |
+| `whoCanPostMessage=NONE_CAN_POST` while `archiveOnly=false` | Google rejects the update. |
+| `allowExternalMembers=false` | Google ignores updates to `whoCanAddExternalMembers`. |
+| `allowExternalMembers` vs `whoCanPostMessage` | `allowExternalMembers` controls membership only. Whether non-members outside the organisation can post depends on `whoCanPostMessage`, moderation and Workspace-wide sharing policies. |
+| `replyTo=REPLY_TO_CUSTOM` | `customReplyTo` must contain a valid email address. |
+| `sendMessageDenyNotification=true` | Enables the rejection notification; `defaultMessageDenyNotificationText` customises its text. |
+| `whoCanPostMessage=ANYONE_CAN_POST` | Google recommends `messageModerationLevel=MODERATE_NON_MEMBERS` to reduce spam. |
+| `membersCanPostAsTheGroup=true` | Individual/new-member moderation settings do not apply to messages sent as the group. |
+| `whoCanDiscoverGroup` vs `whoCanViewGroup` vs `whoCanViewMembership` | Visibility is multi-dimensional. Discovery (can users find the group), conversation visibility (can they read messages), membership-list visibility, and member email-address visibility are separate concepts and are not equivalent. |
+
+### General cautions
+
 1. **Nonprofit edition:** Google Workspace for Nonprofits uses the same Groups Settings API schema as other Google Workspace editions; it does not define a separate schema. API availability and behaviour can still vary by edition, administrator privileges and service settings.
 2. **Security classification is not a posting setting:** `whoCanPostMessage`, `whoCanViewGroup`, etc. do not make a group a security group. The Cloud Identity `groups.security` label is the relevant classification.
-3. **Collaborative Inbox is a mode:** `enableCollaborativeInbox=true` enables the feature on a Google Group; it is not a separate Directory API group type.
-4. **Dynamic groups are different:** Use Cloud Identity Groups API for dynamic membership metadata and query definitions; do not expect the ordinary Groups Settings API to manage the query.
-5. **External members vs external senders:** `allowExternalMembers` controls membership. It does not alone determine whether non-members outside the organisation can post; `whoCanPostMessage`, moderation and Workspace-wide sharing policies also matter.
-6. **Visibility is multi-dimensional:** Discovery, conversation visibility, membership-list visibility, and member email-address visibility are separate concepts.
-7. **Legacy properties:** Google's schema still documents many deprecated forum permissions. They are included here for completeness and audit compatibility, but new configurations should use the consolidated moderation fields.
-8. **Global policy can override or constrain group settings:** Admin Console sharing settings, trust rules, domain policies and other Workspace controls may restrict what a group-level setting can do.
-9. **Read-only / ignored fields:** Do not assume every returned property is writable. `kind`, `customRolesEnabledForSettingsToBeMerged`, Directory identifiers/counts, and Cloud Identity timestamps/resource names are read-only; some deprecated fields may be ignored or have fixed values.
+3. **Dynamic groups are different:** Use Cloud Identity Groups API for dynamic membership metadata and query definitions; do not expect the ordinary Groups Settings API to manage the query.
+4. **Legacy properties:** Google's schema still documents many deprecated forum permissions. They are included here for completeness and audit compatibility, but new configurations should use the consolidated moderation fields (`whoCanModerateMembers`, `whoCanModerateContent`, `whoCanAssistContent`).
+5. **Global policy can override or constrain group settings:** Admin Console sharing settings, trust rules, domain policies and other Workspace controls may restrict what a group-level setting can do.
+6. **Read-only / ignored fields:** Do not assume every returned property is writable. `kind`, `customRolesEnabledForSettingsToBeMerged`, Directory identifiers/counts, and Cloud Identity timestamps/resource names are read-only; some deprecated fields may be ignored or have fixed values.
 
 ## 9. Official and community references
 
@@ -381,9 +374,9 @@ gam update group group@example.org update manager user@example.net
 | [Google Admin SDK Directory API — Group resource](https://developers.google.com/workspace/admin/directory/reference/rest/v1/groups) | Primary source for Directory group fields and group CRUD methods. |
 | [Google Admin SDK Directory API — groups and members](https://developers.google.com/workspace/admin/directory/reference/rest) | Group aliases and membership methods. |
 | [Google Cloud Identity Groups API — Group resource](https://cloud.google.com/identity/docs/reference/rest/v1/groups) | Primary source for Cloud Identity group metadata, labels, dynamic group metadata and external IDs. |
-| [GAMADV-XTD3 — Groups wiki](https://github.com/taers232c/GAMADV-XTD3/wiki/Groups) | GAM syntax, API/UI mapping, `print groups settings`, JSON export/restore and security-group commands. |
-| [GAMADV-XTD3 — Groups membership wiki](https://github.com/taers232c/GAMADV-XTD3/wiki/Groups-Membership) | GAM member roles and per-member delivery preferences. |
+| [GAM7 — Groups wiki](https://github.com/GAM-team/GAM/wiki/Groups) | GAM syntax, API/UI mapping, `print groups settings`, JSON export/restore and security-group commands. |
+| [GAM7 — Groups membership wiki](https://github.com/GAM-team/GAM/wiki/Groups-Membership) | GAM member roles and per-member delivery preferences. |
 
 ---
 
-**Verification date:** 10 November 2026. Google's API references are living documentation; re-check the official schema and the installed GAMADV-XTD3 help before using this as an operational change specification.
+Google's API references are living documentation; re-check the official schema and the installed GAM7 help before using this as an operational change specification.

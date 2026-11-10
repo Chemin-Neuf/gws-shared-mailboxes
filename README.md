@@ -4,7 +4,7 @@
   Original Author: Gemini 3.8 Flash (Google / GitHub Copilot)
   Major Contributors: Kimi K3 (Moonshot AI / GitHub Copilot)
   Contributors: Chemin Neuf Community with help of AI
-  Last Updated: 2026-09-22
+  Last Updated: 2026-11-10
 -->
 
 A comprehensive study of pros, cons, and caveats across the 7 native Google Workspace mechanisms for sharing an email address (functional mailboxes and team inboxes), written for a Google Workspace for Nonprofits tenant. The study is organized as 10 evaluation topics, compared from both the user's and the administrator's perspective (web console and API automation). Primary audience: technical administrators (in English), with an executive decision framework and governance recommendations for IT leadership and management (in French).
@@ -22,6 +22,7 @@ A comprehensive study of pros, cons, and caveats across the 7 native Google Work
 | `synthese-manageriale.html` | Executive decision framework, governance guidelines, and security directives for department heads (in French) |
 | `technical-overview.html` | Technical overview for GWS admins and script developers: web console & API capabilities, choices made (draft) |
 | `brainstorm-technical.md` | Working draft where the technical overview content is being brainstormed before porting to HTML |
+| `groups-parameters.md` | Working draft: exhaustive inventory of Google Groups settings across the Groups Settings, Directory and Cloud Identity APIs, with GAM7 commands |
 | `css/` | Shared stylesheets (`site.css`, `site-nav.css`) |
 | `js/` | Client-side navigation script (`site-nav.js`) |
 | `assets/` | Static media and site favicon (`favicon.svg`) |

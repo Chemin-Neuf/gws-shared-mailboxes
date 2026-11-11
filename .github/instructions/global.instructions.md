@@ -4,7 +4,7 @@ applyTo: "**"
 <!-- AUTO-SYNCED from github.com/Chemin-Neuf/dev-standards DO NOT EDIT HERE - edit in dev-standards and re-sync -->
 <!--
   Chemin-Neuf dev-standards - global rules
-  Last Updated: 2026-11-10
+  Last Updated: 2026-11-11
   Original Author: Claude Sonnet 4.6 (Anthropic / GitHub Copilot)
   Major Contributors: Gemini 3.8 Flash (Google / GitHub Copilot), GitHub Copilot (model not exposed)
   This file is AI-generated operational instructions for use by AI coding assistants.
@@ -23,7 +23,7 @@ applyTo: "**"
 | License | GPL-3.0-only; every source file carries a license notice; preserve third-party notices |
 | Encoding | UTF-8 everywhere; prefer ASCII; ASCII punctuation in code (no em dash); no BOM except PowerShell files; LF; doc typography (`&nbsp;`); no trailing-space breaks |
 | Date Formats | Filenames: `YYYYMMDD` for sortable dates; text: `YYYY-MM-DD` |
-| Windows Mapped Drives | Preserve the mapped drive-letter path for file and shell operations when supported |
+| Windows Mapped Drives | Verify and explicitly use the workspace's mapped drive-letter path; do not assume a supplied UNC path preserves how it was opened |
 | Design Principles | DRY, Simplicity, Single Source of Truth, No Magic Values, Safe File Output, No Legacy by Default |
 | AI Attribution | Record model name in file header when AI wrote or significantly changed the file |
 | Security Baseline | No secrets in tracked files; credentials from env/vault/prompt; validate all external input |
@@ -79,11 +79,12 @@ applyTo: "**"
 **STATUS: DECIDED**
 
 - When a workspace is opened through a mapped drive, preserve its actual drive-letter path for file operations and commands whenever the tool supports that path.
-- Pass the mapped drive-letter absolute path to file tools instead of relying on their default directory.
-- At the start of every shell invocation, explicitly set the working directory to the mapped workspace path using syntax appropriate for that shell.
-- Do not replace the mapped path with a UNC path returned by Git or filesystem resolution.
-- Never assume a drive letter or folder; use the mapping and workspace path actually provided.
-- If a tool cannot use or preserve the mapped path, report the limitation rather than guessing or silently switching to a UNC path.
+- VS Code may open a workspace through a mapped drive while Copilot's initial session context contains a resolved UNC path that file tools such as `view` or `glob` reject. The component that converts the path is unconfirmed.
+- Do not assume a supplied UNC path preserves how the user opened the workspace. If this occurs, inspect existing drive mappings read-only and verify the corresponding drive-letter workspace path before using it.
+- Pass that verified, absolute drive-letter workspace path explicitly to file tools instead of relying on their default directory.
+- At the start of every shell invocation, explicitly set the working directory to that verified workspace path using syntax appropriate for that shell.
+- Never guess a drive letter or create a mapping automatically.
+- If no usable mapping exists, explain the limitation and request the original workspace path, or use a supported fallback only when you explicitly disclose it.
 
 ## Design Principles
 

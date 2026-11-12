@@ -3,8 +3,8 @@
   SPDX-License-Identifier: GPL-3.0-only
 
   Original Author: ChatGPT (OpenAI, personal free edition)
-  Major Contributors: GPT-6 Luna, GPT-6.1 Terra (OpenAI / GitHub Copilot)
-  Last Updated: 2026-11-11
+  Major Contributors: GPT-6 Luna, GPT-6.1 Terra (OpenAI / GitHub Copilot), Copilot (model not exposed)
+  Last Updated: 2026-11-12
 -->
 
 # Google Workspace Groups — API and GAM configuration reference
@@ -48,6 +48,7 @@ This document is a neutral, exhaustive inventory of the settings and properties 
   - [Interaction rules between settings](#interaction-rules-between-settings)
   - [General cautions](#general-cautions)
 - [9. Official and community references](#9-official-and-community-references)
+- [10. Summary of settings for standard, Collaborative Inbox and security groups](#10-summary-of-settings-for-standard-collaborative-inbox-and-security-groups)
 
 > **Important scope note:** “All group settings” is not one API. The Groups Settings API covers email/discussion permissions and behaviour. The Directory API covers the directory group object and membership. Cloud Identity Groups API covers group classification, dynamic groups, and security-group metadata. Some Google Groups UI controls are not exposed by any of these group-level APIs. Member-specific subscription/delivery settings are also separate from group-level settings.
 
@@ -574,3 +575,60 @@ When `update` is given a role together with a delivery setting (for example `upd
 ---
 
 Google's API references are living documentation; re-check the official schema and the installed GAM7 help before using this as an operational change specification.
+
+## 10. Summary of settings for standard, Collaborative Inbox and security groups
+
+This table consolidates the currently configurable, group-level settings for standard/distribution groups, Collaborative Inbox groups, and security groups. A security group is a classification that can be added to a standard Google Group, including one configured as a Collaborative Inbox. `N` = standard/distribution; `C` = Collaborative Inbox; `S` = security classification. Unless otherwise noted, settings marked `N, C, S` apply to all three.
+
+Tenant-wide policy, legacy/deprecated fields, member-level settings, read-only metadata, dynamic groups, and other group types are excluded. “Google Groups UI” refers to the per-group web interface; UI-only choices are described only to the level documented here, without inferring undocumented enumerations.
+
+| Setting / API name | API(s) / web interface | Allowed values / format | Applies to |
+|---|---|---|---|
+| Group name: `name` / Cloud Identity `displayName` | Admin SDK Directory API (`name`); Groups Settings API (`name`); Cloud Identity Groups API (`displayName`); Google Groups UI | Text; Groups Settings API documents a maximum of 75 characters | N, C, S |
+| Group email: `email` | Admin SDK Directory API; Google Groups UI | Valid, unique email address | N, C, S |
+| Group description: `description` | Admin SDK Directory API; Groups Settings API; Cloud Identity Groups API; Google Groups UI | Text; max 4,096 characters | N, C, S |
+| Who can post messages: `whoCanPostMessage` | Groups Settings API; Google Groups UI | `NONE_CAN_POST`; `ALL_MANAGERS_CAN_POST`; `ALL_MEMBERS_CAN_POST`; `ALL_OWNERS_CAN_POST`; `ALL_IN_DOMAIN_CAN_POST`; `ANYONE_CAN_POST` | N, C, S |
+| Who can view conversations: `whoCanViewGroup` | Groups Settings API; Google Groups UI | `ANYONE_CAN_VIEW`; `ALL_IN_DOMAIN_CAN_VIEW`; `ALL_MEMBERS_CAN_VIEW`; `ALL_MANAGERS_CAN_VIEW` | N, C, S |
+| Who can join: `whoCanJoin` | Groups Settings API; Google Groups UI | `ANYONE_CAN_JOIN`; `ALL_IN_DOMAIN_CAN_JOIN`; `INVITED_CAN_JOIN`; `CAN_REQUEST_TO_JOIN` | N, C, S |
+| Allow external members: `allowExternalMembers` | Groups Settings API; Google Groups UI | `true`; `false` | N, C, S |
+| Who can view the membership list: `whoCanViewMembership` | Groups Settings API; Google Groups UI | `ALL_IN_DOMAIN_CAN_VIEW`; `ALL_MEMBERS_CAN_VIEW`; `ALL_MANAGERS_CAN_VIEW` | N, C, S |
+| Who can manage members: `whoCanModerateMembers` | Groups Settings API; Google Groups UI | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | N, C, S |
+| Message moderation: `messageModerationLevel` | Groups Settings API; Google Groups UI | `MODERATE_ALL_MESSAGES`; `MODERATE_NON_MEMBERS`; `MODERATE_NEW_MEMBERS`; `MODERATE_NONE` | N, C, S |
+| Spam handling: `spamModerationLevel` | Groups Settings API; Google Groups UI | `ALLOW`; `MODERATE`; `SILENTLY_MODERATE`; `REJECT` | N, C, S |
+| Discoverability: `whoCanDiscoverGroup` | Groups Settings API; Google Groups UI | `ANYONE_CAN_DISCOVER`; `ALL_IN_DOMAIN_CAN_DISCOVER`; `ALL_MEMBERS_CAN_DISCOVER` | N, C, S |
+| Who can contact owners: `whoCanContactOwner` | Groups Settings API; Google Groups UI | `ALL_IN_DOMAIN_CAN_CONTACT`; `ALL_MANAGERS_CAN_CONTACT`; `ALL_MEMBERS_CAN_CONTACT`; `ANYONE_CAN_CONTACT` | N, C, S |
+| Who can add external members: `whoCanAddExternalMembers` | Groups Settings API | `ONLY_ADMINS_CAN_ADD_EXTERNAL_MEMBERS`; `END_USERS_CAN_ADD_EXTERNAL_MEMBERS` (ignored if `allowExternalMembers=false`) | N, C, S |
+| Who can leave: `whoCanLeaveGroup` | Groups Settings API | `ALL_MEMBERS_CAN_LEAVE`; `ALL_MANAGERS_CAN_LEAVE`; `NONE_CAN_LEAVE` | N, C, S |
+| Allow web posting: `allowWebPosting` | Groups Settings API; Google Groups UI | `true`; `false` | N, C, S |
+| Conversation history: `isArchived` | Groups Settings API; Google Groups UI | `true`; `false` | N, C, S |
+| Archive-only / deactivate group: `archiveOnly` | Groups Settings API | `true`; `false` | N, C, S |
+| Include in Global Address List: `includeInGlobalAddressList` | Groups Settings API | `true`; `false` | N, C, S |
+| Allow members to post as the group: `membersCanPostAsTheGroup` | Groups Settings API; Google Groups UI | `true`; `false` | N, C, S |
+| Default sender when posting as the group: `defaultSender` | Groups Settings API; Google Groups UI | `DEFAULT_SELF`; `GROUP` | N, C, S |
+| Default reply destination: `replyTo` | Groups Settings API; Google Groups UI | `REPLY_TO_CUSTOM`; `REPLY_TO_SENDER`; `REPLY_TO_LIST`; `REPLY_TO_OWNER`; `REPLY_TO_IGNORE`; `REPLY_TO_MANAGERS` | N, C, S |
+| Custom reply-to address: `customReplyTo` | Groups Settings API; Google Groups UI | Email address; used when `replyTo=REPLY_TO_CUSTOM` | N, C, S |
+| Notify sender when a message is rejected: `sendMessageDenyNotification` | Groups Settings API; Google Groups UI | `true`; `false` | N, C, S |
+| Rejection notification text: `defaultMessageDenyNotificationText` | Groups Settings API; Google Groups UI | Text; max 10,000 characters | N, C, S |
+| Include custom footer: `includeCustomFooter` | Groups Settings API; Google Groups UI | `true`; `false` | N, C, S |
+| Custom footer text: `customFooterText` | Groups Settings API; Google Groups UI | Text; max 1,000 characters | N, C, S |
+| Group email language: `primaryLanguage` | Groups Settings API; Google Groups UI | Google's supported language tags, e.g. `en`, `fr`, `nl`, `en-GB` | N, C, S |
+| Locked group state: `labels["cloudidentity.googleapis.com/groups.locked"]` | Cloud Identity Groups API | Locked (label present) / unlocked (label removed); availability depends on group support | N, C, S |
+| Welcome message | Google Groups UI only | Text | N, C, S |
+| Shared labels: enable | Google Groups UI only | Enabled / disabled | N, C, S |
+| Identification required for new members | Google Groups UI only | Enabled / disabled | N, C, S |
+| New member restrictions | Google Groups UI only | UI-defined choices; not enumerated in the APIs covered here | N, C, S |
+| Who can view member email addresses | Google Groups UI only | UI-defined access choices; distinct from permission to view the membership list | N, C, S |
+| Allow Email Posting | Google Groups UI only | Enabled / disabled; distinct from `whoCanPostMessage` and `allowWebPosting` | N, C, S |
+| Who can reply privately to authors | Google Groups UI only | UI-defined access choices; not enumerated in the APIs covered here | N, C, S |
+| Who can attach files | Google Groups UI only | Enabled / disabled | N, C, S |
+| Subject prefix | Google Groups UI only | Text | N, C, S |
+| Include the standard Groups footer | Google Groups UI only | Enabled / disabled; distinct from the custom footer settings | N, C, S |
+| Auto replies | Google Groups UI only | UI-defined enablement and reply text | N, C, S |
+| Who can manage custom roles | Google Groups UI only | UI-defined role/permission choices | N, C, S |
+| Conversation mode | Google Groups UI only | UI-defined conversation modes | N, C, S |
+| Collaborative Inbox mode: `enableCollaborativeInbox` | Groups Settings API; Google Groups UI | `true`; `false` | N, C, S; toggles Collaborative Inbox mode |
+| Who can moderate content: `whoCanModerateContent` | Groups Settings API; Google Groups UI | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `OWNERS_ONLY`; `NONE` | N, C, S; discussion/content workflows |
+| Who can moderate metadata: `whoCanAssistContent` | Groups Settings API; Google Groups UI | `ALL_MEMBERS`; `OWNERS_AND_MANAGERS`; `MANAGERS_ONLY`; `OWNERS_ONLY`; `NONE` | N, C, S; topic assignments, tags, response status and related workflow |
+| Show favourite replies at the top: `favoriteRepliesOnTop` | Groups Settings API | `true`; `false` | N, C, S; when topic workflows are used |
+| Security group classification: `labels["cloudidentity.googleapis.com/groups.security"]` | Cloud Identity Groups API | Add the security label (empty value); irreversible once added | S |
+| Security member restriction: `securitySettings.memberRestriction.query` | Cloud Identity Groups API (`groups.updateSecuritySettings`) | CEL expression using supported terms `member.customer_id` / `groupCustomerId()` and `member.type` (`1` = USER, `2` = SERVICE_ACCOUNT, `3` = GROUP); operators `&&`, `\|\|`, `==` | S |

@@ -3,8 +3,8 @@
   SPDX-License-Identifier: GPL-3.0-only
 
   Original Author: Kimi K3 (Moonshot AI / GitHub Copilot)
-  Major Contributors: Claude (Anthropic / GitHub Copilot)
-  Last Updated: 2026-11-09
+  Major Contributors: Claude (Anthropic / GitHub Copilot), Copilot (model not exposed)
+  Last Updated: 2026-11-12
 -->
 
 # Brainstorm — Technical Overview page
@@ -79,7 +79,7 @@ happen directly in the HTML, to avoid two diverging sources of truth.
 | 3 | Groups & membership sync | Group, Member | HRIS → GWS | ? | |
 | 4 | Shared mailbox provisioning | User (functional account) or Group | mixed | ? | Some HRIS-backed (function / mission / responsibility), some GWS-native — see ownership model below |
 | 5 | Inbox delegation grants | Gmail delegates, `su-` security group | mixed | ? | One group delegate per mailbox; access = group membership (see section 4) |
-| 6 | Contacts — delegation / sharing | Contacts (People API / Domain Shared Contacts) | mixed | ? | Exact mechanism TBD (see open questions) |
+| 6 | Contacts — delegation / sharing | Contacts and proposed `sc-` security group | mixed | ? | `sc-` expresses intended membership; the grant mechanism remains TBD (see section 4) |
 | 7 | Calendar sharing | Calendar ACLs, `sa-` security group | mixed | ? | Part of the mailbox bundle (see section 1); one `writer` ACL per calendar granted to `sa-` (see section 4) |
 | 8 | Shared drives — provisioning & membership | Shared drive, members | mixed | ? | |
 | 9 | Consistency checks & reconciliation | All managed objects | both | ? | REQUIRED. Personal users: see section 3.1.5 (automatic or selective manual correction). Other objects: policy parked |
@@ -335,9 +335,8 @@ at once. A mass-change safety threshold should be discussed with offboarding.
 
     Set the external-membership setting before adding the member. Google's 2026
     membership-classification change makes this a prerequisite for groups intended to
-    contain external members. Do not set `archiveOnly=true`: that makes a group inactive
-    and causes it to reject new messages; it is different from disabling conversation
-    history.
+    contain external members. Do not set `archiveOnly=true`: it causes the group to
+    reject new messages; it is different from disabling conversation history.
   - **Important send/receive distinction**: `ANYONE_CAN_POST` lets anyone submit a
     message *to* the group so that it can be delivered to the member. It does not by
     itself let the member send *as* the group; keep `membersCanPostAsTheGroup=false`.
@@ -391,20 +390,22 @@ at once. A mass-change safety threshold should be discussed with offboarding.
 
 <a id="section-4"></a>
 
-## 4. Shared mailboxes — access groups (`su-` / `sa-`)
+## 4. Shared mailboxes — access groups (`su-` / `sa-` / `sc-`)
 
-> Proposed 2026-10-26, updated 2026-10-28. Status: draft — open points in 4.6.
+> Proposed 2026-10-26, updated 2026-11-12. Status: draft — open points in 4.6.
 
 ### 4.1 Model
 
-Access to a shared mailbox and its calendar is granted through **security groups**, never
-to individual users directly — same pattern as `sd-<shared-drive-name>@security.chemin-neuf.net`
-for shared drives.
+The proposed access model uses **security groups**, following the existing
+`sd-<shared-drive-name>@security.chemin-neuf.net` pattern for shared drives. Gmail and
+Calendar can use a group as the grant target; contacts may require individual grants
+derived from group membership.
 
 | Group | Meaning | Grants | Members |
 |---|---|---|---|
 | `su-<mailbox>@security.chemin-neuf.net` | **s**hared **u**ser | Gmail delegation on the shared mailbox (the group is the single delegate) | People who read / send for the mailbox |
 | `sa-<mailbox>@security.chemin-neuf.net` | **s**hared **a**genda (*agenda*, not *address book* — avoids confusing calendar and contacts) | Calendar ACL on the mailbox's primary calendar, role **`writer`** ("Make changes to events") — read/write, no sharing management | `su-<mailbox>@…` (nested) + calendar-only people, if any |
+| `sc-<mailbox>@security.chemin-neuf.net` | **s**hared **c**ontacts | Proposed source of intended contact delegates, **not itself a contact-delegation grant** | People intended to manage contacts; nesting with `su-` remains open |
 | `saro-<mailbox>@security.chemin-neuf.net` | **s**hared **a**genda **r**ead-**o**nly | Calendar ACL on the same calendar, role **`reader`** ("See all event details") | Read-only calendar people |
 | `sd-<shared-drive>@security.chemin-neuf.net` (existing convention) | **s**hared **d**rive | Shared drive linked to the shared mailbox | `su-<mailbox>@…` (nested) + others as needed |
 
@@ -424,17 +425,19 @@ for shared drives.
   themselves are set once and stay under admin / exodus control (no ACL drift to detect).
 - **Why separate calendar groups even when members are identical**: future access changes
   become membership changes only — no per-calendar ACL calls.
-- **Contacts**: no group — see 4.4 (contact delegation is per user).
+- **Contacts**: `sc-` is a proposed membership source, not a native group delegation
+  mechanism. Whether exodus can reconcile its expanded membership to individual grants
+  is unverified; see 4.4. Creating the group alone gives no contact access.
 
 ### 4.2 Naming rule (decided 2026-10-26)
 
 - Shared mailbox on **`@chemin-neuf.org`** → use only the local part (before `@`).
 - Shared mailbox on **any other domain** → use the full address with `---` replacing `@`.
 
-| Shared mailbox | `su-` group | `sa-` group |
-|---|---|---|
-| `contact@chemin-neuf.org` | `su-contact@security.chemin-neuf.net` | `sa-contact@security.chemin-neuf.net` |
-| `contact@chemin-neuf.fr` | `su-contact---chemin-neuf.fr@security.chemin-neuf.net` | `sa-contact---chemin-neuf.fr@security.chemin-neuf.net` |
+| Shared mailbox | `su-` group | `sa-` group | `sc-` group |
+|---|---|---|---|
+| `contact@chemin-neuf.org` | `su-contact@security.chemin-neuf.net` | `sa-contact@security.chemin-neuf.net` | `sc-contact@security.chemin-neuf.net` |
+| `contact@chemin-neuf.fr` | `su-contact---chemin-neuf.fr@security.chemin-neuf.net` | `sa-contact---chemin-neuf.fr@security.chemin-neuf.net` | `sc-contact---chemin-neuf.fr@security.chemin-neuf.net` |
 
 `saro-` and `sd-` follow the same pattern.
 
@@ -442,7 +445,7 @@ Constraints the rule implies:
 
 - **64-character limit** on a group's local part (Google: "no more than 64 characters
   before the at sign"). Compute the length with the **longest prefix (`saro-`, 5
-  characters)**, so that `su-`, `sa-` and `saro-` of one mailbox always share the same
+  characters)**, so that `su-`, `sa-`, `sc-` and `saro-` of one mailbox always share the same
   body.
 - **`---` is reserved**: no mailbox local part may contain `---`, otherwise names could
   collide.
@@ -471,63 +474,176 @@ Remarks:
   store the **full mailbox address in the group description**, and have exodus find
   groups by that link, not by recomputing the name.
 
-### 4.3 Group settings (updated 2026-11-09)
+### 4.3 Group settings (proposal, 2026-11-12)
 
-The table gives the intended setting and the GAM7 setting name/value where GAM exposes it.
-GAM names and values use the documented command-line spelling; `N/A` means the current
-GAM Groups Settings mapping does not expose that UI control. These are access groups, not
-mailing lists.
+Use the same baseline for `su-`, `sa-` and `sc-`; their **memberships and grants** are
+separate. The optional `saro-` and existing `sd-` groups are not replaced by this proposal.
+The [group-parameter inventory](groups-parameters.md) lists all properties; this table
+selects the ones relevant to access groups.
 
-| Setting | Intended value | GAM7 setting / literal |
+**Defaults or explicit settings?** Set security- and access-relevant properties explicitly,
+even when today's tenant default happens to match: defaults and organisation policies may
+change. Leave discussion presentation settings at their defaults when they have no effect
+on this use case; review them if posting is ever enabled. Verify the resulting settings,
+because organisation policy, API constraints and permissions may override or reject them.
+
+**Important: no mail is not automatic.** A security label does not disable email.
+Google's [Groups Settings API reference](https://developers.google.com/workspace/admin/groups-settings/v1/reference/groups)
+describes `archiveOnly=true` as “the group is inactive”: new messages are rejected,
+old conversations remain accessible, and `whoCanPostMessage` becomes `NONE_CAN_POST`.
+This wording describes Groups Settings; it does **not** establish that the security-group
+identity, membership or access grants are disabled. Gemini reports that membership and
+Drive, Shared Drive, Calendar and IAM access remain functional, but we have not found a
+Google source explicitly confirming these claims or its assertion that archive-only is a
+recommended best practice. Gmail delegation was not addressed. This is a plausible
+approach, not yet verified: test the relevant grants and membership changes before
+production. See the [inventory's evidence note](groups-parameters.md#archive-only-groups-used-for-access-control).
+Do not treat moderation or no-delivery subscriptions as equivalent to no posting.
+
+| Parameter | Proposed value / rationale | GAM7 or handling |
 |---|---|---|
-| Security label | On for all access groups; permanent once applied | `makesecuritygroup` (flag; no `false`/off option) |
-| Group email language | English (UK), for any system-generated group messages | `primarylanguage en-GB` |
-| Who can see/discover group | Members only (hidden from wider directory discovery); hiding is not a security boundary | `whocandiscovergroup all_members_can_discover` |
-| Who can view conversations | Owners only, the most restrictive available role | `whocanviewgroup all_owners_can_view` |
-| Who can post | Nobody | `whocanpostmessage none_can_post` |
-| Allow web posting | Off | `allowwebposting false` |
-| Conversation history/archive | Off; does not erase previously archived conversations | `isarchived false` |
-| Who can join | Invitation only; no self-join or join requests | `whocanjoin invited_can_join` |
-| Who can manage members | Owners and managers (administrative membership management only) | `whocanmoderatemembers owners_and_managers` |
-| Who can invite members | Managers only, where separately configurable | `whocaninvite all_managers_can_invite` |
-| Who can view members | All group members, for community transparency. **Large-group exception to investigate**: for groups with more than 100 members, decide whether to restrict this and confirm a group-specific option. | `whocanviewmembership all_members_can_view` |
-| Who can contact group owners | Owners only; this controls the Groups UI's message-to-owners feature, not posting to the group | `whocancontactowner all_owners_can_contact` |
-| Who can view member email addresses | Most restrictive available; this is separate from permission to view the roster | N/A in GAM's current mapping |
-| Allow external members | Off; also limit who can add externals to admins | `allowexternalmembers false`; `whocanaddexternalmembers only_admins_can_add_external_members` |
-| Who can post as the group | Nobody | `memberscanpostasthegroup false` |
-| Who can attach files | Nobody / most restrictive available | N/A in GAM's current mapping |
-| Who can reply privately to authors | Nobody / most restrictive available | N/A in GAM's current mapping |
-| Message moderation | All messages, as defense in depth while posting is disabled | `messagemoderationlevel moderate_all_messages` |
-| New-member post moderation | Most restrictive available. This controls new members' posts, not approval to join; all-message moderation already covers it. | No separate GAM setting in the current mapping; `moderate_all_messages` is the available all-posts policy |
-| Spam message handling | Reject spam; avoid an unmonitored review queue | `spammoderationlevel reject` |
-| Default subscription/delivery | No group email delivery, without removing membership | Per member, not a group setting: `delivery none` when adding/updating a member |
-| Subject prefix | Unset | N/A in GAM's current mapping |
-| Custom footer | Off / unset | `includecustomfooter false`; leave `customfootertext` unset |
-| Default reply-to | Reply to sender, not the access-group address | `replyto reply_to_sender` |
-| Maximum message size | Do not set or rely on 250 kB | `maxmessagebytes` is deprecated; no effective control |
-| Explicit group owner | Prefer no extra human owner if possible; Google says administrators are automatically assigned the owner role for all organization groups, but docs do not establish whether zero explicit owner memberships is supported. Verify in the test tenant before deciding. If an explicit owner is required, fallback preference for each `su-`/`sa-`/`sd-` group is its corresponding shared user, rather than a frequently changing administrator. | Not a group setting; membership role `OWNER`. GAM adds/updates owners through group membership commands. |
+| Identity | Separate, purpose-specific name and description linking each group to the shared user | Set after creation |
+| Security classification | Security group; conversion is irreversible | `makesecuritygroup` after creation |
+| Posting and archive-only state | Proposed no-mail pilot: archive-only rejects new messages and sets posting to nobody. Test access grants and membership before production | `archive_only true` (sets `none_can_post`) |
+| Web posting | Disabled | `allow_web_posting false` |
+| Group conversation history | Disabled for new messages; does not erase old conversations | `is_archived false` |
+| Join policy | Invitation only; admins can still directly manage membership | `who_can_join invited_can_join` |
+| Voluntary leave | All members may leave voluntarily; consider how authoritative membership sync handles departures | `who_can_leave_group all_members_can_leave` |
+| External members | Disabled, subject to organisation policy and nested-member checks | `allow_external_members false`; `who_can_add_external_members` is ignored while this is false |
+| Discoverability | Group members only; hiding is not an access boundary | `who_can_discover_group all_members_can_discover` |
+| Global address list | Exclude the group; distinct from discoverability | `include_in_global_address_list false` |
+| View membership | All members for transparency; revisit large or sensitive groups | `who_can_view_membership all_members_can_view` |
+| Manage membership | Owners and managers; grant these roles sparingly, because they can change access | `who_can_moderate_members owners_and_managers` |
+| View conversations | Owners and managers, the most restrictive value in Google's current API reference | `who_can_view_group all_managers_can_view` |
+| Contact owners | Owners and managers, the most restrictive value in Google's current API reference | `who_can_contact_owner all_managers_can_contact` |
+| Post as group | Disabled | `members_can_post_as_the_group false` |
+| Message and spam moderation | Moderate all messages; reject spam. Moderation creates an approval path and is not a no-mail control | `message_moderation_level moderate_all_messages`; `spam_moderation_level reject` |
+| Collaborative Inbox | Disabled | `enable_collaborative_inbox false` |
+| Group language | English (UK) for group-generated messages | `primary_language en-GB` |
+| Member delivery | Optional no-delivery preference per member; it does not prevent posting or all system messages | Set per member, not a group default; GAM uses `nomail` |
+| Owner | Keep owner roles minimal. Whether zero explicit owner members is supported remains unverified; if required, consider the shared user as owner | Membership role, not a group setting; verify before relying on it |
+| Other discussion settings | Leave reply-to, footer, subject prefix, attachment and forum controls at defaults while unused; inspect UI-only controls if needed | Not set by the baseline |
+| Membership restrictions | Consider internal users and security groups only, if supported by the tenant edition | Separate Cloud Identity security settings; test before depending on them |
 
-Keep group-setting changes administrator-controlled. An explicit `OWNER` role is powerful:
-Google says owners can change settings, manage members, and delete groups. Google also
-states that admins are automatically assigned the owner role for all organization groups
-and recommends keeping the number of owners low. The documentation does not clearly say
-whether a group may have zero explicit owner entries despite that administrator ownership;
-do not assume it works until tested.
+#### GAM7 commands
 
-**Member delivery note:** `delivery none` is distinct from `delivery disabled`: `NONE`
-means no mail is delivered while the person remains a member; `DISABLED` removes the
-subscription. The Directory API also lists `ALL_MAIL`, `DAILY` and `DIGEST`.
+Example for the shared user `jongeren@chemin-neuf.nl`: first retrieve the account's
+name and primary email, then create `su-jongeren---chemin-neuf.nl@security.chemin-neuf.net`.
+The commands below configure **only the `su-` group**; `sa-` and `sc-` will need their own
+commands. The group name is an example label, not a value automatically derived from the
+account's returned name; adjust it after inspecting the first command if needed.
 
-**GAM/API caveat:** GAM's current Groups documentation marks some older settings
-deprecated and lists certain current Groups UI controls as unavailable through its
-Groups Settings API mapping. For UI-only settings above, apply the restrictive UI value
-and verify it in the tenant rather than assuming a GAM command exists.
+Run each GAM7 command separately, in order, as an authorised administrator with Groups
+Settings and Cloud Identity access. Check the output and **stop on any failure**; earlier
+changes are not rolled back. Inspect existing groups first, and do not populate or grant
+access until the settings and security label have been verified. The archive-only
+configuration is a proposal: test it on a disposable group before using it for a real
+mailbox, and do not assume the group grants access until delegation has been configured.
 
-**Sources checked 2026-11-09:** [GAM Groups documentation](https://gam.docs.oxl.app/usage/Groups.html),
+```powershell
+gam info user jongeren@chemin-neuf.nl
+
+gam create group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net name "E-mail delegation for Jongeren CCN NL" description "All members of this group have the right to read and write e-mail for jongeren@chemin-neuf.nl"
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net makesecuritygroup
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net archive_only true
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net allow_web_posting false
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net is_archived false
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net who_can_join invited_can_join
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net who_can_leave_group all_members_can_leave
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net who_can_add_external_members only_admins_can_add_external_members
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net allow_external_members false
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net who_can_discover_group all_members_can_discover
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net who_can_view_membership all_members_can_view
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net include_in_global_address_list false
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net who_can_moderate_members owners_and_managers
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net who_can_view_group all_managers_can_view
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net who_can_contact_owner all_managers_can_contact
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net members_can_post_as_the_group false
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net message_moderation_level moderate_all_messages
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net spam_moderation_level reject
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net enable_collaborative_inbox false
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net primary_language en-GB
+
+gam info group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net
+gam info cigroup su-jongeren---chemin-neuf.nl@security.chemin-neuf.net
+```
+
+Inspect the output: verify the security label, each explicit setting, owners and membership.
+These commands do **not** add members, nest groups, create Gmail or Calendar grants, or
+grant contacts access. Confirm the installed GAM7 syntax and test Google-accepted settings
+on a disposable group; the API can reject combinations of visibility and member-management
+permissions. Do not use `accesstype restricted` as a substitute: its preset permits members
+to post and request to join.
+
+After verifying the group, add Bart as a manager, set his group subscription to no email,
+and list direct members with their roles, membership status and delivery settings:
+
+```powershell
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net add manager bart.vermeulen@chemin-neuf.org
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net update delivery nomail bart.vermeulen@chemin-neuf.org
+gam print group-members group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net showdeliverysettings
+```
+
+Run each command separately and stop on failure. If Bart is already a member, update his
+role with `update manager` rather than adding him again. `nomail` changes his group-message
+delivery preference, not his role, and does not guarantee that all system notifications
+are suppressed. A manager can manage group membership and thereby affect access; this
+group membership alone does not create the Gmail delegation grant. The list is for direct
+members; expanded nested membership needs a separate check. `showdeliverysettings`
+requires an additional API call per member.
+
+#### Gmail delegation to the group
+
+Google supports adding a Google Group as a Gmail delegate when group delegation is
+enabled for both the mailbox's OU and each delegate's OU; see 4.4. The following GAM7
+command is the documented syntax for creating a delegate, but Google's Gmail API
+documentation describes a **user** delegate and does not explicitly establish whether
+creating a group delegate through the API is supported. GAM's example for creating a
+delegate likewise shows a user. Treat the group-address command as an **unverified
+candidate**, not a confirmed implementation; test it against a disposable mailbox and
+group before using the real addresses:
+
+```powershell
+gam user jongeren@chemin-neuf.nl add delegate su-jongeren---chemin-neuf.nl@security.chemin-neuf.net
+gam user jongeren@chemin-neuf.nl show delegates
+```
+
+The first line would create one group delegation if accepted; the second inspects the
+result. Do not assume a successful command or a listed delegate proves that a group
+member can access the mailbox: verify access and removal after propagation, including
+the proposed archive-only setting. If the API rejects the group, the documented
+alternative is to add the group in the mailbox's Gmail delegation settings; the Admin
+console enables the policy but is not itself the documented per-mailbox grant flow.
+Do not silently substitute individual delegates: that would change the membership
+management model.
+
+Sources: [Google admin delegation settings](https://knowledge.workspace.google.com/admin/gmail/let-users-delegate-access-to-a-gmail-account),
+[Gmail API delegate creation](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.settings.delegates/create),
+and [GAM7 Gmail delegates](https://github.com/GAM-team/GAM/wiki/Users-Gmail-Delegates).
+
+**No-mail pilot, not production:** on a disposable security group after setting up test
+grants, the following sets archive-only; Google describes the group as inactive in the
+Groups Settings API and sets posting to `NONE_CAN_POST` automatically. This wording
+does not establish whether the group remains usable for access control:
+
+```powershell
+gam update group su-pilot@security.chemin-neuf.net archive_only true
+gam info group su-pilot@security.chemin-neuf.net
+```
+
+Confirm that email is rejected and test existing and new Gmail delegation, Calendar
+permissions, nested membership, member add/remove and revocation after propagation. Also
+investigate the Google Groups UI's separate **Allow email posting** control: its API
+mapping and effect on access are unverified. If neither route provides no-mail groups
+without breaking access, choose another explicitly approved control. Re-enabling an
+archived group resets posting to managers, so reapply and verify the desired posting policy.
+
+Sources checked 2026-11-12: [Google Groups Settings API](https://developers.google.com/workspace/admin/groups-settings/v1/reference/groups),
+[GAM7 Groups](https://github.com/GAM-team/GAM/wiki/Groups),
+[GAM7 Cloud Identity Groups](https://github.com/GAM-team/GAM/wiki/Cloud-Identity-Groups),
 [Google group roles](https://support.google.com/a/users/answer/10385278?hl=en),
-[Directory API Group resource](https://developers.google.com/workspace/admin/directory/reference/rest/v1/groups),
-[Directory API Member resource](https://developers.google.com/workspace/admin/directory/reference/rest/v1/members),
-and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs/reference/rest/v1/groups).
+and [Google Contacts delegation](https://support.google.com/contacts/answer/2590392?hl=en).
 
 ### 4.4 Google constraints to respect
 
@@ -590,13 +706,13 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
   need another lever (e.g. suspend the account).
 - **Limits**: 1,000 delegates per mailbox (a group counts as one); ~40 concurrent delegate
   sessions with typical use — a large `su-` group can hit the concurrency limit.
-- **Contact delegation is per user, not per group** (checked 2026-10-28): Google's help
-  page "Give another user access to your contacts" only mentions delegating to people in
-  the same domain (up to 25 per invite, desktop only); groups are never mentioned. It is
-  also separate from Gmail delegation ("access to your contacts doesn't grant access to
-  your email account", and the reverse). Consequence: if shared contacts are needed,
-  exodus would have to expand `su-` membership into individual contact delegates and keep
-  them in sync — API support for contact delegation still to verify.
+- **Contact delegation is separate from Gmail delegation**: Google's
+  [help page](https://support.google.com/contacts/answer/2590392?hl=en) describes
+  invitations to individual people in the same domain or organisation, up to 25 names
+  per invitation, and does not document a group as a delegate. Do not assume `sc-`
+  membership grants access. If per-user delegation is chosen, exodus would need to
+  expand `sc-` membership and reconcile both grants and removals; API support and
+  operational feasibility remain to be verified.
 
 ### 4.5 Benefits
 
@@ -613,8 +729,9 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
    collision discriminator for step 3.
 3. **Shared drive ↔ shared user link** — how a shared drive is associated with a shared
    mailbox (the `su-` → `sd-` membership is decided).
-4. **Contacts** — needed at all? If yes: per-user delegation synced from `su-` (API to
-   verify), or Domain Shared Contacts instead.
+4. **Contacts** — confirm `sc-` membership policy, including whether `su-` should be
+   nested, and choose per-user delegation synced from `sc-` (API to verify) or Domain
+   Shared Contacts instead.
 5. **Group-delegation policy check** — adopt the proposed exodus consistency check
    (4.4)? Confirm the minimum permissions needed to read policies (scope only, or also
    the GCP role).
@@ -627,6 +744,11 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
 8. **Group UUID** — test whether exodus can write and reliably read a UUID through the
    Cloud Identity Groups API `externalIds` field; decide between that and an exodus-side
    mapping. This is not a user-style custom schema.
+9. **No-mail access groups** — test archive-only against Gmail, Calendar, nesting,
+   membership management and revocation before production. Verify other services if
+   needed; investigate the separate UI email-posting control as an alternative.
+10. **Voluntary leave** — determine how a member leaving voluntarily interacts with
+    the authoritative membership and reconciliation policy.
 
 <a id="section-5"></a>
 
@@ -674,7 +796,7 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
 | Mode-2 sync scope: UUID, photo, postal address, name (+ primary-address rename), phone | Sync all onesime fields (title, department, manager…) | Only fields with a clear consumer in GWS; title/department/manager too org-specific to keep authoritative in onesime |
 | Primary address follows name changes | Name syncs but address stays | Identity stays consistent; GWS keeps the old address as an alias, so no mail is lost |
 | UUID-missing matching: auto on email match, admin chooses otherwise | Auto-link on name; fully manual table | Email keys are unambiguous; name-only matching risks linking the wrong homonym |
-| Shared mailbox access via security groups `su-` (mail) nested in `sa-` (calendar) | Per-user delegates and per-user calendar ACLs | One delegate / one ACL per mailbox; access = membership; mirrors the `sd-` shared-drive convention |
+| Shared mailbox access via security groups `su-` (mail) nested in `sa-` (calendar); `sc-` proposed for contacts membership | Per-user delegates and per-user calendar ACLs | One Gmail group delegate / one Calendar ACL; contacts still need a verified grant mechanism |
 | Group name = local part on `@chemin-neuf.org`, full address with `---` for `@` otherwise | Always local part; always full address | Short names for the main domain, no collisions across domains |
 | `sa-` gets calendar role `writer`, `saro-` gets `reader`; access managed by group membership only | `owner` (manage sharing) | Members edit / read events but cannot re-share the calendar; ACLs stay admin/exodus-controlled |
 | `su-` is a member of the linked shared drive's `sd-` group | Separate drive grants | Mailbox team gets the drive automatically; one membership to manage |
@@ -710,16 +832,16 @@ and [Cloud Identity Groups resource](https://docs.cloud.google.com/identity/docs
   - [x] Personal users — full-account model described in section 3.1, updated 2026-09-30
     (language sync, homonym & accountType proposals, drift trade-off); remaining
     follow-ups in 3.1.7. Google Group delivery proposed in section 3.2.
-  - [ ] Shared users — access groups `su-` / `sa-` proposed (section 4, 2026-10-26);
+  - [ ] Shared users — access groups `su-` / `sa-` / `sc-` proposed (section 4);
     account creation, OU sub-tree and ownership still open  - [ ] Collaborative groups
   - [ ] Aliases
 - [ ] Per-feature status (live / planned / idea) in the section 2 table.
 
 **2. NEXT — The mailbox bundle**
 
-- [ ] Contacts mechanism: per-mailbox contact delegation vs Domain Shared Contacts
-  (Directory API)? Note (2026-10-28): contact delegation is per user only, no groups
-  (section 4.4).
+- [ ] Contacts mechanism: per-mailbox contact delegation synced from `sc-` vs Domain
+  Shared Contacts (Directory API)? Google documents invitations to people, not a group
+  delegation mechanism; API support for synchronisation remains open (section 4.4).
 - [x] ~~Calendars: ACL grants on the functional account's calendar vs separate shared
   calendars / resources?~~ → DECIDED (2026-10-28): `writer` ACL on the functional
   account's calendar, granted to the `sa-` group; `reader` via `saro-` (section 4).

@@ -99,7 +99,7 @@ The table includes the current settings, legacy/deprecated properties still pres
 |---|---|---|---|---|---|
 | `allowExternalMembers` | `allowexternalmembers` | Allow external members | `true`; `false` | All | Allows or blocks members outside the Workspace organisation. Google notes these are Workspace users external to the organisation; broader external posting is separately controlled. |
 | `allowWebPosting` | `allow_web_posting` | Allow posting on the web | `true`; `false` | Groups with Google Groups web interface | Enables members to post through the Google Groups web interface. If false, members use email/Gmail to communicate with the group. |
-| `archiveOnly` | `archive_only` | Archive-only / deactivate group | `true`; `false` | All | When true, group becomes inactive and new messages are rejected; old conversations remain browsable/searchable. Google sets `whoCanPostMessage=NONE_CAN_POST`. Turning it off resets posting permission to `ALL_MANAGERS_CAN_POST`. |
+| `archiveOnly` | `archive_only` | Archive-only group | `true`; `false` | All | Google describes the group as inactive: new messages are rejected and old conversations remain browsable/searchable. Google sets `whoCanPostMessage=NONE_CAN_POST`. The reference does not establish whether the group identity or access grants are disabled. Turning it off resets posting permission to `ALL_MANAGERS_CAN_POST`. |
 | `customFooterText` | `custom_footer_text` | Custom footer text | Text; max 1,000 characters | All | Text appended as the custom footer when enabled. |
 | `customReplyTo` | `custom_reply_to` | Custom reply-to address | Email address | All, conditional | Required when `replyTo=REPLY_TO_CUSTOM`; otherwise not used. Google describes this as an address defined by an account administrator. |
 | `customRolesEnabledForSettingsToBeMerged` | Read-only; no update | Custom roles included in merged settings | `true`; `false` | Groups with custom roles / merged moderation settings | Read-only. Google ignores UPDATE/PATCH attempts. |
@@ -111,7 +111,7 @@ The table includes the current settings, legacy/deprecated properties still pres
 | `favoriteRepliesOnTop` | `favorite_replies_on_top` | Show favourite replies at top | `true`; `false` | Forum / Collaborative Inbox topic workflow | Controls whether favourite replies are displayed above other replies. Not explicitly marked deprecated in the current resource description. |
 | `includeCustomFooter` | `include_custom_footer` | Include custom footer | `true`; `false` | All | Enables/disables the custom footer on group messages. |
 | `includeInGlobalAddressList` | `include_in_global_address_list` / `gal` | Include in Global Address List (GAL) | `true`; `false` | All | Controls whether the group is included in the Workspace Global Address List. |
-| `isArchived` | `is_archived` | Conversation history / archive messages | `true`; `false` | All | When true, archive messages sent to the group. When false, new messages are not archived; previously archived messages remain. This is not the same as archiving/deactivating the group. |
+| `isArchived` | `is_archived` | Conversation history / archive messages | `true`; `false` | All | When true, archive messages sent to the group. When false, new messages are not archived; previously archived messages remain. This is not the same as archive-only mode. |
 | `kind` | Output only | Resource kind | `groupsSettings#groups` | All | Identifies a Groups Settings API resource. Read-only. |
 | `membersCanPostAsTheGroup` | `members_can_post_as_the_group` | Allow members to post as the group | `true`; `false` | All; relevant when members can post | Allows members to send messages using the group's address rather than their own. When true, per-user/new-member message moderation does not apply to messages posted as the group. |
 | `messageModerationLevel` | `message_moderation_level` | Message moderation | `MODERATE_ALL_MESSAGES`; `MODERATE_NON_MEMBERS`; `MODERATE_NEW_MEMBERS`; `MODERATE_NONE` | All | Determines which incoming messages require moderator approval. Moderation of posts made as the group is treated differently: individual/new-member moderation does not apply to those posts. |
@@ -526,7 +526,7 @@ When `update` is given a role together with a delivery setting (for example `upd
 
 | Setting / combination | Behaviour |
 |---|---|
-| `archiveOnly=true` | Deactivates the group, rejects new messages and forces `whoCanPostMessage=NONE_CAN_POST`. Re-enabling it resets posting permission to `ALL_MANAGERS_CAN_POST`. |
+| `archiveOnly=true` | Google describes the group as inactive, rejects new messages and sets `whoCanPostMessage=NONE_CAN_POST`. Its effect on security-group identity and access grants is not established by this reference. Setting it back to `false` resets posting permission to `ALL_MANAGERS_CAN_POST`. |
 | `whoCanPostMessage=NONE_CAN_POST` while `archiveOnly=false` | Google rejects the update. |
 | `allowExternalMembers=false` | Google ignores updates to `whoCanAddExternalMembers`. |
 | `allowExternalMembers` vs `whoCanPostMessage` | Interpretation of this document: `allowExternalMembers` controls membership only. Whether non-members outside the organisation can post depends on `whoCanPostMessage`, moderation and Workspace-wide sharing policies. |
@@ -538,6 +538,31 @@ When `update` is given a role together with a delivery setting (for example `upd
 | `whoCanViewMembership` vs `whoCanDiscoverGroup` | Membership visibility cannot be broader than group discoverability. Google rejects such a combination (for example `whoCanViewMembership=ALL_IN_DOMAIN_CAN_VIEW` with `whoCanDiscoverGroup=ALL_MEMBERS_CAN_DISCOVER`) with `WHO_CAN_VIEW_MEMBERSHIP_CANNOT_BE_BROADER_THAN_WHO_CAN_SEE_GROUP`. Source: GAM7 wiki. |
 | `whoCanModerateMembers` vs `whoCanViewMembership` | Who can manage members cannot be broader than who can view membership. Google rejects, for example, `whoCanViewMembership=ALL_OWNERS_CAN_VIEW` with the error `DONT_USE_OR_ELSE_WHO_CAN_MANAGE_MEMBERS_CANNOT_BE_BROADER_THAN_WHO_CAN_VIEW_MEMBERSHIP`. Source: GAM7 wiki, which does not show the manage-members value used in those tests. |
 | A valid combination of the two rules above is rejected | The GAM7 wiki suggests first setting `whoCanViewMembership=ALL_IN_DOMAIN_CAN_VIEW` together with `whoCanDiscoverGroup=ALL_IN_DOMAIN_CAN_DISCOVER`, then repeating the intended update. |
+
+#### Archive-only groups used for access control
+
+The Groups Settings API documents `archiveOnly` in terms of posting and conversation
+history. Separately, Google describes the security label as an access-control
+classification and the Directory API has membership operations. These separate
+responsibilities make it plausible that an archive-only security group can continue to
+manage access, but they do not prove how every service evaluates that group.
+
+An unverified Gemini response states that existing Drive, Shared Drive, Calendar and
+Google Cloud IAM grants continue to work and that membership can still be managed. It
+also calls archive-only a best practice for access-control groups. No Google source
+confirming those statements or that recommendation was found in the references checked on
+2026-11-12; treat them as hypotheses, not as confirmed behaviour. In particular, the
+response did not address Gmail group delegation.
+
+Before production use, test with a disposable security group: verify rejection of new
+messages, read back its security label and membership, add and remove members, and check
+the actual resource grants needed, including Gmail delegation and Calendar access.
+Test revocation after propagation. Use a separate test resource for Drive, Shared Drive
+or IAM if those services are in scope. See the [brainstorm pilot](brainstorm-technical.md#43-group-settings-proposal-2026-11-12).
+
+Sources: [Groups Settings API](https://developers.google.com/workspace/admin/groups-settings/v1/reference/groups),
+[Google security groups](https://knowledge.workspace.google.com/admin/groups/control-access-to-sensitive-data-with-security-groups),
+and [Directory API members](https://developers.google.com/workspace/admin/directory/reference/rest/v1/members).
 
 ### General cautions
 
@@ -601,7 +626,7 @@ Tenant-wide policy, legacy/deprecated fields, member-level settings, read-only m
 | Who can leave: `whoCanLeaveGroup` | Groups Settings API | `ALL_MEMBERS_CAN_LEAVE`; `ALL_MANAGERS_CAN_LEAVE`; `NONE_CAN_LEAVE` | N, C, S |
 | Allow web posting: `allowWebPosting` | Groups Settings API; Google Groups UI | `true`; `false` | N, C, S |
 | Conversation history: `isArchived` | Groups Settings API; Google Groups UI | `true`; `false` | N, C, S |
-| Archive-only / deactivate group: `archiveOnly` | Groups Settings API | `true`; `false` | N, C, S |
+| Archive-only mode: `archiveOnly` | Groups Settings API | `true`; `false` | N, C, S |
 | Include in Global Address List: `includeInGlobalAddressList` | Groups Settings API | `true`; `false` | N, C, S |
 | Allow members to post as the group: `membersCanPostAsTheGroup` | Groups Settings API; Google Groups UI | `true`; `false` | N, C, S |
 | Default sender when posting as the group: `defaultSender` | Groups Settings API; Google Groups UI | `DEFAULT_SELF`; `GROUP` | N, C, S |

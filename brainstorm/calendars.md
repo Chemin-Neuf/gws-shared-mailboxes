@@ -30,7 +30,7 @@ The following are the reported default settings for the organisation, recorded
 
 - **Working location:** On.
   - Discuss whether working location is meaningful for a shared calendar representing
-    a team rather than an individual, and who should see it.
+    a team rather than an individual.
 - **External sharing options for primary calendars:** Share all information, but
   outsiders cannot change calendars.
   - This permits sharing event details with external people, for example when a mission
@@ -42,9 +42,7 @@ The following are the reported default settings for the organisation, recorded
     be granted; non-private event details may then be exposed.
   - If a specific use requires external editing in future, consider an exception group
     such as `sa-allow-external-write@security.chemin-neuf.net` for the relevant
-    calendar owners. This is an idea, not an existing group or grant: verify that
-    the configuration-group override works as intended, define approval and review,
-    and grant calendar access separately.
+    calendar owners. This is an idea, not an existing group.
 - **Internal sharing options for primary calendars:** Only free/busy information
   (hide event details).
   - The reported Google default of sharing all details internally is considered too
@@ -52,27 +50,22 @@ The following are the reported default settings for the organisation, recorded
     can be configured to share more or less internally.
   - This is a default, not an enforced ceiling: customised calendar sharing may differ.
     For functional accounts, reconcile that flexibility with the current direction
-    that administrator / exodus controls the calendar ACLs. Verify that the explicit
-    `sa-` and `saro-` grants work alongside the free/busy default, including private
-    events and overlapping membership.
+    that administrator / exodus controls the calendar ACLs.
 - **Video conferencing - Make Google Meet the default video conferencing provider
   when available:** On.
-  - Users can adjust conferencing preferences. Test which preferences apply when a
-    delegate creates an event on a functional account's calendar, and who controls
-    the resulting meeting if its creator leaves.
+  - Users can adjust conferencing preferences.
 - **Video conferencing - Automatically add video conferencing to events users
   create:** On.
   - A Meet link is automatically added when the first guest is added, but not when an
     event is copied or duplicated. Consider whether unnecessary links on in-person
-    events cause confusion; test delegated, mobile and automated event creation.
+    events cause confusion.
 - **External invitations - Warn users when inviting guests outside of the domain
   Communauté du Chemin Neuf:** On.
-  - This is a warning, not a block. Test secondary domains, aliases, groups containing
-    external members, delegated events and API-created events; do not assume the
-    warning identifies every ultimately external recipient.
+  - This is a warning, not a block.
 - **Working hours:** On.
   - Discuss whether a functional account should have team coverage hours, no configured
-    hours, or another approach. Consider distributed teams and time zones.
+    hours, or another approach.
+  - Consider distributed teams and time zones.
 
 ### General settings
 
@@ -88,16 +81,12 @@ There are no organisational unit or group overrides for these settings.
     security must be balanced across the organisation. External editors can see
     private event details, edit events, and restore or permanently delete events from
     trash. Consider approval, periodic access review and an inventory of external
-    grants; check existing uses before changing the limit.
+    grants.
 - **Internal sharing options for secondary calendars:** Only free/busy information
   (hide event details).
-  - Check whether team and resource calendars have the intended explicit access and
-    whether existing customised calendars are affected by changes to this default.
 - **Resource booking permissions - Allow users to book resources that are shared
   as "See only free/busy":** On.
-  - This allows privacy-preserving resource booking. Check which users should book
-    restricted resources, and test available and conflicting bookings, cancellations
-    and resource responses.
+  - This allows privacy-preserving resource booking.
 
 ### Advanced settings
 
@@ -112,28 +101,18 @@ There are no organisational unit or group overrides for these settings.
     expected to come from known senders. A shared mailbox team must nevertheless
     monitor those emails: a sender known to a delegate may not be known to the
     functional account.
-  - Test unknown, known and internal senders, the functional inbox and delegate
-    visibility. Confirm the distinct effects of the two Admin console controls, what
-    users can change, and the effect on existing and new accounts.
 - **Time insights:** On.
-  - Discuss whether insights are meaningful for a team calendar rather than an
-    individual. Check visibility to delegates and availability under the licence.
 - **Calendar web offline:** On.
   - This is expected to be rarely used but valuable when needed. The working
     assessment is that use is mostly on personal devices and the risk of leaking
     relatively low-sensitivity calendar data is small.
   - The setting permits users to enable offline access; it does not automatically
-    enable it on every browser. Check device policy, cached data and access revocation
-    for shared or unmanaged devices. Offline web Calendar does not support creating
-    or editing events.
+    enable it on every browser.
+  - Offline web Calendar does not support creating or editing events.
 - **Default event duration:** 60 minutes.
   - Discuss whether an hour encourages unnecessarily long meetings or leaves too
-    little transition time. It is a default, not a limit; test which preference
-    applies when a delegate creates an event.
+    little transition time. It is a default, not a limit.
 - **Appointment schedules with payments:** Off.
-  - This blocks required payments in Calendar appointment schedules, not necessarily
-    free appointment schedules or other payment methods. Discuss whether any team
-    needs paid bookings and what approval and financial process would be required.
 
 ## Current direction
 
@@ -199,8 +178,6 @@ with group grants, rather than either alternative.
 - How should sensitive event details be handled when all `writer` members can edit events?
 - Should external participants ever be added to these access groups, or should calendar
   sharing remain internal-only?
-- Verify how the primary calendar's internal free/busy default interacts with the
-  explicit `writer` and `reader` group ACLs.
 
 ### Provisioning and operations
 

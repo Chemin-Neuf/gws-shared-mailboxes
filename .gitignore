@@ -34,7 +34,9 @@ secrets.*
 .env.*
 *.local
 
-# Editor and temp files
+# Editor, backups and temp files
+backup/
+.backup/
 *.tmp
 *.temp
 *.bak
@@ -49,6 +51,9 @@ secrets.*
 
 # Exclude .NET assemblies from source
 *.dll
+
+# Exclude Ezra chat exports
+.ezra-chat-exports/
 
 # >>>>> REPO-SPECIFIC IGNORES - lines below are preserved during sync <<<<<
 pdf/

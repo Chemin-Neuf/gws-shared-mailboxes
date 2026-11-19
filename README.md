@@ -21,8 +21,7 @@ A comprehensive study of pros, cons, and caveats across the 7 native Google Work
 | `matrix.html` | Consolidated OK/NOK master matrix (7 options × 10 topics) |
 | `synthese-manageriale.html` | Executive decision framework, governance guidelines, and security directives for department heads (in French) |
 | `technical-overview.html` | Technical overview for GWS admins and script developers: web console & API capabilities, choices made (draft) |
-| `brainstorm-technical.md` | Working draft where the technical overview content is being brainstormed before porting to HTML |
-| `groups-parameters.md` | Working draft: exhaustive inventory of Google Groups settings across the Groups Settings, Directory and Cloud Identity APIs, with GAM7 commands |
+| `brainstorm/` | Working drafts: `technical.md` for the technical overview, `groups-parameters.md` for the Google Groups API and GAM7 inventory, and `calendars.md` for calendar design |
 | `css/` | Shared stylesheets (`site.css`, `site-nav.css`) |
 | `js/` | Client-side navigation script (`site-nav.js`) |
 | `assets/` | Static media and site favicon (`favicon.svg`) |

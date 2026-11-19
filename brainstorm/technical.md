@@ -49,8 +49,9 @@ happen directly in the HTML, to avoid two diverging sources of truth.
   the original study question (choosing among the 7 sharing options). It is the
   **implementation companion to the Decision Guide**: once an option is chosen, making it
   work in practice immediately implies the surrounding bundle — shared calendar, shared
-  contacts, shared drive. These were not studied as separate topics because they are
-  straightforward; they are covered here, and exodus handles them anyway.
+  contacts, shared drive. Calendar decisions and follow-up are in the
+  [calendar brainstorm](calendars.md); contacts and shared drives are covered
+  here, and exodus handles them anyway.
 - **exodus coverage**: contract-level only (what it does, what it owns, ops pointers) —
   the page is not about exodus internals. Hosting, scheduling, and secrets belong to the
   exodus project itself. The name "exodus" may be published.
@@ -80,7 +81,7 @@ happen directly in the HTML, to avoid two diverging sources of truth.
 | 4 | Shared mailbox provisioning | User (functional account) or Group | mixed | ? | Some HRIS-backed (function / mission / responsibility), some GWS-native — see ownership model below |
 | 5 | Inbox delegation grants | Gmail delegates, `su-` security group | mixed | ? | One group delegate per mailbox; access = group membership (see section 4) |
 | 6 | Contacts — delegation / sharing | Contacts and proposed `sc-` security group | mixed | ? | `sc-` expresses intended membership; the grant mechanism remains TBD (see section 4) |
-| 7 | Calendar sharing | Calendar ACLs, `sa-` security group | mixed | ? | Part of the mailbox bundle (see section 1); one `writer` ACL per calendar granted to `sa-` (see section 4) |
+| 7 | Calendar sharing | Calendar ACLs, `sa-` security group | mixed | ? | Part of the mailbox bundle; current model and follow-up are in the [calendar brainstorm](calendars.md) |
 | 8 | Shared drives — provisioning & membership | Shared drive, members | mixed | ? | |
 | 9 | Consistency checks & reconciliation | All managed objects | both | ? | REQUIRED. Personal users: see section 3.1.5 (automatic or selective manual correction). Other objects: policy parked |
 | 10 | Failure handling & recovery | — | — | REQUIRED | Partial-run recovery, alerting (see section 8) |
@@ -397,34 +398,29 @@ at once. A mass-change safety threshold should be discussed with offboarding.
 ### 4.1 Model
 
 The proposed access model uses **security groups**, following the existing
-`sd-<shared-drive-name>@security.chemin-neuf.net` pattern for shared drives. Gmail and
-Calendar can use a group as the grant target; contacts may require individual grants
+`sd-<shared-drive-name>@security.chemin-neuf.net` pattern for shared drives. Gmail can use
+a group as the grant target; the calendar grant model is in the
+[calendar brainstorm](calendars.md). Contacts may require individual grants
 derived from group membership.
 
 | Group | Meaning | Grants | Members |
 |---|---|---|---|
 | `su-<mailbox>@security.chemin-neuf.net` | **s**hared **u**ser | Gmail delegation on the shared mailbox (the group is the single delegate) | People who read / send for the mailbox |
-| `sa-<mailbox>@security.chemin-neuf.net` | **s**hared **a**genda (*agenda*, not *address book* — avoids confusing calendar and contacts) | Calendar ACL on the mailbox's primary calendar, role **`writer`** ("Make changes to events") — read/write, no sharing management | `su-<mailbox>@…` (nested) + calendar-only people, if any |
+| `sa-<mailbox>@security.chemin-neuf.net` | **s**hared **a**genda | Calendar access; see the [calendar brainstorm](calendars.md) | `su-<mailbox>@…` (nested) + calendar-only people, if any |
 | `sc-<mailbox>@security.chemin-neuf.net` | **s**hared **c**ontacts | Proposed source of intended contact delegates, **not itself a contact-delegation grant** | People intended to manage contacts; nesting with `su-` remains open |
-| `saro-<mailbox>@security.chemin-neuf.net` | **s**hared **a**genda **r**ead-**o**nly | Calendar ACL on the same calendar, role **`reader`** ("See all event details") | Read-only calendar people |
+| `saro-<mailbox>@security.chemin-neuf.net` | **s**hared **a**genda **r**ead-**o**nly | Calendar access; see the [calendar brainstorm](calendars.md) | Read-only calendar people |
 | `sd-<shared-drive>@security.chemin-neuf.net` (existing convention) | **s**hared **d**rive | Shared drive linked to the shared mailbox | `su-<mailbox>@…` (nested) + others as needed |
 
-- **Nesting**: `su-` is a member of `sa-` → mail access implies calendar access; the
-  reverse (calendar-only access) remains possible by adding people to `sa-` only.
-  `su-` is also a member of the `sd-` group of the shared drive linked to the mailbox
-  (decided 2026-10-28; **how a shared drive is linked to a shared user is still to be
-  discussed**).
-- A person in both `sa-` and `saro-` gets the higher role (`writer`).
+- **Nesting**: `su-` is a member of `sa-` and the `sd-` group of the shared drive linked
+  to the mailbox (decided 2026-10-28; **how a shared drive is linked to a shared user is
+  still to be discussed**). See the [calendar brainstorm](calendars.md) for
+  the calendar access implications.
 - **Nested groups work for Gmail delegation** — confirmed by test (2026-10-26). Google's
   admin doc does not state it (some third-party sources even claim the opposite), so
   record the test details (nesting depth tested, add **and** removal propagation) and
   re-test after notable Google changes.
-- **Calendar roles** (decided 2026-10-28): `sa-` = `writer`, `saro-` = `reader`, **never
-  `owner`** — members can edit (or read) events but cannot change the calendar's sharing.
-  Access is managed **only by adding / removing people in the groups**; the calendar ACLs
-  themselves are set once and stay under admin / exodus control (no ACL drift to detect).
-- **Why separate calendar groups even when members are identical**: future access changes
-  become membership changes only — no per-calendar ACL calls.
+- Calendar roles, ACL ownership, and the rationale for separate calendar groups are
+  documented in the [calendar brainstorm](calendars.md).
 - **Contacts**: `sc-` is a proposed membership source, not a native group delegation
   mechanism. Whether exodus can reconcile its expanded membership to individual grants
   is unverified; see 4.4. Creating the group alone gives no contact access.
@@ -439,7 +435,8 @@ derived from group membership.
 | `contact@chemin-neuf.org` | `su-contact@security.chemin-neuf.net` | `sa-contact@security.chemin-neuf.net` | `sc-contact@security.chemin-neuf.net` |
 | `contact@chemin-neuf.fr` | `su-contact---chemin-neuf.fr@security.chemin-neuf.net` | `sa-contact---chemin-neuf.fr@security.chemin-neuf.net` | `sc-contact---chemin-neuf.fr@security.chemin-neuf.net` |
 
-`saro-` and `sd-` follow the same pattern.
+`saro-` and `sd-` follow the same pattern. Calendar group naming details are in the
+[calendar brainstorm](calendars.md).
 
 Constraints the rule implies:
 
@@ -796,9 +793,8 @@ and [Google Contacts delegation](https://support.google.com/contacts/answer/2590
 | Mode-2 sync scope: UUID, photo, postal address, name (+ primary-address rename), phone | Sync all onesime fields (title, department, manager…) | Only fields with a clear consumer in GWS; title/department/manager too org-specific to keep authoritative in onesime |
 | Primary address follows name changes | Name syncs but address stays | Identity stays consistent; GWS keeps the old address as an alias, so no mail is lost |
 | UUID-missing matching: auto on email match, admin chooses otherwise | Auto-link on name; fully manual table | Email keys are unambiguous; name-only matching risks linking the wrong homonym |
-| Shared mailbox access via security groups `su-` (mail) nested in `sa-` (calendar); `sc-` proposed for contacts membership | Per-user delegates and per-user calendar ACLs | One Gmail group delegate / one Calendar ACL; contacts still need a verified grant mechanism |
+| Shared mailbox access via security groups | Per-user grants | See the [calendar brainstorm](calendars.md) for the calendar access model; contacts still need a verified grant mechanism |
 | Group name = local part on `@chemin-neuf.org`, full address with `---` for `@` otherwise | Always local part; always full address | Short names for the main domain, no collisions across domains |
-| `sa-` gets calendar role `writer`, `saro-` gets `reader`; access managed by group membership only | `owner` (manage sharing) | Members edit / read events but cannot re-share the calendar; ACLs stay admin/exodus-controlled |
 | `su-` is a member of the linked shared drive's `sd-` group | Separate drive grants | Mailbox team gets the drive automatically; one membership to manage |
 | … | … | … |
 
@@ -842,9 +838,8 @@ and [Google Contacts delegation](https://support.google.com/contacts/answer/2590
 - [ ] Contacts mechanism: per-mailbox contact delegation synced from `sc-` vs Domain
   Shared Contacts (Directory API)? Google documents invitations to people, not a group
   delegation mechanism; API support for synchronisation remains open (section 4.4).
-- [x] ~~Calendars: ACL grants on the functional account's calendar vs separate shared
-  calendars / resources?~~ → DECIDED (2026-10-28): `writer` ACL on the functional
-  account's calendar, granted to the `sa-` group; `reader` via `saro-` (section 4).
+- [x] Calendar model and access roles — current direction and follow-up are in the
+  [calendar brainstorm](calendars.md).
 - [ ] Shared drives: who becomes Manager; in scope now or later? (`su-` is a member of
   the linked drive's `sd-` group — section 4; the mailbox ↔ drive link is TBD.)
 

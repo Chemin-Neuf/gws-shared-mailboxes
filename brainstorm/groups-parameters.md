@@ -558,7 +558,7 @@ Before production use, test with a disposable security group: verify rejection o
 messages, read back its security label and membership, add and remove members, and check
 the actual resource grants needed, including Gmail delegation and Calendar access.
 Test revocation after propagation. Use a separate test resource for Drive, Shared Drive
-or IAM if those services are in scope. See the [brainstorm pilot](brainstorm-technical.md#43-group-settings-proposal-2026-11-12).
+or IAM if those services are in scope. See the [brainstorm pilot](technical.md#43-group-settings-proposal-2026-11-12).
 
 Sources: [Groups Settings API](https://developers.google.com/workspace/admin/groups-settings/v1/reference/groups),
 [Google security groups](https://knowledge.workspace.google.com/admin/groups/control-access-to-sensitive-data-with-security-groups),

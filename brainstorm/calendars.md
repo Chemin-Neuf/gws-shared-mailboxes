@@ -3,6 +3,7 @@
   SPDX-License-Identifier: GPL-3.0-only
 
   Original Author: Copilot (model not exposed)
+  Major Contributors: Copilot (model not exposed)
   Last Updated: 2026-11-19
 -->
 
@@ -15,6 +16,124 @@ decided.
 
 Calendar sharing is feature 7 in the exodus contract. Its direction is mixed and its
 status (live / planned / idea) remains to be confirmed.
+
+## Google Calendar Admin console settings
+
+The following are the reported default settings for the organisation, recorded
+2026-11-19. These are configuration values, not necessarily Google's product defaults.
+
+- **Service status:** On.
+  - Discuss which types of users or functional accounts, if any, should have Calendar
+    disabled.
+
+### Sharing settings
+
+- **Working location:** On.
+  - Discuss whether working location is meaningful for a shared calendar representing
+    a team rather than an individual, and who should see it.
+- **External sharing options for primary calendars:** Share all information, but
+  outsiders cannot change calendars.
+  - This permits sharing event details with external people, for example when a mission
+    or a house wants to share events with a wider audience. As a precaution, the
+    organisation's baseline does not allow external people to edit primary calendars.
+  - This is a maximum permitted level, not an automatic external grant. An individual
+    calendar or event cannot exceed the effective limit. An OU or configuration group
+    may override the baseline for its users. Specific external sharing still needs to
+    be granted; non-private event details may then be exposed.
+  - If a specific use requires external editing in future, consider an exception group
+    such as `sa-allow-external-write@security.chemin-neuf.net` for the relevant
+    calendar owners. This is an idea, not an existing group or grant: verify that
+    the configuration-group override works as intended, define approval and review,
+    and grant calendar access separately.
+- **Internal sharing options for primary calendars:** Only free/busy information
+  (hide event details).
+  - The reported Google default of sharing all details internally is considered too
+    broad; free/busy is an acceptable baseline. Individual and shared account calendars
+    can be configured to share more or less internally.
+  - This is a default, not an enforced ceiling: customised calendar sharing may differ.
+    For functional accounts, reconcile that flexibility with the current direction
+    that administrator / exodus controls the calendar ACLs. Verify that the explicit
+    `sa-` and `saro-` grants work alongside the free/busy default, including private
+    events and overlapping membership.
+- **Video conferencing - Make Google Meet the default video conferencing provider
+  when available:** On.
+  - Users can adjust conferencing preferences. Test which preferences apply when a
+    delegate creates an event on a functional account's calendar, and who controls
+    the resulting meeting if its creator leaves.
+- **Video conferencing - Automatically add video conferencing to events users
+  create:** On.
+  - A Meet link is automatically added when the first guest is added, but not when an
+    event is copied or duplicated. Consider whether unnecessary links on in-person
+    events cause confusion; test delegated, mobile and automated event creation.
+- **External invitations - Warn users when inviting guests outside of the domain
+  Communauté du Chemin Neuf:** On.
+  - This is a warning, not a block. Test secondary domains, aliases, groups containing
+    external members, delegated events and API-created events; do not assume the
+    warning identifies every ultimately external recipient.
+- **Working hours:** On.
+  - Discuss whether a functional account should have team coverage hours, no configured
+    hours, or another approach. Consider distributed teams and time zones.
+
+### General settings
+
+There are no organisational unit or group overrides for these settings.
+
+- **External sharing options for secondary calendars:** Share all information, and
+  outsiders can change calendars.
+  - This is an intentional balance: primary calendars are protected from external
+    editing by default, while users can grant outsiders edit access to secondary
+    calendars when needed. The permissive setting is an organisation-wide maximum,
+    not an automatic grant.
+  - There is no OU or group override for these general settings, so flexibility and
+    security must be balanced across the organisation. External editors can see
+    private event details, edit events, and restore or permanently delete events from
+    trash. Consider approval, periodic access review and an inventory of external
+    grants; check existing uses before changing the limit.
+- **Internal sharing options for secondary calendars:** Only free/busy information
+  (hide event details).
+  - Check whether team and resource calendars have the intended explicit access and
+    whether existing customised calendars are affected by changes to this default.
+- **Resource booking permissions - Allow users to book resources that are shared
+  as "See only free/busy":** On.
+  - This allows privacy-preserving resource booking. Check which users should book
+    restricted resources, and test available and conflicting bookings, cancellations
+    and resource responses.
+
+### Advanced settings
+
+- **Add invitations to Calendar:** Invitations from known senders.
+- **Set the default value:** Invitations from known senders.
+  - The rationale is to reduce the small but non-zero risk of malicious or spam
+    invitations appearing automatically. Known senders include contacts, people in
+    the organisation and people previously interacted with; they need not all be
+    added as contacts. Known does not necessarily mean trusted.
+  - The expected inconvenience is small: invitations from unknown senders still arrive
+    by email and appear on the calendar after acceptance, and most invitations are
+    expected to come from known senders. A shared mailbox team must nevertheless
+    monitor those emails: a sender known to a delegate may not be known to the
+    functional account.
+  - Test unknown, known and internal senders, the functional inbox and delegate
+    visibility. Confirm the distinct effects of the two Admin console controls, what
+    users can change, and the effect on existing and new accounts.
+- **Time insights:** On.
+  - Discuss whether insights are meaningful for a team calendar rather than an
+    individual. Check visibility to delegates and availability under the licence.
+- **Calendar web offline:** On.
+  - This is expected to be rarely used but valuable when needed. The working
+    assessment is that use is mostly on personal devices and the risk of leaking
+    relatively low-sensitivity calendar data is small.
+  - The setting permits users to enable offline access; it does not automatically
+    enable it on every browser. Check device policy, cached data and access revocation
+    for shared or unmanaged devices. Offline web Calendar does not support creating
+    or editing events.
+- **Default event duration:** 60 minutes.
+  - Discuss whether an hour encourages unnecessarily long meetings or leaves too
+    little transition time. It is a default, not a limit; test which preference
+    applies when a delegate creates an event.
+- **Appointment schedules with payments:** Off.
+  - This blocks required payments in Calendar appointment schedules, not necessarily
+    free appointment schedules or other payment methods. Discuss whether any team
+    needs paid bookings and what approval and financial process would be required.
 
 ## Current direction
 
@@ -62,6 +181,13 @@ with group grants, rather than either alternative.
   setup?
 - When a functional account is deleted or converted, what happens to its events and calendar
   ACLs?
+- For user decommissioning, should future events be cancelled before deleting the user,
+  or transferred when they need to continue? How should guests, recurring events and
+  booked resources be handled, including when a user is suspended rather than deleted?
+- What should happen to the user's secondary calendars and their events? Google's
+  decommissioning guidance says that secondary calendars are deleted with their owner
+  and must be transferred before deletion if they are to be retained. Verify the
+  applicable transfer limitations and process before acting.
 
 ### Access and privacy
 
@@ -73,6 +199,8 @@ with group grants, rather than either alternative.
 - How should sensitive event details be handled when all `writer` members can edit events?
 - Should external participants ever be added to these access groups, or should calendar
   sharing remain internal-only?
+- Verify how the primary calendar's internal free/busy default interacts with the
+  explicit `writer` and `reader` group ACLs.
 
 ### Provisioning and operations
 
@@ -111,3 +239,11 @@ Before calling the calendar setup operationally complete, record:
   mailbox access groups and the exodus feature list.
 - [Google Groups settings reference](groups-parameters.md) for the adjacent group
   configuration inventory.
+- [Google: Calendar sharing options](https://knowledge.workspace.google.com/admin/calendar/set-google-calendar-sharing-options)
+  and [resource calendar sharing](https://support.google.com/a/answer/1034381).
+- [Google: Calendar video conferencing settings](https://knowledge.workspace.google.com/admin/calendar/control-video-conferencing-for-google-calendar-events-for-admins).
+- [Google: Manage invitations](https://support.google.com/calendar/answer/13159188)
+  and [known sender invitation behaviour](https://workspaceupdates.googleblog.com/2022/07/invitations-from-known-senders-only-google-calendar.html).
+- [Google: Use Calendar offline](https://support.google.com/calendar/answer/1340696)
+  and [paid appointment schedules](https://support.google.com/a/answer/13765946).
+- [Google: Cancel or transfer events and secondary calendars before deleting a user](https://support.google.com/a/answer/7400733).

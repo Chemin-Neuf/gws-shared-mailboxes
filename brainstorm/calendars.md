@@ -4,15 +4,16 @@
 
   Original Author: Copilot (model not exposed)
   Major Contributors: Copilot (model not exposed)
-  Last Updated: 2026-11-19
+  Model check on 2026-11-20: gpt-6.1-terra (check request only; earlier edits unverified)
+  Last Updated: 2026-11-20
 -->
 
-# Brainstorm - Shared mailbox calendars
+# Brainstorm - Google Workspace calendars
 
-Working notes on the calendar that accompanies a shared mailbox. The technical overview
-links here for calendar details. This file brings together the current decisions, their
-rationale, and the questions and operational details that still need to be tested or
-decided.
+Working notes on Google Workspace calendars for all users, including personal, functional
+account and shared mailbox calendars. This file brings together settings, current
+directions, their rationale, and questions and operational details that still need to be
+tested or decided. The technical overview links here for calendar details.
 
 Calendar sharing is feature 7 in the exodus contract. Its direction is mixed and its
 status (live / planned / idea) remains to be confirmed.
@@ -42,7 +43,8 @@ The following are the reported default settings for the organisation, recorded
     be granted; non-private event details may then be exposed.
   - If a specific use requires external editing in future, consider an exception group
     such as `sa-allow-external-write@security.chemin-neuf.net` for the relevant
-    calendar owners. This is an idea, not an existing group.
+    calendar owners. This is an idea, not an existing group. Alternatively, use a
+    secondary calendar and grant the external person edit access to that calendar.
 - **Internal sharing options for primary calendars:** Only free/busy information
   (hide event details).
   - The reported Google default of sharing all details internally is considered too
@@ -69,14 +71,15 @@ The following are the reported default settings for the organisation, recorded
 
 ### General settings
 
-There are no organisational unit or group overrides for these settings.
+> **Important:** There are no organisational unit or group overrides for these settings.
 
 - **External sharing options for secondary calendars:** Share all information, and
   outsiders can change calendars.
   - This is an intentional balance: primary calendars are protected from external
     editing by default, while users can grant outsiders edit access to secondary
-    calendars when needed. The permissive setting is an organisation-wide maximum,
-    not an automatic grant.
+    calendars when needed. This is the maximum sharing level allowed organisation-wide;
+    it does not mean that all secondary calendars are shared with external users.
+    External access must be granted separately.
   - There is no OU or group override for these general settings, so flexibility and
     security must be balanced across the organisation. External editors can see
     private event details, edit events, and restore or permanently delete events from
@@ -84,6 +87,8 @@ There are no organisational unit or group overrides for these settings.
     grants.
 - **Internal sharing options for secondary calendars:** Only free/busy information
   (hide event details).
+  - This is a default: sharing can be configured higher or lower for an individual
+    calendar.
 - **Resource booking permissions - Allow users to book resources that are shared
   as "See only free/busy":** On.
   - This allows privacy-preserving resource booking.
@@ -114,7 +119,7 @@ There are no organisational unit or group overrides for these settings.
     little transition time. It is a default, not a limit.
 - **Appointment schedules with payments:** Off.
 
-## Current direction
+## Shared mailbox calendar - current direction
 
 - Use the functional account's primary calendar, rather than a separate shared calendar or
   a calendar resource (decided 2026-10-28).
@@ -128,7 +133,7 @@ There are no organisational unit or group overrides for these settings.
 - A person with effective membership in both `sa-` and `saro-` gets the higher role,
   `writer`.
 
-## Group model and rationale
+## Shared mailbox calendar - group model and rationale
 
 - `sa-` means **shared agenda** ("agenda" rather than "address book", to distinguish
   calendars from contacts). It grants `writer` access and can contain `su-` plus
@@ -154,7 +159,8 @@ with group grants, rather than either alternative.
 
 ### Calendar ownership and lifecycle
 
-- Is the primary calendar always retained for the lifetime of the functional account?
+- A primary calendar is tied to its account and is retained for the account's lifetime;
+  its events can be cleared, but the primary calendar itself cannot be deleted separately.
 - What should happen when a mailbox changes purpose, owner, or address?
 - Should an account with no need for a team calendar still receive the same mailbox-calendar
   setup?
@@ -171,13 +177,28 @@ with group grants, rather than either alternative.
 ### Access and privacy
 
 - Is `reader` ("See all event details") the right default for every read-only participant,
-  or is there a use case for free/busy-only access?
-- Which roles should be available beyond the current `writer` and `reader` groups, if any?
+  given that internal users already have free/busy access by default? Consider whether
+  any use case requires a separate free/busy-only grant, for example when default
+  internal sharing has been restricted or access is external.
+- The current direction needs no additional group roles beyond `writer` and `reader`.
+  One possible exception to discuss is Google's `writerWithoutPrivateAccess` role,
+  which permits editing non-private events while showing private events as free/busy.
+  Add a separate role or group only if there is a concrete need and its availability
+  and group ACL behaviour have been verified.
 - Can there be calendar-only editors and readers, and how should they be distinguished from
   mailbox users in the group naming and membership process?
-- How should sensitive event details be handled when all `writer` members can edit events?
-- Should external participants ever be added to these access groups, or should calendar
-  sharing remain internal-only?
+- How should sensitive events be handled when `writer` members can see and edit even
+  private events? Examples include an individual's pastoral appointment, a confidential
+  personnel discussion or a meeting involving a vulnerable person. Options to discuss
+  include keeping sensitive details on a more restricted calendar or considering
+  `writerWithoutPrivateAccess`; marking an event private alone does not hide it from
+  ordinary writers.
+- External participants may be added to access groups for legitimate cases, subject
+  to the effective sharing limit. For example, members of a "frat de quartier" may not
+  have a full Google Workspace user account. If an individual needs more access, the
+  personal group can be converted to a full account. Define the approval process and
+  test the effective access of external members, especially because the primary
+  calendar baseline does not allow external writing.
 
 ### Provisioning and operations
 
@@ -218,6 +239,8 @@ Before calling the calendar setup operationally complete, record:
   configuration inventory.
 - [Google: Calendar sharing options](https://knowledge.workspace.google.com/admin/calendar/set-google-calendar-sharing-options)
   and [resource calendar sharing](https://support.google.com/a/answer/1034381).
+- [Google: Calendar API sharing roles](https://developers.google.com/workspace/calendar/api/concepts/sharing)
+  and [delete or unsubscribe from a calendar](https://support.google.com/calendar/answer/37188).
 - [Google: Calendar video conferencing settings](https://knowledge.workspace.google.com/admin/calendar/control-video-conferencing-for-google-calendar-events-for-admins).
 - [Google: Manage invitations](https://support.google.com/calendar/answer/13159188)
   and [known sender invitation behaviour](https://workspaceupdates.googleblog.com/2022/07/invitations-from-known-senders-only-google-calendar.html).

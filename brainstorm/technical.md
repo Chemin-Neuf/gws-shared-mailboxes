@@ -566,6 +566,10 @@ gam info group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net
 gam info cigroup su-jongeren---chemin-neuf.nl@security.chemin-neuf.net
 ```
 
+```powershell
+gam update group su-jongeren---chemin-neuf.nl@security.chemin-neuf.net name "E-mail delegation for Jongeren CCN NL" description "All members of this group have the right to read and write e-mail for jongeren@chemin-neuf.nl" archive_only true allow_web_posting false is_archived false who_can_join invited_can_join who_can_leave_group all_members_can_leave who_can_add_external_members only_admins_can_add_external_members allow_external_members false who_can_discover_group all_members_can_discover who_can_view_membership all_members_can_view include_in_global_address_list false who_can_moderate_members owners_and_managers who_can_view_group all_managers_can_view who_can_contact_owner all_managers_can_contact members_can_post_as_the_group false message_moderation_level moderate_all_messages spam_moderation_level reject enable_collaborative_inbox false primary_language en-GB makesecuritygroup
+```
+
 Inspect the output: verify the security label, each explicit setting, owners and membership.
 These commands do **not** add members, nest groups, create Gmail or Calendar grants, or
 grant contacts access. Confirm the installed GAM7 syntax and test Google-accepted settings
@@ -589,6 +593,25 @@ are suppressed. A manager can manage group membership and thereby affect access;
 group membership alone does not create the Gmail delegation grant. The list is for direct
 members; expanded nested membership needs a separate check. `showdeliverysettings`
 requires an additional API call per member.
+
+#### Calendar access through the `sa-` group
+
+The calendar model and role rationale are in the
+[calendar brainstorm](calendars.md#shared-mailbox-calendar---current-direction). After
+creating and verifying the mailbox's `sa-` security group, add `su-` as a member of `sa-`
+and grant `sa-` writer access to the shared user's primary calendar. This makes the
+mailbox delegates in `su-` calendar editors as well; do not grant `owner`.
+
+```powershell
+gam update group sa-jongeren---chemin-neuf.nl@security.chemin-neuf.net add member su-jongeren---chemin-neuf.nl@security.chemin-neuf.net
+gam user jongeren@chemin-neuf.nl add calendaracls primary writer group:sa-jongeren---chemin-neuf.nl@security.chemin-neuf.net sendnotifications false
+gam user jongeren@chemin-neuf.nl show calendaracls primary
+```
+
+Run the membership and ACL commands only after confirming the `sa-` group exists and is
+the intended security group. Check each command's result; then verify the nested membership
+and calendar ACL. `writer` permits reading and editing event details, including private
+events. Use the separate `saro-` group with `reader` for read-only access.
 
 #### Gmail delegation to the group
 

@@ -132,6 +132,8 @@ The following are the reported default settings for the organisation, recorded
   access. Calendar-only access remains possible through direct membership in `sa-`.
 - A person with effective membership in both `sa-` and `saro-` gets the higher role,
   `writer`.
+- The Jongeren GAM7 commands for nesting `su-` in `sa-` and granting `sa-` writer access
+  to the primary calendar are in the [technical brainstorm](technical.md#section-4).
 
 ## Shared mailbox calendar - group model and rationale
 
